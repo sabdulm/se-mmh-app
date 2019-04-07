@@ -1,5 +1,19 @@
 import 'package:flutter/material.dart';
-class DWidget extends StatelessWidget {
+
+class MyHomePage extends StatelessWidget {
+	Widget _listItemBuilder (BuildContext context , int index){
+		return Stack(
+			children: <Widget>[
+				new Image.network(listings[index].photo_url),
+				Center(
+					child: Text(listings[index].name)
+				),
+			],
+		);
+		// return Text(listings[index].name);
+	}
+
+
 	@override
 	Widget build (BuildContext ctxt) {
 		return new Scaffold(
@@ -7,7 +21,12 @@ class DWidget extends StatelessWidget {
 			appBar: new AppBar(
 				title: new Text("Drawer Demo"),
 			),
-			body: new Text("Drawer Body"),
+			body: new ListView.builder(
+					itemCount: listings.length,
+					itemExtent: 100.0,
+					itemBuilder: _listItemBuilder,
+
+				), //<-------add lists here!!!
 			floatingActionButton: FloatingActionButton(
 				tooltip: 'Increment',
 				child: Icon(Icons.photo_filter),
