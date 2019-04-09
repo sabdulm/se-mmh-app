@@ -1,18 +1,102 @@
 import 'package:flutter/material.dart';
 
-class MyHomePage extends StatelessWidget {
-	Widget _listItemBuilder (BuildContext context , int index){
-		return Stack(
-			children: <Widget>[
-				new Image.network(listings[index].photo_url),
-				Center(
-					child: Text(listings[index].name)
-				),
-			],
-		);
+class MyState extends State<MyHomePage> {
+	final List<advertisement> listings = <advertisement>[
+    advertisement(name: 'bungla' , photo_url: 'https://assets.site-static.com/userFiles/657/image/Camelot_Development_Northbridge.jpg',description:'wow what a house'),
+    advertisement(name: 'bungla1' , photo_url: 'https://westvancouver.ca/sites/default/files/styles/grid-9/public/coachhouse_0.jpg?itok=G4DGtlrw',description:'shit house'),
+    advertisement(name: 'bungla2' , photo_url: 'https://eieihome.com/articles/wp-content/uploads/2018/04/architecture-building-driveway-186077.jpg',description:'Beautiful'),
+  ];
+  List<advertisement> items = List<advertisement>();
+  final Set<advertisement> _saved = new Set<advertisement>(); 
+
+  int _perpage =1;
+  int _current = 0;
+  final _biggerFont = const TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            );
+  
+  @override
+  void initState() {
+      super.initState();
+      setState(() {
+          items.addAll(listings.getRange(_current, _current + _perpage));
+          _current = _current + _perpage;
+      });
+  }
+  void loadMore() {
+    setState(() {
+      if (_current >= listings.length ){
+        return;
+      }else if((_current + _perpage )> listings.length) {
+          items.addAll(
+            listings.getRange(_current, (listings.length-1)));
+      } else {
+        items.addAll(
+            listings.getRange(_current, _current + _perpage));
+      }
+
+      _current = _current + _perpage;
+    });
+  }
+  void bookmark(){
+
+  }
+  Widget _listItemBuilder (BuildContext context , int index){
+		final bool alreadySaved = _saved.contains(items[index]);
+    if ((index < items.length)) {
+		//   return Row(
+    //   crossAxisAlignment: CrossAxisAlignment.start,
+		// 	children: <Widget>[
+				
+    //     new Image.network(items[index].photo_url,
+    //       alignment: Alignment.centerLeft,
+    //       fit: BoxFit.fitHeight,
+    //       width: 100,
+    //       ),
+		// 		Container(
+		// 			child: Text(
+    //         items[index].name,
+    //         style: _biggerFont,
+    //         textAlign: TextAlign.center,
+    //         ),
+		// 		),
+		// 	],
+		// );
+    return  Card(
+      child: Column(
+          children: <Widget>[ListTile(
+              leading: new Image.network(items[index].photo_url,
+                  height: 120,
+                  width: 160,
+                  alignment: Alignment.bottomCenter,
+                  ),
+              title: Text(items[index].name , style: _biggerFont,),
+              subtitle: Text(items[index].description),
+              trailing: Icon(
+                alreadySaved? Icons.bookmark : Icons.bookmark_border,
+                color: alreadySaved? Colors.orangeAccent : null,  
+                ),
+                onTap: () {      // Add 9 lines from here...
+                setState(() {
+                    if (alreadySaved) {
+                      _saved.remove(items[index]);
+                    } else { 
+                      _saved.add(items[index]); 
+                    }
+                  });
+                },
+            ),
+          ],
+        ),
+      );
+		} else {
+		  return Container(
+             child: Text("End.", textAlign: TextAlign.center,),
+            );
+		}
 		// return Text(listings[index].name);
 	}
-
 
 	@override
 	Widget build (BuildContext ctxt) {
@@ -21,12 +105,20 @@ class MyHomePage extends StatelessWidget {
 			appBar: new AppBar(
 				title: new Text("Drawer Demo"),
 			),
-			body: new ListView.builder(
-					itemCount: listings.length,
-					itemExtent: 100.0,
-					itemBuilder: _listItemBuilder,
+			body:NotificationListener<ScrollNotification>( 
+        onNotification: (ScrollNotification scrollInfo) {
+          if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            loadMore();
+          }
+        },
+        child: new ListView.builder(
+            itemExtent: 140.0,
+            padding: EdgeInsets.all(10.0),
+            itemCount: (_current < (listings.length-1)) ? items.length + 1 : items.length,
+            itemBuilder: _listItemBuilder,
 
-				), //<-------add lists here!!!
+          ),
+      ), //<-------add lists here!!!
 			floatingActionButton: FloatingActionButton(
 				tooltip: 'Increment',
 				child: Icon(Icons.photo_filter),
@@ -36,6 +128,11 @@ class MyHomePage extends StatelessWidget {
 }
 
 
+
+class MyHomePage extends StatefulWidget {
+  @override
+  MyState createState() => new MyState();
+}
 class advertisement {
 	const advertisement({this.name,this.photo_url,this.description});
 	final String name;
@@ -43,11 +140,6 @@ class advertisement {
 	final String description;
 }
 
-final List<advertisement> listings = <advertisement>[
-	advertisement(name: 'bungla' , photo_url: 'https://assets.site-static.com/userFiles/657/image/Camelot_Development_Northbridge.jpg',description:'wow what a house'),
-	advertisement(name: 'bungla1' , photo_url: 'https://westvancouver.ca/sites/default/files/styles/grid-9/public/coachhouse_0.jpg?itok=G4DGtlrw',description:'shit house'),
-	advertisement(name: 'bungla2' , photo_url: 'https://eieihome.com/articles/wp-content/uploads/2018/04/architecture-building-driveway-186077.jpg',description:'Beautiful'),
-];
 
 class DrawerOnly extends StatelessWidget {
   @override
