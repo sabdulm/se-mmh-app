@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "358441719226",
+    "firebase_url": "https://mmhapp-576cd.firebaseio.com",
+    "project_id": "mmhapp-576cd",
+    "storage_bucket": "mmhapp-576cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358441719226:android:5d85b0f43f28e98d",
+        "android_client_info": {
+          "package_name": "com.example.second"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqVH-uQ-_suOXyBD9pL1mRKB8fg4DxWIQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358441719226-i5c1fkp77isrbhsa5jlva1eoqoh6955v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
