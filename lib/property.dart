@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'drawer.dart';
 
 class propertyPage extends StatelessWidget {
-
-	// String get getName => "LUMS";
 
 	final String _name = "hello";
 	final String _address = "Address: " + "LUMS";
@@ -11,6 +10,10 @@ class propertyPage extends StatelessWidget {
 	final String _tags = "Tags: HELL";
 	final String _price = "Price: 545645132";
 
+  final List<String> image_urls = <String> [
+    'https://assets.site-static.com/userFiles/657/image/Camelot_Development_Northbridge.jpg',
+    'https://westvancouver.ca/sites/default/files/styles/grid-9/public/coachhouse_0.jpg?itok=G4DGtlrw',
+  ];
 
 	TextStyle _textStyle = TextStyle(
 		color: Colors.black,
@@ -18,23 +21,35 @@ class propertyPage extends StatelessWidget {
 		fontWeight: FontWeight.w500,
 	);
 
-	Widget _buildCoverImage(Size screenSize) => Container(
-			height: screenSize.height / 3,
-			decoration: BoxDecoration(
-				image: DecorationImage(
-					image: NetworkImage	('https://assets.site-static.com/userFiles/657/image/Camelot_Development_Northbridge.jpg'),
-					fit: BoxFit.cover,
-				),
-			),
-		);
+  List<NetworkImage> _buildNetworkImages(){
+    List<NetworkImage> lst = new List<NetworkImage>();
+    for (var i = 0; i < image_urls.length; i++) {
+      lst.add(NetworkImage(image_urls[i]));
+    }
+    return lst;
+  }
+
+	Widget _buildCoverImage(Size screenSize) => new SizedBox(
+    height: screenSize.height/3,
+    child: new Carousel(
+      boxFit: BoxFit.cover,
+      images: _buildNetworkImages(),
+      animationCurve: Curves.fastOutSlowIn,
+      animationDuration: Duration(seconds: 2),
+      borderRadius: true,
+      indicatorBgPadding: 0.0,
+    ),
+  );
 
   Widget _buildName() => Text(
       _name,
+			textAlign: TextAlign.left,
       style: _textStyle,
     );
 
   Widget _buildAddress() => Text(
       _address,
+			textAlign: TextAlign.left,
       style: _textStyle,
     );
 
@@ -62,23 +77,21 @@ class propertyPage extends StatelessWidget {
 			appBar: new AppBar(
 				title: new Text('Property Details'),
 			),
-			body: Stack(
-				children: <Widget>[
-					SafeArea(
-						child: SingleChildScrollView(
-							child: Column(
-								children: <Widget>[
-									_buildName(),
-									_buildCoverImage(screenSize),
-									_buildAddress(),
-									_buildDescription(),
-									_buildTags(),
-									_buildPrice(),
-								],
-							),
-						),
-					)
-				],	
+
+      // body: _buildCoverImage(screenSize),
+
+			body: ListView(
+        // padding: EdgeInsets.all(8.0),
+        children: <Widget>[
+          _buildCoverImage(screenSize),
+          _buildName(),
+          _buildAddress(),
+          _buildDescription(),
+          _buildTags(),
+          _buildPrice(),
+          // Image.network('https://assets.site-static.com/userFiles/657/image/Camelot_Development_Northbridge.jpg'),
+          // Image.network(image_urls[1]),
+        ],	
 			),
 		);	
 	}
