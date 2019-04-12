@@ -27,7 +27,7 @@ dependencies:
   firebase_analytics: ^1.0.4
   firebase_auth: ^0.5.12
   carousel_pro: ^0.0.1
-
+  intl: ^0.15.8
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'drawer.dart';
+//import 'drawer.dart';
 import 'property.dart';
 
 
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
 			theme: ThemeData(
 				primarySwatch: Colors.orange,
 			),
-			home: new propertyPage(),
+			home: new PropertyPage(),
 		);
 	}
 }
