@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tags/input_tags.dart';
 
 class AddAdState extends State<AddAd> {
   TextStyle style = TextStyle(fontFamily: 'Roboto', fontSize: 19.0, color: Colors.black);
@@ -9,9 +10,17 @@ class AddAdState extends State<AddAd> {
   String description = "", namestr = "";
   String passstr = "", cpassstr = "";
   List<String> tags = [];
+  DateTime dateTime = new DateTime.now();
   @override
   Widget build(BuildContext context) {
-
+    final inputTag = InputTags(
+      tags: tags,
+      onDelete: (t){},
+      onInsert: (t){},
+      alignment: MainAxisAlignment.start,
+      color: Colors.orangeAccent[700],
+    );
+    
     final descField = TextField(
       obscureText: false,
       style: style,
@@ -19,15 +28,6 @@ class AddAdState extends State<AddAd> {
       controller: _desc,
       onChanged: (text) {
         description = text;
-      },
-      onEditingComplete: (){
-        setState(() {
-          tags.add(description);
-          description = "";
-          _desc.clear();
-          print(tags);
-          // FocusScope.of(context).requestFocus(_desc);
-        });
       },
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
@@ -47,32 +47,7 @@ class AddAdState extends State<AddAd> {
           border:
               OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
     );
-    final passwordField = TextField(
-      obscureText: true,
-      style: style,
-      onChanged: (text) {
-        passstr = text;
-      },
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
-          hintText: "Password",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
-          
-    );
-    final cpasswordField = TextField(
-      obscureText: true,
-      style: style,
-      onChanged: (text) {
-        cpassstr = text;
-      },
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
-          hintText: "Confirm Password",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
-          
-    );
+    
     final signUpRdr = InkWell(
       child: Text('Not a member? Sign up!'),
       onTap: () {
@@ -99,25 +74,11 @@ class AddAdState extends State<AddAd> {
         child: MaterialButton(
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
-          onPressed: () {
-            final snackBar = SnackBar(
-              content: Text("Name entered: " + namestr + ", Email entered: " + description + ", Pass entered: " + passstr + ", CPass entered: " + cpassstr),
-              action: SnackBarAction(
-                label: 'Undo',
-                onPressed: () {
-                  // Some code to undo the change!
-                },
-              ),
-            );
-
-            // Find the Scaffold in the Widget tree and use it to show a SnackBar!
-            _scaffoldKey.currentState.showSnackBar(snackBar);
-           
-          },
+          onPressed: () {},
           child: Text("Post",
-              textAlign: TextAlign.center,
-              style: butt.copyWith(
-                  color: Colors.white, fontWeight: FontWeight.bold)),
+          textAlign: TextAlign.center,
+          style: butt.copyWith(
+          color: Colors.white, fontWeight: FontWeight.bold)),
         ),
       ),
     );
@@ -147,9 +108,7 @@ class AddAdState extends State<AddAd> {
                   SizedBox(height: 10.0),
                   descField,
                   SizedBox(height: 10.0),
-                  passwordField,
-                  SizedBox(height: 10.0),
-                  cpasswordField,
+                  inputTag,
                   SizedBox(
                     height: 20.0,
                   ),
