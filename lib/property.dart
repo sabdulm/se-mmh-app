@@ -68,8 +68,6 @@ class PropertyPage extends StatelessWidget {
 				title: new Text('Property Details'),
 			),
 
-      // body: _buildCoverImage(screenSize),
-
 			body: ListView(
         padding: EdgeInsets.all(15),
         children: <Widget>[
@@ -84,8 +82,6 @@ class PropertyPage extends StatelessWidget {
           _buildTags(),
           Divider(),
           _buildPrice(),
-          // Image.network('https://assets.site-static.com/userFiles/657/image/Camelot_Development_Northbridge.jpg'),
-          // Image.network(imageUrls[1]),
         ],	
 			),
 		);	
