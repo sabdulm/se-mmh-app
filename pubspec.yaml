@@ -25,8 +25,12 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_tags: ^0.3.0
   google_maps_flutter: ^0.5.7
-
-
+  firebase_core: ^0.2.5
+  # firebase_analytics: ^1.0.4
+  # firebase_auth: ^0.5.12
+  cloud_firestore: ^0.8.2
+  carousel_pro: ^0.0.1
+  intl: ^0.15.8
 dev_dependencies:
   flutter_test:
     sdk: flutter
