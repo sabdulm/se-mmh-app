@@ -19,7 +19,8 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
-  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController _controller;
+
   Location location = new Location();
   final Set<Marker> _markers = {};
   static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
@@ -33,35 +34,53 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
-    // _updateCenter();
     return new Scaffold(
-      body: GoogleMap(
-        myLocationEnabled: true,
-        markers: _markers,
-        onCameraMove: _onCameraMove,
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        // label: 'pin',
-        onPressed: _getLocation,
-        child: const Icon(Icons.add_location),
-      ),
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            myLocationEnabled: true,
+            markers: _markers,
+            onCameraMove: _onCameraMove,
+            mapType: MapType.hybrid,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              setState(() {
+                _controller = controller;
+              });  
+            },
+          
+          ),
+          
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton(
+                child: const Icon(Icons.add_location),            
+                onPressed: () => _getLocation(),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.center,
+              child: FloatingActionButton(
+                child: const Icon(Icons.my_location),  
+                backgroundColor: Colors.transparent,          
+                onPressed: () => _getLocation(),
+              ),
+            ),
+          )
+
+        ],
+      )       
     );
   }
 
-  // _animateToUser() async {
-  //   location.onLocationChanged();
-  //   var pos = await location.getLocation();
-  //   mapController
-  // }
-
   void _getLocation(){
-    print(_lastMapPosition);
+    // print(_lastMapPosition);
     setState(() {
       _markers.add(Marker(
         markerId: MarkerId(_lastMapPosition.toString()),
@@ -71,6 +90,8 @@ class MapSampleState extends State<MapSample> {
       ));
     });
   }
+
+
 
 
 }
