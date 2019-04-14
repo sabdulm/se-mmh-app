@@ -185,13 +185,5 @@ packages:
     source: hosted
     version: "2.0.8"
 sdks:
-<<<<<<< HEAD
   dart: ">=2.0.0 <3.0.0"
-=======
-<<<<<<< HEAD
-  dart: ">=2.0.0 <3.0.0"
-=======
-  dart: ">=2.1.0 <3.0.0"
   flutter: ">=0.11.9 <2.0.0"
->>>>>>> dd88d6c28701a34017d5853c5bd8d8c2ea68049e
->>>>>>> hadi
