@@ -22,34 +22,18 @@ class MapSampleState extends State<MapSample> {
   Completer<GoogleMapController> _controller = Completer();
   Location location = new Location();
   final Set<Marker> _markers = {};
-  static LatLng _center =  const LatLng(31.488, 74.36);
+  static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
   LatLng _lastMapPosition = _center;
-  // void async getCenter(){
-  //   location
-  //   var pos = await location.getLocation();
-  // }
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: _center,
-    zoom: 14.4746,
-  );
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: _center,
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  CameraPosition _kGooglePlex = CameraPosition(target: _center, zoom: 15);
 
   void _onCameraMove(CameraPosition position) {
-
     _lastMapPosition = position.target;
   }
-  _updateCenter() async {
-    var pos = await location.getLocation();
-    _center = LatLng(pos['latitude'], pos['longitude']);
-  }
+
   @override
   Widget build(BuildContext context) {
-    _updateCenter();
+    // _updateCenter();
     return new Scaffold(
       body: GoogleMap(
         myLocationEnabled: true,
