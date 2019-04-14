@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
 
 class PropertyPage extends StatelessWidget {
 
-	final String _name = "hello";
-	final String _address = "Address: " + "LUMS";
-	final String _description = "Description: UNI Hell";
-	final String _tags = "Tags: HELL";
-	final String _price = "Price: 545645132";
+	String _name = "hello";
+	String _address = "Address: " + "LUMS";
+	String _description = "Description: UNI Hell";
+	String _tags = "Tags: HELL";
+	String _price = "Price: 545645132";
+  String userID = "DHHl7uVMKgYdiBG0cMD1";
 
-  final List<String> imageUrls = <String> [
+
+  var imageUrls = <dynamic> [
     'https://assets.site-static.com/userFiles/657/image/Camelot_Development_Northbridge.jpg',
     'https://westvancouver.ca/sites/default/files/styles/grid-9/public/coachhouse_0.jpg?itok=G4DGtlrw',
   ];
@@ -58,6 +61,15 @@ class PropertyPage extends StatelessWidget {
       _price,
     );
 
+  void getData(DocumentSnapshot snapshot){
+    _name = snapshot['name'];
+    _tags = snapshot['tags'].join(', ');
+    _description = snapshot['description'];
+    imageUrls = snapshot['photo'];
+    _address = snapshot['location'].toString();
+    _price = snapshot['price'].toString();
+  }
+
 	@override
 	Widget build (BuildContext context) {
 		Size screenSize = MediaQuery.of(context).size;
@@ -68,22 +80,31 @@ class PropertyPage extends StatelessWidget {
 				title: new Text('Property Details'),
 			),
 
-			body: ListView(
-        padding: EdgeInsets.all(15),
-        children: <Widget>[
-          _buildName(),
-          Divider(),
-          _buildCoverImage(screenSize),
-          Divider(),
-          _buildAddress(),
-          Divider(),
-          _buildDescription(),
-          Divider(),
-          _buildTags(),
-          Divider(),
-          _buildPrice(),
-        ],	
-			),
+      body: StreamBuilder(
+        stream: Firestore.instance.collection('Property').snapshots(),
+        builder: (context, snapshot){
+          if(!snapshot.hasData) return const Text('Loading');
+          
+          getData(snapshot.data.documents[0]);
+
+          return new ListView(
+            padding: EdgeInsets.all(15),
+            children: <Widget>[
+              _buildName(),
+              Divider(),
+              _buildCoverImage(screenSize),
+              Divider(),
+              _buildAddress(),
+              Divider(),
+              _buildDescription(),
+              Divider(),
+              _buildTags(),
+              Divider(),
+              _buildPrice(),
+            ],	
+          );
+        },
+      )
 		);	
 	}
 }

@@ -13,7 +13,12 @@
           "package_name": "com.example.second"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "358441719226-i5c1fkp77isrbhsa5jlva1eoqoh6955v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAqVH-uQ-_suOXyBD9pL1mRKB8fg4DxWIQ"
