@@ -22,7 +22,7 @@ dependencies:
 
   google_maps_flutter: ^0.5.7
   location: 1.4.1
-  geoflutterfire: ^2.0.2
+  # geoflutterfire: ^2.0.2
 
 dev_dependencies:
   flutter_test:
