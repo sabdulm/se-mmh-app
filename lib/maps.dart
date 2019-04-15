@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:async';
 import 'package:location/location.dart';
 
 class MyMap extends StatelessWidget {
@@ -41,7 +40,7 @@ class MapSampleState extends State<MapSample> {
             myLocationEnabled: true,
             markers: _markers,
             onCameraMove: _onCameraMove,
-            mapType: MapType.hybrid,
+            mapType: MapType.normal,
             initialCameraPosition: _kGooglePlex,
             onMapCreated: (GoogleMapController controller) {
               setState(() {
@@ -79,13 +78,17 @@ class MapSampleState extends State<MapSample> {
     );
   }
 
-  void _getLocation(){
-    // print(_lastMapPosition);
+  void _getLocation() async {
+    var pos = await location.getLocation();
+    _center = LatLng(pos['latitude'], pos['longitude']);
     setState(() {
+      _markers.clear();
       _markers.add(Marker(
         markerId: MarkerId(_lastMapPosition.toString()),
         position: _lastMapPosition,
-        // infoWindow: InfoWindow()
+        infoWindow: InfoWindow(
+          title: "Undo",
+        ),
         icon: BitmapDescriptor.defaultMarker,
       ));
     });

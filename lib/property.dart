@@ -79,11 +79,13 @@ class PropertyPage extends StatelessWidget {
 			appBar: new AppBar(
 				title: new Text('Property Details'),
 			),
-
+      
       body: StreamBuilder(
         stream: Firestore.instance.collection('Property').snapshots(),
         builder: (context, snapshot){
-          if(!snapshot.hasData) return const Text('Loading');
+          if(!snapshot.hasData) return new Center(
+            child: new CircularProgressIndicator(),
+          );
           
           getData(snapshot.data.documents[0]);
 

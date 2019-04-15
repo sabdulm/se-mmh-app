@@ -76,7 +76,9 @@ class MyState extends State<MyHomePage> {
 				builder: (context, snapshot){
 
 					Size screenSize = MediaQuery.of(context).size;
-					if(!snapshot.hasData) return const Text('Loading...');
+					if(!snapshot.hasData) return new Center(
+            child: new CircularProgressIndicator(),
+          );
 					return new ListView.builder(
 						padding: EdgeInsets.all(2),
 						itemExtent: screenSize.height/4,
