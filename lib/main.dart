@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'listings.dart';
-import 'maps.dart';
+import 'listings.dart';
+// import 'maps.dart';
 // import 'property.dart';
 // import 'addAd.dart';
 
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
 			theme: ThemeData(
 				primarySwatch: Colors.orange,
 			),
-			home: new MyMap(),
+			home: new MyHomePage(),
 		);
 	}
 }
