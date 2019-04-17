@@ -20,7 +20,7 @@ class AddAdState extends State<AddAd> {
       alignment: MainAxisAlignment.start,
       color: Colors.orangeAccent[700],
     );
-    
+
     final descField = TextField(
       obscureText: false,
       style: style,
@@ -47,7 +47,6 @@ class AddAdState extends State<AddAd> {
           border:
               OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
     );
-    
     final signUpRdr = InkWell(
       child: Text('Not a member? Sign up!'),
       onTap: () {
@@ -82,7 +81,7 @@ class AddAdState extends State<AddAd> {
           textAlign: TextAlign.center,
           style: butt.copyWith(
           color: Colors.white, fontWeight: FontWeight.bold)),
-        ),
+       ),
       ),
     );
 

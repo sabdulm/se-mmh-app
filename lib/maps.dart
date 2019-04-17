@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:async';
+import 'package:location/location.dart';
 
 class MyMap extends StatelessWidget {
   @override
@@ -18,39 +18,84 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
-  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController _controller;
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  Location location = new Location();
+  final Set<Marker> _markers = {};
+  static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
+  LatLng _lastMapPosition = _center;
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  CameraPosition _kGooglePlex = CameraPosition(target: _center, zoom: 15);
+
+  void _onCameraMove(CameraPosition position) {
+    _lastMapPosition = position.target;
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
-      ),
+
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            myLocationEnabled: true,
+            markers: _markers,
+            onCameraMove: _onCameraMove,
+            mapType: MapType.normal,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              setState(() {
+                _controller = controller;
+              });  
+            },
+          
+          ),
+          
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton(
+                child: const Icon(Icons.add_location),            
+                onPressed: () => _getLocation(),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.center,
+              child: FloatingActionButton(
+                child: const Icon(Icons.my_location),  
+                backgroundColor: Colors.transparent,          
+                onPressed: () => _getLocation(),
+              ),
+            ),
+          )
+
+        ],
+      )       
     );
   }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+  void _getLocation() async {
+    var pos = await location.getLocation();
+    _center = LatLng(pos['latitude'], pos['longitude']);
+    setState(() {
+      _markers.clear();
+      _markers.add(Marker(
+        markerId: MarkerId(_lastMapPosition.toString()),
+        position: _lastMapPosition,
+        infoWindow: InfoWindow(
+          title: "Undo",
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+      ));
+    });
   }
+
+
+
+
 }
