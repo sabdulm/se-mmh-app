@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
-import 'addAd.dart';
+// import 'addAd.dart';
 
 class MyState extends State<MyHomePage> {
 	final Set<String> _saved = new Set<String>(); 
@@ -91,8 +91,8 @@ class MyState extends State<MyHomePage> {
 				tooltip: 'Increment',
 				child: Icon(Icons.photo_filter), 
 				onPressed: () {
-					Route route = MaterialPageRoute(builder: (context)=> AddAd());
-					Navigator.push(context, route);
+					// Route route = MaterialPageRoute(builder: (context)=> AddAd());
+					Navigator.pushNamed(context, 'addAd');
 				},
 			),
 		);
