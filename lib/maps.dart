@@ -33,7 +33,6 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      
       body: Stack(
         children: <Widget>[
           GoogleMap(
