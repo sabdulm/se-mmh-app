@@ -158,8 +158,8 @@ class MyState extends State<MyHomePage> {
 				tooltip: 'Increment',
 				child: Icon(Icons.photo_filter), 
 				onPressed: () {
-					Route route = MaterialPageRoute(builder: (context)=> AddAd());
-					Navigator.push(context, route);
+					// Route route = MaterialPageRoute(builder: (context)=> AddAd());
+					Navigator.pushNamed(context, 'addAd');
 				},
 			),
 		);

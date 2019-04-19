@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'listings.dart';
 import 'package:flutter/services.dart';
-// import 'maps.dart';
-// import 'property.dart';
-// import 'addAd.dart';
+import 'maps.dart';
+import 'property.dart';
+import 'addAd.dart';
 
 void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
@@ -20,6 +20,15 @@ class MyApp extends StatelessWidget {
 				primarySwatch: Colors.orange,
 			),
 			home: new MyHomePage(),
+
+      initialRoute: '',
+      routes: {
+        'home': (context) => MyHomePage(),
+        'addAd': (context) => AddAd(),
+        'maps': (context) => MyMap(),
+        'property': (context) => PropertyPage(),
+
+      },
 		);
 	}
 }
