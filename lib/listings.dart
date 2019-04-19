@@ -2,24 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
 import 'addAd.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:async/async.dart';
-import 'dart:async';
+import 'search.dart';
+import 'package:location/location.dart';
+import 'dart:math';
+
+int _value = 0;
+	
 class MyState extends State<MyHomePage> {
 	final Set<String> _saved = new Set<String>(); 
 	final _biggerFont = const TextStyle(
 															fontSize: 18.0,
 															fontWeight: FontWeight.bold,
 														);
-	
-	@override
+  var location =new Location();
+  double curr_lat= 0;
+  double curr_lon = 0;
+  bool has_location = false;
+  @override
 	void initState() {
 			super.initState();
+      
+      getUserLocation();
 	}
 	void bookmark(){
 
 	}
-	
+  void getUserLocation() async {
+    var currentLocation = <String, double>{};
+    try {
+      currentLocation = await location.getLocation();
+      curr_lat = currentLocation["latitude"];
+      curr_lon = currentLocation["longitude"];
+      has_location= true;
+      print("$curr_lat - $curr_lon");
+    } on Exception {
+      currentLocation = null;
+    }
+  }
+	void dropdownWidget(){
+    showDialog(
+      context: context,
+      builder: (_)=>SortDialog(),
+    );
+  }
+
 	Widget _image (String url, Size screenSize){
 			return new SizedBox(
 				height: screenSize.height/5.5,
@@ -78,22 +104,46 @@ class MyState extends State<MyHomePage> {
             onPressed: (){
               showSearch(context: context, delegate: Search());
             },
-          )
+          ),
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: (){
+              dropdownWidget();            
+            },
+          ),
+          
         ],
 			),
 			body:StreamBuilder( 
-				stream: Firestore.instance.collection('Property').snapshots(),
-				builder: (context, snapshot){
-
-					Size screenSize = MediaQuery.of(context).size;
+				stream: _value == 2?Firestore.instance.collection('Property').orderBy('time', descending: false).snapshots() //earliest -2
+                            : _value ==1? Firestore.instance.collection('Property').orderBy('name').snapshots() //1 = name
+                            :_value ==3? Firestore.instance.collection('Property').orderBy('time', descending: true).snapshots()// lates
+                            :_value ==4? Firestore.instance.collection('Property').orderBy('price', descending: true).snapshots()// expensive
+                            :_value ==5? Firestore.instance.collection('Property').orderBy('price', descending: false).snapshots()// cheapest
+                            :Firestore.instance.collection('Property').snapshots(), //none                   
+				builder: (context, snapshot) {
+          Size screenSize = MediaQuery.of(context).size;
 					if(!snapshot.hasData) return new Center(
             child: new CircularProgressIndicator(),
           );
-					return new ListView.builder(
+          var temp = snapshot.data.documents;
+          if(has_location){
+            GeoPoint loca = temp[0]['location'];
+            print("location: ${temp[0]['location']} , ${loca.latitude} , ${loca.longitude}");
+            temp.sort((a,b){
+              GeoPoint loca1 = a['location'];
+              GeoPoint loca2 = b['location'];
+               
+              var first = sqrt(pow(loca1.latitude-curr_lat , 2) + pow(loca1.longitude-curr_lon , 2));
+              var second = sqrt(pow(loca2.latitude-curr_lat , 2) + pow(loca2.longitude-curr_lon , 2));
+              return first.compareTo(second);
+            });
+          }
+          return new ListView.builder(
 						padding: EdgeInsets.all(2),
 						itemExtent: screenSize.height/4,
-						itemCount: snapshot.data.documents.length,
-						itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
+						itemCount: temp.length,
+						itemBuilder: (context, index)=>_listItemBuilder(context, temp[index], screenSize),
 					);
 				}, 
 			), //<-------add lists here!!!
@@ -108,130 +158,135 @@ class MyState extends State<MyHomePage> {
 		);
 	}
 }
-
-//Below is the search class
-class Search extends SearchDelegate{
-  Widget _image (String url, Size screenSize){
-			return new SizedBox(
-				height: screenSize.height/5.5,
-				width: screenSize.width/2,
-				child: Container(
-					decoration: BoxDecoration(
-						image: DecorationImage(
-							image: NetworkImage(url),
-							fit: BoxFit.fill,
-						),
-					),
-				),
-			);
-	}
-
-	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
-		return  Card(
-			child: Column(
-					children: <Widget>[
-						ListTile(
-							leading: Container(
-								child: snapshot['photo'].length<1 ? Container(height: screenSize.height/4, width: screenSize.width/3,) 
-											:_image(snapshot['photo'][0], screenSize),
-							),
-							title: Text(snapshot['name'] ),
-							subtitle: Text(snapshot['description'].substring(0,20)),
-					 ),
-				],
-			),
-		);	
-	}
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: (){
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: (){
-        close(context, null);
-      },
-    );
-  }
-  
-  // // Future<Stream> searchResult(q) async {
-  //   List<String> queryKeys = q.split(" "); //the length of this should not be big I should assert but I wont for now TODO to improve latency
-  //   CollectionReference firestoreCollection = Firestore.instance.collection("Property");
-  //   List<Stream<QuerySnapshot>> streamList = [];
-
-  //   for (int i =0 ; i <queryKeys.length; i++ ){
-  //     try{ 
-  //       Stream<QuerySnapshot> x = await firestoreCollection.where("name", isEqualTo: queryKeys[i]).snapshots();
-  //       streamList.add(x);
-  //       Stream<QuerySnapshot> x2 = await  firestoreCollection.where("tags", arrayContains: queryKeys[i]).snapshots();
-  //       streamList.add(x2);
-  //     } catch(e){
-  //     }
-  //   }
-  //   return StreamZip(streamList).asBroadcastStream();
-  //     //this test shows that the stream gets contents from both qury streams
-  //     // x.map((convert){ convert.documents.forEach((f){print(f.data["name"]);});}).listen(print); 
-    
-  // }
-  
-  @override
-  Widget buildResults(BuildContext context) {
-    return StreamBuilder( 
-        stream: Firestore.instance.collection('Property').where("name", isEqualTo: query).snapshots(),
-				// stream: searchResult(query),
-				builder: (context, AsyncSnapshot<QuerySnapshot> snapshot1){
-          return StreamBuilder(
-            stream: Firestore.instance.collection('Property').where("tags", arrayContains: query).snapshots(),
-            builder: (context, snapshot){
-              Size screenSize = MediaQuery.of(context).size;
-              if(!snapshot.hasData && !snapshot1.hasData) return new Center(
-                child: new CircularProgressIndicator(),
-              );
-              if(!snapshot.hasData)return new ListView.builder(
-                padding: EdgeInsets.all(2),
-                itemExtent: screenSize.height/4,
-                itemCount: snapshot1.data.documents.length,
-                itemBuilder: (context, index)=>_listItemBuilder(context, snapshot1.data.documents[index], screenSize),
-              );
-              if(!snapshot1.hasData)return new ListView.builder(
-                padding: EdgeInsets.all(2),
-                itemExtent: screenSize.height/4,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
-              );
-              print(snapshot.data.documents.length);
-              print(query);
-              snapshot.data.documents.addAll(snapshot1.data.documents);
-              return new ListView.builder(
-                padding: EdgeInsets.all(2),
-                itemExtent: screenSize.height/4,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
-              );
-            },
-          );
-					
-				}, 
-			);
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Container();
-  }
-}
 class MyHomePage extends StatefulWidget {
 	@override
 	MyState createState() => new MyState();
+}
+
+class SortDialog extends StatefulWidget {
+  SortDialog({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _SortDialogState createState() => new _SortDialogState();
+}
+
+class _SortDialogState extends State<SortDialog>{
+  int temp = _value;
+  @override
+	void initState() {
+			super.initState();
+      temp = _value;
+	}
+  void _handler(int num){
+    setState(() {
+      temp = num;  
+    });
+  }
+  @override
+  Widget build(BuildContext context){
+    
+    return AlertDialog(
+
+        title: new Text('Sort by'),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: 0,
+                  onChanged: _handler,
+                  groupValue: temp,
+                ),
+                Text('None'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: 1,
+                  onChanged: _handler,
+                  groupValue: temp,
+                ),
+                Text('Name'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: 2,
+                  onChanged: _handler,
+                  groupValue: temp,
+                ),
+                Text('Earliest First'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: 3,
+                  onChanged: _handler,
+                  groupValue: temp,
+                ),
+                Text('Latest First'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: 4,
+                  onChanged: _handler,
+                  groupValue: temp,
+                ),
+                Text('Most Expensive up'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: 5,
+                  onChanged: _handler,
+                  groupValue: temp,
+                ),
+                Text('Cheapest up'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: 6,
+                  onChanged: _handler,
+                  groupValue: temp,
+                ),
+                Text('Closest to current location'),
+              ],
+            ),
+              
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+            child: Text('Close'),
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+          ),
+          new FlatButton(
+            color: Colors.orangeAccent,
+            child: Text('Done', style: TextStyle(color: Colors.white),),
+            onPressed: (){
+              if(temp==_value){
+                Navigator.of(context).pop();
+              }
+              _value= temp;
+              Route route = MaterialPageRoute(builder: (context)=> MyHomePage());
+              Navigator.of(context).push(route);
+            },
+          )
+        ],
+    );
+  }
 }
