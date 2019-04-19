@@ -186,10 +186,9 @@ class _SortDialogState extends State<SortDialog>{
   }
   @override
   Widget build(BuildContext context){
-    
+    final radio_button = TextStyle(color: Colors.grey);
     return AlertDialog(
-
-        title: new Text('Sort by'),
+      title: new Text('Sort by'),
         content: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -201,7 +200,8 @@ class _SortDialogState extends State<SortDialog>{
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Text('None'),
+                Icon( Icons.not_interested),
+                Text('  None', style: radio_button,),
               ],
             ),
             Row(
@@ -211,7 +211,8 @@ class _SortDialogState extends State<SortDialog>{
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Text('Name'),
+                Icon(Icons.sort_by_alpha),
+                Text('  Name', style: radio_button,),
               ],
             ),
             Row(
@@ -221,7 +222,8 @@ class _SortDialogState extends State<SortDialog>{
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Text('Earliest First'),
+                Icon(Icons.fast_rewind),
+                Text('  Earliest First', style: radio_button,),
               ],
             ),
             Row(
@@ -231,7 +233,8 @@ class _SortDialogState extends State<SortDialog>{
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Text('Latest First'),
+                Icon(Icons.fast_forward),
+                Text('  Latest First', style: radio_button,),
               ],
             ),
             Row(
@@ -241,7 +244,8 @@ class _SortDialogState extends State<SortDialog>{
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Text('Most Expensive up'),
+                Icon(Icons.monetization_on),
+                Text('  Most Expensive up', style: radio_button,),
               ],
             ),
             Row(
@@ -251,7 +255,8 @@ class _SortDialogState extends State<SortDialog>{
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Text('Cheapest up'),
+                Icon(Icons.money_off),
+                Text('  Cheapest up', style: radio_button,),
               ],
             ),
             Row(
@@ -261,10 +266,10 @@ class _SortDialogState extends State<SortDialog>{
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Text('Closest to current location'),
+                Icon(Icons.location_on),
+                Text('  Closest to current location', style: radio_button,),
               ],
             ),
-              
           ],
         ),
         actions: <Widget>[
