@@ -47,7 +47,14 @@ class MyState extends State<MyHomePage> {
   }
 
 	Widget _image (String url, Size screenSize){
-			return new SizedBox(
+			if(url == ''){
+        return SizedBox(
+          height: screenSize.height/5.5,
+				  width: screenSize.width/2,
+          child: Image.asset("no_img.png", fit: BoxFit.fill,)
+        );
+      }
+      return new SizedBox(
 				height: screenSize.height/5.5,
 				width: screenSize.width/2,
 				child: Container(
@@ -67,7 +74,7 @@ class MyState extends State<MyHomePage> {
 					children: <Widget>[
 						ListTile(
 							leading: Container(
-								child: snapshot['photo'].length<1 ? Container(height: screenSize.height/4, width: screenSize.width/3,) 
+								child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) 
 											:_image(snapshot['photo'][0], screenSize),
 							),
 							title: Text(snapshot['name'] , style: _biggerFont,),
