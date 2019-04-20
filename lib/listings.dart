@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
-import 'addAd.dart';
 import 'search.dart';
 import 'package:location/location.dart';
 import 'dart:math';
@@ -120,7 +119,7 @@ class MyState extends State<MyHomePage> {
   }
 	@override
 	Widget build (BuildContext context) {
-		print("listings: ${_value}");
+		// print("listings: ${_value}");
     return new Scaffold(
 			drawer: new DrawerOnly(),
 			appBar: new AppBar(
@@ -176,7 +175,7 @@ class MyState extends State<MyHomePage> {
 				child: Icon(Icons.photo_filter), 
 				onPressed: () {
 					// Route route = MaterialPageRoute(builder: (context)=> AddAd());
-					Navigator.pushNamed(context, 'addAd');
+					Navigator.pushNamed(context, '/addAd');
 				},
 			),
 		);

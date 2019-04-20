@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'addAd2.dart';
 
 class MyMap extends StatelessWidget {
   @override
@@ -68,12 +69,30 @@ class MapSampleState extends State<MapSample> {
               child: FloatingActionButton(
                 child: const Icon(Icons.my_location),  
                 backgroundColor: Colors.transparent,
+                heroTag: 'btn2',
                 onPressed: () {},          
                 // onPressed: () => _getLocation(),
               ),
             ),
-          )
-
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                child: const Icon(Icons.navigate_next),  
+                backgroundColor: Colors.blueAccent,
+                heroTag: 'btn3',
+                onPressed: () {
+                  if (_markers.length == 1) {
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddAd2()),
+                    );
+                  }
+                },          
+              ),
+            ),
+          ),
         ],
       )       
     );
@@ -88,10 +107,11 @@ class MapSampleState extends State<MapSample> {
         markerId: MarkerId(_lastMapPosition.toString()),
         position: _lastMapPosition,
         infoWindow: InfoWindow(
-          title: 'hello',
+          title: 'your pin',
         ),
         icon: BitmapDescriptor.defaultMarker,
       ));
+
     });
   }
 

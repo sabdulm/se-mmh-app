@@ -74,7 +74,7 @@ class AddAdState extends State<AddAd> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
           onPressed: () {
-            Navigator.pushNamed(context, 'maps');
+            Navigator.pushNamed(context, '/maps');
           },
           child: Text("Post",
           textAlign: TextAlign.center,
