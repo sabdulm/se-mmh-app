@@ -75,13 +75,11 @@ class PropertyPage extends StatelessWidget {
 	@override
 	Widget build (BuildContext context) {
 		Size screenSize = MediaQuery.of(context).size;
-
 		return new Scaffold(
 			drawer: new DrawerOnly(),
 			appBar: new AppBar(
 				title: new Text('Property Details'),
 			),
-      
       body: StreamBuilder(
         stream: Firestore.instance.collection('Property').document(_key).snapshots(),
         builder: (context, snapshot){

@@ -19,7 +19,6 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   GoogleMapController _controller;
-
   Location location = new Location();
   final Set<Marker> _markers = {};
   static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
@@ -34,7 +33,6 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -56,7 +54,8 @@ class MapSampleState extends State<MapSample> {
             child: Align(
               alignment: Alignment.bottomLeft,
               child: FloatingActionButton(
-                child: const Icon(Icons.add_location),            
+                child: const Icon(Icons.add_location),   
+                heroTag: 'btn1',         
                 onPressed: () => _getLocation(),
               ),
             ),
@@ -68,8 +67,9 @@ class MapSampleState extends State<MapSample> {
               alignment: Alignment.center,
               child: FloatingActionButton(
                 child: const Icon(Icons.my_location),  
-                backgroundColor: Colors.transparent,          
-                onPressed: () => _getLocation(),
+                backgroundColor: Colors.transparent,
+                onPressed: () {},          
+                // onPressed: () => _getLocation(),
               ),
             ),
           )
@@ -88,7 +88,7 @@ class MapSampleState extends State<MapSample> {
         markerId: MarkerId(_lastMapPosition.toString()),
         position: _lastMapPosition,
         infoWindow: InfoWindow(
-          title: "Undo",
+          title: 'hello',
         ),
         icon: BitmapDescriptor.defaultMarker,
       ));
