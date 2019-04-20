@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
 
 class PropertyPage extends StatelessWidget {
-
+  PropertyPage(this._key);
+  String _key = "";
 	String _name = "hello";
 	String _address = "Address: " + "LUMS";
 	String _description = "Description: UNI Hell";
@@ -29,14 +30,15 @@ class PropertyPage extends StatelessWidget {
 
 	Widget _buildCoverImage(Size screenSize) => new SizedBox(
     height: screenSize.height/3,
-    child: new Carousel(
+    child: imageUrls.length>0? new Carousel(
       boxFit: BoxFit.cover,
       images: _buildNetworkImages(),
       animationCurve: Curves.fastOutSlowIn,
       animationDuration: Duration(seconds: 2),
       borderRadius: true,
-      indicatorBgPadding: 0.0,
-    ),
+      indicatorBgPadding: 0.0)
+      : 
+      Image.asset("no_img.png", fit: BoxFit.cover, ),
   );
 
   Widget _buildName() => Text(
@@ -81,13 +83,13 @@ class PropertyPage extends StatelessWidget {
 			),
       
       body: StreamBuilder(
-        stream: Firestore.instance.collection('Property').snapshots(),
+        stream: Firestore.instance.collection('Property').document(_key).snapshots(),
         builder: (context, snapshot){
           if(!snapshot.hasData) return new Center(
             child: new CircularProgressIndicator(),
           );
-          
-          getData(snapshot.data.documents[0]);
+          // print(snapshot.data['name']);
+          getData(snapshot.data);
 
           return new ListView(
             padding: EdgeInsets.all(15),

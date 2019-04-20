@@ -5,7 +5,7 @@ import 'addAd.dart';
 import 'search.dart';
 import 'package:location/location.dart';
 import 'dart:math';
-
+import 'property.dart';
 int _value =0;
 class MyState extends State<MyHomePage> {
 	final Set<String> _saved = new Set<String>(); 
@@ -73,7 +73,8 @@ class MyState extends State<MyHomePage> {
 	}
 	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
 		final bool alreadySaved = _saved.contains(snapshot.documentID);
-		return  Card(
+		print("List item: ${snapshot.documentID}");
+    return  Card(
 			child: Column(
 					children: <Widget>[
 						ListTile(
@@ -83,20 +84,25 @@ class MyState extends State<MyHomePage> {
 							),
 							title: Text(snapshot['name'] , style: _biggerFont,),
 							subtitle: Text(snapshot['description'].substring(0,20)),
-							trailing: Icon(
-								alreadySaved? Icons.bookmark : Icons.bookmark_border,
+							trailing: IconButton(
+								icon: alreadySaved? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
 								color: alreadySaved? Colors.orangeAccent : null,  
-								),
-							onTap: () {
-							setState(() {
-									if (alreadySaved) {
-										_saved.remove(snapshot.documentID);
-									} else { 
-										_saved.add(snapshot.documentID);
-										 
-									}
-								});
-							},
+								onPressed: () {
+                  setState(() {
+                      if (alreadySaved) {
+                        _saved.remove(snapshot.documentID);
+                      } else { 
+                        _saved.add(snapshot.documentID);
+                        
+                      }
+                    });
+                  },
+                ),
+							onTap: (){
+                Route route = MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
+                Navigator.of(context).push(route);
+ 
+              },
 					 ),
 				],
 			),
