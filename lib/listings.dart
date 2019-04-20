@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
-import 'addAd.dart';
 import 'search.dart';
 import 'package:location/location.dart';
 import 'dart:math';
@@ -83,7 +82,7 @@ class MyState extends State<MyHomePage> {
 											:_image(snapshot['photo'][0], screenSize),
 							),
 							title: Text(snapshot['name'] , style: _biggerFont,),
-							subtitle: Text(snapshot['description'].substring(0,20)),
+							subtitle: Text("${snapshot['description'].substring(0,20)}..."),
 							trailing: IconButton(
 								icon: alreadySaved? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
 								color: alreadySaved? Colors.orangeAccent : null,  
