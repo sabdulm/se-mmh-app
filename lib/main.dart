@@ -26,8 +26,6 @@ class MyApp extends StatelessWidget {
         'home': (context) => MyHomePage(),
         'addAd': (context) => AddAd(),
         'maps': (context) => MyMap(),
-        'property': (context) => PropertyPage(),
-
       },
 		);
 	}
