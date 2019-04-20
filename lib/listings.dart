@@ -6,8 +6,7 @@ import 'search.dart';
 import 'package:location/location.dart';
 import 'dart:math';
 
-int _value = 0;
-	
+int _value =0;
 class MyState extends State<MyHomePage> {
 	final Set<String> _saved = new Set<String>(); 
 	final _biggerFont = const TextStyle(
@@ -15,9 +14,10 @@ class MyState extends State<MyHomePage> {
 															fontWeight: FontWeight.bold,
 														);
   var location =new Location();
-  double curr_lat= 0;
-  double curr_lon = 0;
-  bool has_location = false;
+  
+  double _currLat= 0;
+  double _currLon = 0;
+  bool _hasLocation = false;
   @override
 	void initState() {
 			super.initState();
@@ -31,10 +31,9 @@ class MyState extends State<MyHomePage> {
     var currentLocation = <String, double>{};
     try {
       currentLocation = await location.getLocation();
-      curr_lat = currentLocation["latitude"];
-      curr_lon = currentLocation["longitude"];
-      has_location= true;
-      print("$curr_lat - $curr_lon");
+      _currLat = currentLocation["latitude"];
+      _currLon = currentLocation["longitude"];
+      _hasLocation= true;
     } on Exception {
       currentLocation = null;
     }
@@ -43,9 +42,14 @@ class MyState extends State<MyHomePage> {
     showDialog(
       context: context,
       builder: (_)=>SortDialog(),
-    );
+    ).then((v){
+      if(v){
+        setState(() {
+       
+        });
+      }
+    });
   }
-
 	Widget _image (String url, Size screenSize){
 			if(url == ''){
         return SizedBox(
@@ -98,10 +102,20 @@ class MyState extends State<MyHomePage> {
 			),
 		);	
 	}
-
+  Stream<QuerySnapshot> streamSelector(int num){
+    switch (num) {
+      case 1: return Firestore.instance.collection('Property').orderBy('name').snapshots();
+      case 2: return Firestore.instance.collection('Property').orderBy('time', descending: false).snapshots();
+      case 3: return Firestore.instance.collection('Property').orderBy('time', descending: true).snapshots();// lates
+      case 4: return Firestore.instance.collection('Property').orderBy('price', descending: true).snapshots();// expensive
+      case 5: return Firestore.instance.collection('Property').orderBy('price', descending: false).snapshots();
+      default: return Firestore.instance.collection('Property').snapshots();
+    }
+  }
 	@override
 	Widget build (BuildContext context) {
-		return new Scaffold(
+		print("listings: ${_value}");
+    return new Scaffold(
 			drawer: new DrawerOnly(),
 			appBar: new AppBar(
 				title: new Text("Drawer Demo"),
@@ -118,44 +132,41 @@ class MyState extends State<MyHomePage> {
               dropdownWidget();            
             },
           ),
-          
         ],
 			),
-			body:StreamBuilder( 
-				stream: _value == 2?Firestore.instance.collection('Property').orderBy('time', descending: false).snapshots() //earliest -2
-                            : _value ==1? Firestore.instance.collection('Property').orderBy('name').snapshots() //1 = name
-                            :_value ==3? Firestore.instance.collection('Property').orderBy('time', descending: true).snapshots()// lates
-                            :_value ==4? Firestore.instance.collection('Property').orderBy('price', descending: true).snapshots()// expensive
-                            :_value ==5? Firestore.instance.collection('Property').orderBy('price', descending: false).snapshots()// cheapest
-                            :Firestore.instance.collection('Property').snapshots(), //none                   
-				builder: (context, snapshot) {
-          Size screenSize = MediaQuery.of(context).size;
-					if(!snapshot.hasData) return new Center(
-            child: new CircularProgressIndicator(),
-          );
-          var temp = snapshot.data.documents;
-          if(has_location){
-            GeoPoint loca = temp[0]['location'];
-            print("location: ${temp[0]['location']} , ${loca.latitude} , ${loca.longitude}");
-            temp.sort((a,b){
-              GeoPoint loca1 = a['location'];
-              GeoPoint loca2 = b['location'];
-               
-              var first = sqrt(pow(loca1.latitude-curr_lat , 2) + pow(loca1.longitude-curr_lon , 2));
-              var second = sqrt(pow(loca2.latitude-curr_lat , 2) + pow(loca2.longitude-curr_lon , 2));
-              return first.compareTo(second);
-            });
-          }
-          return new ListView.builder(
-						padding: EdgeInsets.all(2),
-						itemExtent: screenSize.height/4,
-						itemCount: temp.length,
-						itemBuilder: (context, index)=>_listItemBuilder(context, temp[index], screenSize),
-					);
-				}, 
-			), //<-------add lists here!!!
-			floatingActionButton: FloatingActionButton(
-				tooltip: 'Increment',
+			body: StreamBuilder( 
+          stream: streamSelector(_value), //none                   
+          builder: (context, snapshot) {
+            Size screenSize = MediaQuery.of(context).size;
+            if(!snapshot.hasData) return new Center(
+              child: new CircularProgressIndicator(),
+            );
+            var temp = snapshot.data.documents;
+            if(_hasLocation && _value == 6){
+              temp.sort((a,b){
+                GeoPoint loca1 = a['location'];
+                GeoPoint loca2 = b['location'];
+                
+                var first = sqrt(pow(loca1.latitude-_currLat , 2) + pow(loca1.longitude-_currLon , 2));
+                var second = sqrt(pow(loca2.latitude-_currLat , 2) + pow(loca2.longitude-_currLon , 2));
+                return first.compareTo(second);
+              });
+              return new ListView.builder(
+                padding: EdgeInsets.all(2),
+                itemExtent: screenSize.height/4,
+                itemCount: temp.length,
+                itemBuilder: (context, index)=>_listItemBuilder(context, temp[index], screenSize),
+              );
+            }
+            return new ListView.builder(
+              padding: EdgeInsets.all(2),
+              itemExtent: screenSize.height/4,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
+            );
+          }, 
+        ), //<-------add lists here!!!
+      floatingActionButton: FloatingActionButton(
 				child: Icon(Icons.photo_filter), 
 				onPressed: () {
 					Route route = MaterialPageRoute(builder: (context)=> AddAd());
@@ -170,11 +181,10 @@ class MyHomePage extends StatefulWidget {
 	MyState createState() => new MyState();
 }
 
+
 class SortDialog extends StatefulWidget {
   SortDialog({Key key, this.title}) : super(key: key);
-
   final String title;
-
   @override
   _SortDialogState createState() => new _SortDialogState();
 }
@@ -184,8 +194,7 @@ class _SortDialogState extends State<SortDialog>{
   @override
 	void initState() {
 			super.initState();
-      temp = _value;
-	}
+  }
   void _handler(int num){
     setState(() {
       temp = num;  
@@ -193,7 +202,7 @@ class _SortDialogState extends State<SortDialog>{
   }
   @override
   Widget build(BuildContext context){
-    final radio_button = TextStyle(color: Colors.grey);
+    final _radioButton = TextStyle(color: Colors.grey);
     return AlertDialog(
       title: new Text('Sort by'),
         content: Column(
@@ -208,7 +217,7 @@ class _SortDialogState extends State<SortDialog>{
                   groupValue: temp,
                 ),
                 Icon( Icons.not_interested),
-                Text('  None', style: radio_button,),
+                Text('  None', style: _radioButton,),
               ],
             ),
             Row(
@@ -219,7 +228,7 @@ class _SortDialogState extends State<SortDialog>{
                   groupValue: temp,
                 ),
                 Icon(Icons.sort_by_alpha),
-                Text('  Name', style: radio_button,),
+                Text('  Name', style: _radioButton,),
               ],
             ),
             Row(
@@ -230,7 +239,7 @@ class _SortDialogState extends State<SortDialog>{
                   groupValue: temp,
                 ),
                 Icon(Icons.fast_rewind),
-                Text('  Earliest First', style: radio_button,),
+                Text('  Earliest First', style: _radioButton,),
               ],
             ),
             Row(
@@ -241,7 +250,7 @@ class _SortDialogState extends State<SortDialog>{
                   groupValue: temp,
                 ),
                 Icon(Icons.fast_forward),
-                Text('  Latest First', style: radio_button,),
+                Text('  Latest First', style: _radioButton,),
               ],
             ),
             Row(
@@ -252,7 +261,7 @@ class _SortDialogState extends State<SortDialog>{
                   groupValue: temp,
                 ),
                 Icon(Icons.monetization_on),
-                Text('  Most Expensive up', style: radio_button,),
+                Text('  Most Expensive up', style: _radioButton,),
               ],
             ),
             Row(
@@ -263,7 +272,7 @@ class _SortDialogState extends State<SortDialog>{
                   groupValue: temp,
                 ),
                 Icon(Icons.money_off),
-                Text('  Cheapest up', style: radio_button,),
+                Text('  Cheapest up', style: _radioButton,),
               ],
             ),
             Row(
@@ -274,7 +283,7 @@ class _SortDialogState extends State<SortDialog>{
                   groupValue: temp,
                 ),
                 Icon(Icons.location_on),
-                Text('  Closest to current location', style: radio_button,),
+                Text('  Closest to current location', style: _radioButton,),
               ],
             ),
           ],
@@ -283,19 +292,15 @@ class _SortDialogState extends State<SortDialog>{
           new FlatButton(
             child: Text('Close'),
             onPressed: (){
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(false);
             },
           ),
           new FlatButton(
             color: Colors.orangeAccent,
             child: Text('Done', style: TextStyle(color: Colors.white),),
             onPressed: (){
-              if(temp==_value){
-                Navigator.of(context).pop();
-              }
-              _value= temp;
-              Route route = MaterialPageRoute(builder: (context)=> MyHomePage());
-              Navigator.of(context).push(route);
+              _value == temp? Navigator.of(context).pop(false) :Navigator.of(context).pop(true);
+              _value = temp;
             },
           )
         ],
