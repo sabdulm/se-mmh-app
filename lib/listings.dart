@@ -5,6 +5,7 @@ import 'search.dart';
 import 'package:location/location.dart';
 import 'dart:math';
 import 'property.dart';
+import 'addAd.dart';
 int _value =0;
 class MyState extends State<MyHomePage> {
 	final Set<String> _saved = new Set<String>(); 
@@ -175,7 +176,12 @@ class MyState extends State<MyHomePage> {
 				child: Icon(Icons.photo_filter), 
 				onPressed: () {
 					// Route route = MaterialPageRoute(builder: (context)=> AddAd());
-					Navigator.pushNamed(context, '/addAd');
+					Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddAd(),
+            ),
+          );
 				},
 			),
 		);

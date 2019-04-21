@@ -2,28 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'addAd2.dart';
+import 'classes.dart';
 
 class MyMap extends StatelessWidget {
+  AddAd1 temp;
+  MyMap(this.temp);
+
+
+  // MyMap(this._desc, this._name, this._tags);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Google Maps Demo',
-      home: MapSample(),
+      home: MapSample(temp),
     );
   }
 }
 
 class MapSample extends StatefulWidget {
+  AddAd1 temp;
+  MapSample(this.temp);
   @override
-  State<MapSample> createState() => MapSampleState();
+  State<MapSample> createState() => MapSampleState(temp);
 }
 
 class MapSampleState extends State<MapSample> {
+  AddAd1 temp;
+  MapSampleState(this.temp);
   GoogleMapController _controller;
   Location location = new Location();
   final Set<Marker> _markers = {};
+  LatLng droppedPin;
   static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
   LatLng _lastMapPosition = _center;
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
 
   CameraPosition _kGooglePlex = CameraPosition(target: _center, zoom: 15);
 
@@ -85,9 +97,20 @@ class MapSampleState extends State<MapSample> {
                 heroTag: 'btn3',
                 onPressed: () {
                   if (_markers.length == 1) {
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddAd2()),
+                    AddAd2 t = AddAd2(temp.title, temp.description, temp.tags, droppedPin);
+                    // Navigator.push(context,
+                    //   MaterialPageRoute(builder: (context) => AddAdSec(t)),
+                    // );
+                  } else {
+                    final snackBar = SnackBar(
+                      content: Text("Select Property's location"),
+                      action: SnackBarAction(
+                        label: 'Undo',
+                        onPressed: () {
+                        },
+                      ),
                     );
+                    _scaffoldKey.currentState.showSnackBar(snackBar);
                   }
                 },          
               ),
@@ -111,7 +134,7 @@ class MapSampleState extends State<MapSample> {
         ),
         icon: BitmapDescriptor.defaultMarker,
       ));
-
+      droppedPin = _lastMapPosition;
     });
   }
 

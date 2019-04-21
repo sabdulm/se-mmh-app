@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'listings.dart';
 import 'package:flutter/services.dart';
-import 'maps.dart';
-import 'addAd.dart';
-import 'addAd2.dart';
 
 void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
@@ -24,9 +21,6 @@ class MyApp extends StatelessWidget {
       initialRoute: 'home',
       routes: <String, WidgetBuilder>{
         'home': (context) => MyHomePage(),
-        '/addAd': (context) => AddAd(),
-        '/maps': (context) => MyMap(),
-        '/addAdSec': (context) => AddAd2(),
       },
 		);
 	}
