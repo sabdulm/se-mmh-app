@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './drawer.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() => runApp(Edit());
 
@@ -16,7 +18,13 @@ class EditProfile extends State<Edit> {
   String addressStr = "";
   String titleStr = "";
   String mobileStr = "";
+  Future<File> imageFile;
 
+  pickImageFromGallery(ImageSource source) {
+    setState(() {
+      imageFile = ImagePicker.pickImage(source: source);
+    });
+  }
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle style = TextStyle(fontFamily: 'Roboto', fontSize: 19.0, color: Colors.black);
   @override
@@ -125,6 +133,27 @@ class EditProfile extends State<Edit> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    InkWell(
+                      child: Container(
+                        width: 140.0,
+                        height: 140.0,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/profile.jpg'),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(80.0),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 10.0,
+                            )
+                        ),
+                      ),
+
+                      onTap: () {
+                        pickImageFromGallery(ImageSource.gallery);
+                      },
+                    ),
                     SizedBox(height: 20.0),
                     nameField,
                     SizedBox(height: 20.0),
