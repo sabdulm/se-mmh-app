@@ -12,10 +12,7 @@ class MyMap extends StatelessWidget {
   // MyMap(this._desc, this._name, this._tags);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Google Maps Demo',
-      home: MapSample(temp),
-    );
+    return MapSample(temp);
   }
 }
 
@@ -46,6 +43,9 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: AppBar(
+        title: Text('Select your location'),
+      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -98,9 +98,9 @@ class MapSampleState extends State<MapSample> {
                 onPressed: () {
                   if (_markers.length == 1) {
                     AddAd2 t = AddAd2(temp.title, temp.description, temp.tags, droppedPin);
-                    // Navigator.push(context,
-                    //   MaterialPageRoute(builder: (context) => AddAdSec(t)),
-                    // );
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddAdSec(t)),
+                    );
                   } else {
                     final snackBar = SnackBar(
                       content: Text("Select Property's location"),
