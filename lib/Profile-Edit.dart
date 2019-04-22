@@ -113,7 +113,64 @@ class EditProfile extends State<Edit> {
           border:
           OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
     );
+    Widget profilePic() {
+      return Container(
+        child: FutureBuilder(
+          builder: (context, data) {
+            if (data.hasData) {
+              return InkWell(
+                child: Container(
+                  width: 140.0,
+                  height: 140.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: new FileImage(data.data),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.circular(80.0),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 10.0,
+                    )
+                  ),
+                ),
+                onTap:() {
+                  imageFile = ImagePicker.pickImage(source: ImageSource.gallery)
+                      .whenComplete(() {
+                    setState(() {});
+                  });
+                },
+              );
+            }
+            return InkWell(
+              child: Container(
+                width: 140.0,
+                height: 140.0,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/profile.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.circular(80.0),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 10.0,
+                    )
+                ),
+              ),
+              onTap:() {
+                imageFile = ImagePicker.pickImage(source: ImageSource.gallery)
+                    .whenComplete(() {
+                setState(() {});
+                });
+              },
+            );
+          },
+          future: imageFile,
+        ),
 
+      );
+    }
     return Scaffold(
       drawer: DrawerOnly(),
       appBar: AppBar(
@@ -133,27 +190,7 @@ class EditProfile extends State<Edit> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    InkWell(
-                      child: Container(
-                        width: 140.0,
-                        height: 140.0,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/profile.jpg'),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(80.0),
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 10.0,
-                            )
-                        ),
-                      ),
-
-                      onTap: () {
-                        pickImageFromGallery(ImageSource.gallery);
-                      },
-                    ),
+                    profilePic(),
                     SizedBox(height: 20.0),
                     nameField,
                     SizedBox(height: 20.0),
