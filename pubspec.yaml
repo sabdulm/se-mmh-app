@@ -17,7 +17,7 @@ dependencies:
   firebase_storage: ^2.0.0
   
   image_picker: ^0.4.12+1
-  file_picker: ^1.1.1
+  # file_picker: ^1.1.1
 
   carousel_pro: ^0.0.1
   intl: ^0.15.8

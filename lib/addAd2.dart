@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'classes.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -94,7 +93,7 @@ class _AddAdSecState extends State<AddAdSec> {
                       var imgUrls = [];
                       for (var i = 0; i < imgs.length; i++) {
                         final StorageReference storageRef = FirebaseStorage.instance.ref().child(imgs[i]);
-                        final StorageUploadTask uploadTask = storageRef.putFile(File(imgs[i]),);
+                        final StorageUploadTask uploadTask = storageRef.putFile(File(imgs[i]));
                         final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
                         final String url = (await downloadUrl.ref.getDownloadURL());
                         imgUrls.add(url);
