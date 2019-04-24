@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'classes.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+import 'dart:math';
+import 'resultAdd.dart';
 
 
 class AddAdSec extends StatefulWidget {
@@ -63,6 +68,7 @@ class _AddAdSecState extends State<AddAdSec> {
             child: Align(
               // alignment: Alignment.center,
               child: FloatingActionButton(
+                heroTag: 'addBtn',
                 child: Icon(Icons.add),
                   onPressed: ()  async {
                     var imgFile = await ImagePicker.pickImage(
@@ -75,8 +81,47 @@ class _AddAdSecState extends State<AddAdSec> {
                   }
               ),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton(
+                heroTag: 'doneBtn',
+                child: Icon(Icons.done),
+                  onPressed: () async {
+                    // if(imgs.length>0){
+                      var imgUrls = [];
+                      for (var i = 0; i < imgs.length; i++) {
+                        final StorageReference storageRef = FirebaseStorage.instance.ref().child(imgs[i]);
+                        final StorageUploadTask uploadTask = storageRef.putFile(File(imgs[i]),);
+                        final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+                        final String url = (await downloadUrl.ref.getDownloadURL());
+                        imgUrls.add(url);
+                      }
+                      var x = Random() ;
+                      var price = x.nextInt(50000) + 10000;
+                      Firestore.instance.collection('Property').add({
+                        "user" : "users/DHHl7uVMKgYdiBG0cMD1",
+                        "name" : temp.title,
+                        "description" : temp.description,
+                        "photo" : imgUrls,
+                        "tags" : temp.tags,
+                        "location_lat" : temp.pin.latitude,
+                        "location_long" : temp.pin.longitude,
+                        "price" : price,
+                          
+                      })
+                      .then((res) => Navigator.push(context, MaterialPageRoute(builder: (context) => ResultAdd(true))))
+                      .catchError((err)=>{
+                        print(err),
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ResultAdd(false))),
+                        });
+                    // }
+                }
+              ),
+            ),
           )
-
         ],       
       ),
     );

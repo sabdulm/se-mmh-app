@@ -17,12 +17,14 @@ dependencies:
   firebase_storage: ^2.0.0
   
   image_picker: ^0.4.12+1
+  file_picker: ^1.1.1
 
   carousel_pro: ^0.0.1
   intl: ^0.15.8
 
   google_maps_flutter: ^0.5.7
   location: 1.4.1
+  # geoflutterfire: 2.0.3+2
 
 dev_dependencies:
   flutter_test:
