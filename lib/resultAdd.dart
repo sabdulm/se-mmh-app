@@ -20,9 +20,9 @@ class ResultAdd extends StatelessWidget {
       ),
       body: Center(
         // alignment: Alignment.center,
-        child: Row(
-          children: <Widget>[
-            Column(
+        // child: Row(
+        //   children: <Widget>[
+          child:  Column(
               children: <Widget>[
                 _result(),
                 FlatButton.icon(
@@ -35,9 +35,9 @@ class ResultAdd extends StatelessWidget {
                   
                 )
               ],
-            )
-          ],
-        ),
+            ),
+        //   ],
+        // ),
       ),
     );
   }
