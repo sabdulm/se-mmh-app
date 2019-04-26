@@ -124,7 +124,7 @@ class MapSampleState extends State<MapSample> {
               child: FloatingActionButton(
                 child: const Icon(Icons.map),  
                 backgroundColor: Colors.blueAccent,
-                heroTag: 'btn3',
+                heroTag: 'changeMapType',
                 onPressed: () {
                   setState(() {
                     _currentMapType = _currentMapType == MapType.normal

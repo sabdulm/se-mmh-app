@@ -95,7 +95,7 @@ class _AddAdSecState extends State<AddAdSec> {
                     // if(imgs.length>0){
                       var imgUrls = [];
                       for (var i = 0; i < imgs.length; i++) {
-                        final StorageReference storageRef = FirebaseStorage.instance.ref().child(imgs[i].toString());
+                        final StorageReference storageRef = FirebaseStorage.instance.ref().child(DateTime.now().toString());
                         final StorageUploadTask uploadTask = storageRef.putFile(imgs[i]);
                         final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
                         final String url = (await downloadUrl.ref.getDownloadURL());

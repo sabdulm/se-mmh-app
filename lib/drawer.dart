@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import './Admin-Usres.dart';
-import './Profile-Own.dart';
-import './listings.dart';
-import './date.dart';
-import './property.dart';
+import 'Admin-Usres.dart';
+import 'Profile-Own.dart';
+import 'listings.dart';
+// import 'date.dart';
+import 'property.dart';
 
 class DrawerOnly extends StatelessWidget {
   @override
@@ -51,11 +51,10 @@ class DrawerOnly extends StatelessWidget {
               leading: const Icon(Icons.account_circle),
               title: const Text('Listings'),
               onTap: () =>{
-                Navigator.pushReplacement(
+                Navigator.push(
                   ctxt,
-                  new MaterialPageRoute(
-                    builder: (BuildContext context) => new MyHomePage()
-                  )
+                  MaterialPageRoute(
+                    builder: (ctxt) => MyHomePage())
                 )
               },
             ),

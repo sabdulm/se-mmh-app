@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './Profile-Edit.dart';
-import './drawer.dart';
+import 'Profile-Edit.dart';
+import 'drawer.dart';
 
 void main() => runApp(Profile());
 
