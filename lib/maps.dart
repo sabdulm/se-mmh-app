@@ -8,8 +8,6 @@ class MyMap extends StatelessWidget {
   AddAd1 temp;
   MyMap(this.temp);
 
-
-  // MyMap(this._desc, this._name, this._tags);
   @override
   Widget build(BuildContext context) {
     return MapSample(temp);
@@ -58,6 +56,7 @@ class MapSampleState extends State<MapSample> {
             onMapCreated: (GoogleMapController controller) {
               setState(() {
                 _controller = controller;
+                _controller.getVisibleRegion();
               });  
             },
           

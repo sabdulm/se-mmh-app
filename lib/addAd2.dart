@@ -17,12 +17,15 @@ class AddAdSec extends StatefulWidget {
   _AddAdSecState createState() => _AddAdSecState(temp);
 }
 
+
 class _AddAdSecState extends State<AddAdSec> {
   AddAd2 temp;
   _AddAdSecState(this.temp);
 
   var imgs = <File> [];
-
+  var imgUrls = <String> [];
+  bool finishing = false;
+  
   List<FileImage> _buildGalleryImages(){
     List<FileImage> lst = new List<FileImage>();
     for (var i = 0; i < imgs.length; i++) {
@@ -43,14 +46,14 @@ class _AddAdSecState extends State<AddAdSec> {
       : 
       Image.asset("no_img.png", fit: BoxFit.cover, ),
   );
-  @override
-  Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text('Add Property'),
-      ),
-      body: Stack(
+
+  Widget _mainScreen(Size screenSize){
+    if (finishing){
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Stack(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(16),
@@ -66,19 +69,25 @@ class _AddAdSecState extends State<AddAdSec> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Align(
-              // alignment: Alignment.center,
+              alignment: Alignment.center,
               child: FloatingActionButton(
                 heroTag: 'addBtn',
                 child: Icon(Icons.add),
+                
                   onPressed: ()  async {
                     File imgFile = await ImagePicker.pickImage(
                       source: ImageSource.gallery,
                     );
-                    setState(() {
-                      if(imgFile!=null){
-                        imgs.add(imgFile);
-                      }
-                    });
+                    if(imgFile!=null){
+                      setState (() {
+                          imgs.add(imgFile);
+                      });
+                      // final StorageReference storageRef = FirebaseStorage.instance.ref().child(DateTime.now().toString());
+                      // final StorageUploadTask uploadTask = storageRef.putFile(imgFile);
+                      // final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+                      // final String url = (await downloadUrl.ref.getDownloadURL());
+                      // imgUrls.add(url);
+                    }
                     return;
                   }
               ),
@@ -93,6 +102,9 @@ class _AddAdSecState extends State<AddAdSec> {
                 child: Icon(Icons.done),
                   onPressed: () async {
                     // if(imgs.length>0){
+                      setState(() {
+                        finishing = true;
+                      });
                       var imgUrls = [];
                       for (var i = 0; i < imgs.length; i++) {
                         final StorageReference storageRef = FirebaseStorage.instance.ref().child(DateTime.now().toString());
@@ -131,7 +143,17 @@ class _AddAdSecState extends State<AddAdSec> {
             ),
           )
         ],       
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    return new Scaffold(
+      appBar: AppBar(
+        title: Text('Add Property'),
       ),
+      body: _mainScreen(screenSize), 
     );
   }
 }

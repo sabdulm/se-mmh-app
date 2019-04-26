@@ -18,23 +18,26 @@ class ResultAdd extends StatelessWidget {
       appBar: new AppBar(
         title: Text('Add Property'),
       ),
-      body: Card(
-        child: Center(
-          child: Stack(
-            children: <Widget>[
-              _result(),
-              FloatingActionButton(
-                heroTag: 'homeBtn',
-                child: Icon(Icons.home),
-                onPressed: () {
-                  Navigator.popUntil(context, ModalRoute.withName('home'));
-                },
-                
-              )
-            ],
-          ),
-        )
-        
+      body: Center(
+        // alignment: Alignment.center,
+        child: Row(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                _result(),
+                FlatButton.icon(
+                  onPressed: () {
+                    Navigator.popUntil(context, ModalRoute.withName('home'));
+                  }, 
+                  icon: Icon(Icons.home),
+                  label: Text('Return to home'),
+                  color: Colors.orangeAccent,
+                  
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
