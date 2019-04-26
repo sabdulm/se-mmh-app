@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'listings.dart';
+// import 'main.dart';
 
 class ResultAdd extends StatelessWidget {
   bool check;
@@ -27,7 +27,7 @@ class ResultAdd extends StatelessWidget {
                 heroTag: 'homeBtn',
                 child: Icon(Icons.home),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+                  Navigator.popUntil(context, ModalRoute.withName('home'));
                 },
                 
               )

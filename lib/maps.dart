@@ -33,6 +33,7 @@ class MapSampleState extends State<MapSample> {
   static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
   LatLng _lastMapPosition = _center;
   var _scaffoldKey = GlobalKey<ScaffoldState>();
+  MapType _currentMapType = MapType.normal;
 
   CameraPosition _kGooglePlex = CameraPosition(target: _center, zoom: 15);
 
@@ -52,7 +53,7 @@ class MapSampleState extends State<MapSample> {
             myLocationEnabled: true,
             markers: _markers,
             onCameraMove: _onCameraMove,
-            mapType: MapType.normal,
+            mapType: _currentMapType,
             initialCameraPosition: _kGooglePlex,
             onMapCreated: (GoogleMapController controller) {
               setState(() {
@@ -90,7 +91,7 @@ class MapSampleState extends State<MapSample> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Align(
-              alignment: Alignment.bottomRight,
+              alignment: Alignment.bottomCenter,
               child: FloatingActionButton(
                 child: const Icon(Icons.navigate_next),  
                 backgroundColor: Colors.blueAccent,
@@ -112,6 +113,24 @@ class MapSampleState extends State<MapSample> {
                     );
                     _scaffoldKey.currentState.showSnackBar(snackBar);
                   }
+                },          
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: FloatingActionButton(
+                child: const Icon(Icons.map),  
+                backgroundColor: Colors.blueAccent,
+                heroTag: 'btn3',
+                onPressed: () {
+                  setState(() {
+                    _currentMapType = _currentMapType == MapType.normal
+                      ? MapType.satellite
+                      : MapType.normal;
+                  });
                 },          
               ),
             ),

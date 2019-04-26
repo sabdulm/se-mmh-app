@@ -53,14 +53,14 @@ class MyState extends State<MyHomePage> {
 	Widget _image (String url, Size screenSize){
 			if(url == ''){
         return SizedBox(
-          height: screenSize.height/5.5,
-				  width: screenSize.width/2,
+          height: screenSize.height/4.5,
+				  width: screenSize.width/3,
           child: Image.asset("no_img.png", fit: BoxFit.fill,)
         );
       }
       return new SizedBox(
-				height: screenSize.height/5.5,
-				width: screenSize.width/2,
+        height: screenSize.height/4.5,
+				width: screenSize.width/3,
 				child: Container(
 					decoration: BoxDecoration(
 						image: DecorationImage(
@@ -73,8 +73,10 @@ class MyState extends State<MyHomePage> {
 	}
 	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
 		final bool alreadySaved = _saved.contains(snapshot.documentID);
-		print("List item: ${snapshot.documentID}");
+		// print("List item: ${snapshot.documentID}");
+    // print(snapshot.data);
     return  Card(
+      
 			child: Column(
 					children: <Widget>[
 						ListTile(
@@ -83,7 +85,7 @@ class MyState extends State<MyHomePage> {
 											:_image(snapshot['photo'][0], screenSize),
 							),
 							title: Text(snapshot['name'] , style: _biggerFont,),
-							subtitle: Text(snapshot['description'].substring(0,20)),
+							subtitle: snapshot['description'].length>20? Text("${snapshot['description'].substring(0,20)}..."):Text(snapshot['description']),
 							trailing: IconButton(
 								icon: alreadySaved? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
 								color: alreadySaved? Colors.orangeAccent : null,  

@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'dart:io';
 import 'dart:math';
 import 'resultAdd.dart';
@@ -20,7 +21,7 @@ class _AddAdSecState extends State<AddAdSec> {
   AddAd2 temp;
   _AddAdSecState(this.temp);
 
-  var imgs = <dynamic> [];
+  var imgs = <File> [];
 
   List<FileImage> _buildGalleryImages(){
     List<FileImage> lst = new List<FileImage>();
@@ -70,11 +71,13 @@ class _AddAdSecState extends State<AddAdSec> {
                 heroTag: 'addBtn',
                 child: Icon(Icons.add),
                   onPressed: ()  async {
-                    var imgFile = await ImagePicker.pickImage(
+                    File imgFile = await ImagePicker.pickImage(
                       source: ImageSource.gallery,
                     );
                     setState(() {
-                      imgs.add(imgFile);
+                      if(imgFile!=null){
+                        imgs.add(imgFile);
+                      }
                     });
                     return;
                   }
@@ -92,22 +95,28 @@ class _AddAdSecState extends State<AddAdSec> {
                     // if(imgs.length>0){
                       var imgUrls = [];
                       for (var i = 0; i < imgs.length; i++) {
-                        final StorageReference storageRef = FirebaseStorage.instance.ref().child(imgs[i]);
-                        final StorageUploadTask uploadTask = storageRef.putFile(File(imgs[i]));
+                        final StorageReference storageRef = FirebaseStorage.instance.ref().child(imgs[i].toString());
+                        final StorageUploadTask uploadTask = storageRef.putFile(imgs[i]);
                         final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
                         final String url = (await downloadUrl.ref.getDownloadURL());
                         imgUrls.add(url);
                       }
+
+                      Geoflutterfire geoPoint = Geoflutterfire();
+                      GeoFirePoint point = geoPoint.point(latitude: temp.pin.latitude, longitude: temp.pin.longitude);
+                      String key = "DHHl7uVMKgYdiBG0cMD1";
+                      DocumentReference ref = Firestore.instance.collection('users').document(key);
+                      
                       var x = Random() ;
                       var price = x.nextInt(50000) + 10000;
                       Firestore.instance.collection('Property').add({
-                        "user" : "users/DHHl7uVMKgYdiBG0cMD1",
+                        "time" : DateTime.now(),
+                        "user" : ref,
                         "name" : temp.title,
                         "description" : temp.description,
                         "photo" : imgUrls,
                         "tags" : temp.tags,
-                        "location_lat" : temp.pin.latitude,
-                        "location_long" : temp.pin.longitude,
+                        "location" : point.geoPoint,
                         "price" : price,
                           
                       })
