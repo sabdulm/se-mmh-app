@@ -117,7 +117,7 @@ class InboxPage extends StatefulWidget{
   InboxPagescreen createState() {
     name = name1;
     email = email1;
-    InboxPagescreen(); 
+    return InboxPagescreen(); 
   }
 }
 
