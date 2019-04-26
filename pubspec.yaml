@@ -27,6 +27,7 @@ dependencies:
   flutter_tags: ^0.3.0
   google_maps_flutter: ^0.5.7
   firebase_core: ^0.2.5
+  firebase_auth: ^0.6.6
   # firebase_analytics: ^1.0.4
   # firebase_auth: ^0.5.12
   carousel_pro: ^0.0.1

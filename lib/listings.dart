@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
 import 'addAd.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class MyState extends State<MyHomePage> {
+
   final Set<String> _saved = new Set<String>(); 
   final _biggerFont = const TextStyle(
                               fontSize: 18.0,
@@ -66,9 +69,10 @@ class MyState extends State<MyHomePage> {
 		return new Scaffold(
 			drawer: new DrawerOnly(),
 			appBar: new AppBar(
-				title: new Text("Drawer Demo"),
+				title: new Text("${(widget.user.uid).toString()}"),
 			),
-			body:StreamBuilder( 
+			body:
+      StreamBuilder( 
         stream: Firestore.instance.collection('Property').snapshots(),
         builder: (context, snapshot){
           if(!snapshot.hasData) return const Text('Loading...');
@@ -88,6 +92,7 @@ class MyState extends State<MyHomePage> {
           Navigator.push(context, route);
         },
 			),
+      
 		);
 	}
 }
@@ -95,6 +100,9 @@ class MyState extends State<MyHomePage> {
 
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key key, this.user}) : super(key: key);
+  final FirebaseUser user;
+
   @override
   MyState createState() => new MyState();
 }
