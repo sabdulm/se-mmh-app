@@ -55,63 +55,69 @@ class MyState extends State<MyHomePage> {
 	Widget _image (String url, Size screenSize){
 			if(url == ''){
         return SizedBox(
-          height: screenSize.height/4.5,
-				  width: screenSize.width/3,
-          child: Image.asset("no_img.png", fit: BoxFit.fill,)
+          height: 150,
+				  width: screenSize.width/2.5,
+          child: ClipRect(child:Image.asset("no_img.png", fit: BoxFit.fill,)),
         );
       }
       return new SizedBox(
-        height: screenSize.height/4.5,
-				width: screenSize.width/3,
-				child: Container(
-					decoration: BoxDecoration(
-						image: DecorationImage(
-							image: NetworkImage(url),
-							fit: BoxFit.fill,
-						),
-					),
-				),
-			);
+        height: 150,
+				width: screenSize.width/2.5,
+				child: ClipRect(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(url),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+			  ),
+      );
 	}
 	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
 		final bool alreadySaved = _saved.contains(snapshot.documentID);
 		// print("List item: ${snapshot.documentID}");
     // print(snapshot.data);
-    return  Card(
-      
-			child: Column(
-					children: <Widget>[
-						ListTile(
-							leading: Container(
-								child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) 
-											:_image(snapshot['photo'][0], screenSize),
-							),
-							title: Text(snapshot['name'] , style: _biggerFont,),
-							subtitle: snapshot['description'].length>20? Text("${snapshot['description'].substring(0,20)}..."):Text(snapshot['description']),
-							trailing: IconButton(
-								icon: alreadySaved? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
-								color: alreadySaved? Colors.orangeAccent : null,  
-								onPressed: () {
-                  setState(() {
-                      if (alreadySaved) {
-                        _saved.remove(snapshot.documentID);
-                      } else { 
-                        _saved.add(snapshot.documentID);
-                        
-                      }
-                    });
-                  },
+    return SizedBox(
+      height: 150,
+      width: screenSize.width,
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        child: Column(
+            children: <Widget>[
+              ListTile(
+                leading: Container(
+                  child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) 
+                        :_image(snapshot['photo'][0], screenSize),
                 ),
-							onTap: (){
-                Route route = MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
-                Navigator.of(context).push(route);
- 
-              },
-					 ),
-				],
-			),
-		);	
-	}
+                title: Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}" , style: _biggerFont,),
+                subtitle: snapshot['description'].length>20? Text("${snapshot['description'].substring(0,20)}..."):Text(snapshot['description']),
+                trailing: IconButton(
+                  icon: alreadySaved? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
+                  color: alreadySaved? Colors.orangeAccent : null,  
+                  onPressed: () {
+                    setState(() {
+                        if (alreadySaved) {
+                          _saved.remove(snapshot.documentID);
+                        } else { 
+                          _saved.add(snapshot.documentID);
+                          
+                        }
+                      });
+                    },
+                  ),
+                onTap: (){
+                  Route route = MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
+                  Navigator.of(context).push(route);
+  
+                },
+            ),
+          ],
+        ),
+      ),	
+    ); 
+    }
   Stream<QuerySnapshot> streamSelector(int num){
     switch (num) {
       case 1: return Firestore.instance.collection('Property').orderBy('name').snapshots();
@@ -163,14 +169,14 @@ class MyState extends State<MyHomePage> {
               });
               return new ListView.builder(
                 padding: EdgeInsets.all(2),
-                itemExtent: screenSize.height/4,
+                itemExtent: 140,
                 itemCount: temp.length,
                 itemBuilder: (context, index)=>_listItemBuilder(context, temp[index], screenSize),
               );
             }
             return new ListView.builder(
               padding: EdgeInsets.all(2),
-              itemExtent: screenSize.height/4,
+              itemExtent: 140,
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
             );
