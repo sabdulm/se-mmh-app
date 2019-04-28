@@ -156,6 +156,8 @@ class ChatScreenState extends State<ChatScreen>{
       new TextEditingController();
 
   Widget Msgsbuilder(_msgs){
+    Iterable _msgs_iter = _msgs.reversed;
+    _msgs = _msgs_iter.toList();
     return new ListView.builder(
       reverse: true,
       itemCount: _msgs.length,
