@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:flutter_tags/selectable_tags.dart';
 import 'drawer.dart';
+import 'Profile-Other.dart';
+import 'mapProp.dart';
 
 class PropertyPage extends StatelessWidget {
   PropertyPage(this._key);
@@ -14,7 +16,7 @@ class PropertyPage extends StatelessWidget {
 	var _tags = [] ;
 	String _price ;
   String userID ;
-  var _user;
+  DocumentReference _user;
 
   var imageUrls = <dynamic> [];
 
@@ -119,6 +121,9 @@ class PropertyPage extends StatelessWidget {
                       children: <Widget>[
                         FlatButton.icon(
                           onPressed: () {
+                            Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => PropertyMap(_address, _name)),
+                            );
 
                           },
                           icon: Icon(Icons.map),
@@ -127,7 +132,7 @@ class PropertyPage extends StatelessWidget {
                         ),
                         FlatButton.icon(
                           onPressed: () {
-
+                            // DocumentSnapshot snap = _user.firestore.document(_user.documentID).snapshots().data;
                           },
                           icon: Icon(Icons.person),
                           label: Text('View User'),

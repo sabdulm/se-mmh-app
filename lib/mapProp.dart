@@ -1,52 +1,83 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'addAd2.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
-import 'classes.dart';
+// import 'addAd2.dart';
+// import 'package:geoflutterfire/geoflutterfire.dart';
+// import 'classes.dart';
 
 class PropertyMap extends StatelessWidget {
   // AddAd1 temp;
   // PropertyMap(this.temp);
-
+  GeoPoint point;
+  String name;
+  PropertyMap(this.point, this.name);
   @override
   Widget build(BuildContext context) {
-    return PropMap();
+    return PropMap(point, name);
   }
 }
 
 class PropMap extends StatefulWidget {
-  // AddAd1 temp;
-  // PropMap(this.temp);
+  GeoPoint point;
+  String name;
+  PropMap(this.point, this.name);
   @override
-  State<PropMap> createState() => PropMapState();
+  State<PropMap> createState() => PropMapState(point, name);
 }
 
 class PropMapState extends State<PropMap> {
+  GeoPoint point;
+  String name;
+  PropMapState(this.point, this.name);
   // AddAd1 temp;
   // PropMapState(this.temp);
-  GoogleMapController _controller;
+  Completer<GoogleMapController> _controller = Completer();
   Location location = new Location();
   final Set<Marker> _markers = {};
-  LatLng droppedPin;
   static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
   LatLng _lastMapPosition = _center;
-  var _scaffoldKey = GlobalKey<ScaffoldState>();
   MapType _currentMapType = MapType.normal;
 
-  CameraPosition _kGooglePlex = CameraPosition(target: _center, zoom: 15);
 
   void _onCameraMove(CameraPosition position) {
     _lastMapPosition = position.target;
   }
 
+  Future<void> _moveToPos() async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      bearing: 192.8334901395799,
+      target: _center,
+      tilt: 0,
+      zoom: 15)));
+  }
+
   @override
   Widget build(BuildContext context) {
+    _center = LatLng(point.latitude, point.longitude);
+
+    CameraPosition _kGooglePlex = CameraPosition(target: _center, zoom: 15);
+
+
+    _markers.add(Marker(
+        markerId: MarkerId(_center.toString()),
+        position: _center,
+        infoWindow: InfoWindow(
+          title: name,
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+    ));
+
+
     return new Scaffold(
       appBar: AppBar(
-        title: Text('Select your location'),
+        title: Text('Property Location'),
       ),
       body: Stack(
+
         children: <Widget>[
           GoogleMap(
             myLocationEnabled: true,
@@ -56,8 +87,7 @@ class PropMapState extends State<PropMap> {
             initialCameraPosition: _kGooglePlex,
             onMapCreated: (GoogleMapController controller) {
               setState(() {
-                _controller = controller;
-                _controller.getVisibleRegion();
+                _controller.complete(controller);
               });  
             },
           
@@ -66,64 +96,22 @@ class PropMapState extends State<PropMap> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Align(
+              alignment: Alignment.bottomCenter,
+              child: FlatButton.icon(
+                label: Text('Show Location'),
+                icon: Icon(Icons.location_searching),  
+                color: Colors.orangeAccent, 
+                onPressed: _moveToPos,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
               alignment: Alignment.bottomLeft,
               child: FloatingActionButton(
-                child: const Icon(Icons.add_location),   
-                heroTag: 'btn1',         
-                onPressed: () => _getLocation(),
-              ),
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Align(
-              alignment: Alignment.center,
-              child: FloatingActionButton(
-                child: const Icon(Icons.my_location),  
-                backgroundColor: Colors.transparent,
-                heroTag: 'btn2',
-                onPressed: () {},          
-                // onPressed: () => _getLocation(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: FloatingActionButton(
-                child: const Icon(Icons.navigate_next),  
-                backgroundColor: Colors.blueAccent,
-                heroTag: 'btn3',
-                onPressed: () {
-                  // if (_markers.length == 1) {
-                  //   AddAd2 t = AddAd2(temp.title, temp.description, temp.tags, droppedPin);
-                  //   Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => AddAdSec(t)),
-                  //   );
-                  // } else {
-                  //   final snackBar = SnackBar(
-                  //     content: Text("Select Property's location"),
-                  //     action: SnackBarAction(
-                  //       label: 'Undo',
-                  //       onPressed: () {
-                  //       },
-                  //     ),
-                  //   );
-                  //   _scaffoldKey.currentState.showSnackBar(snackBar);
-                  // }
-                },          
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: FloatingActionButton(
                 child: const Icon(Icons.map),  
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: Colors.orangeAccent,
                 heroTag: 'changeMapType',
                 onPressed: () {
                   setState(() {
@@ -138,23 +126,6 @@ class PropMapState extends State<PropMap> {
         ],
       )       
     );
-  }
-
-  void _getLocation() async {
-    var pos = await location.getLocation();
-    _center = LatLng(pos['latitude'], pos['longitude']);
-    setState(() {
-      _markers.clear();
-      _markers.add(Marker(
-        markerId: MarkerId(_lastMapPosition.toString()),
-        position: _lastMapPosition,
-        infoWindow: InfoWindow(
-          title: 'your pin',
-        ),
-        icon: BitmapDescriptor.defaultMarker,
-      ));
-      droppedPin = _lastMapPosition;
-    });
   }
 
 

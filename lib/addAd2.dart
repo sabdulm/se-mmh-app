@@ -82,11 +82,7 @@ class _AddAdSecState extends State<AddAdSec> {
                       setState (() {
                           imgs.add(imgFile);
                       });
-                      // final StorageReference storageRef = FirebaseStorage.instance.ref().child(DateTime.now().toString());
-                      // final StorageUploadTask uploadTask = storageRef.putFile(imgFile);
-                      // final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
-                      // final String url = (await downloadUrl.ref.getDownloadURL());
-                      // imgUrls.add(url);
+
                     }
                     return;
                   }

@@ -54,19 +54,20 @@ class MyState extends State<MyHomePage> {
   }
 	Widget _image (String url, Size screenSize){
 			if(url == ''){
-        return SizedBox(
-          height: 150,
-				  width: screenSize.width/2.5,
-          child: ClipRect(child:Image.asset("no_img.png", fit: BoxFit.fill,)),
+        return new SizedBox(
+          height: 120,
+          width: screenSize.width/2.5,
+          child: ClipRect(child:new Image.asset("no_img.png", fit: BoxFit.fill,),)
         );
       }
       return new SizedBox(
-        height: 150,
+        height: 120,
 				width: screenSize.width/2.5,
-				child: ClipRect(
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
+				child: new ClipRect(
+          child: new Container(
+            decoration: new BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: new DecorationImage(
                 image: new NetworkImage(url),
                 fit: BoxFit.fill,
               ),
@@ -79,45 +80,65 @@ class MyState extends State<MyHomePage> {
 		final bool alreadySaved = _saved.contains(snapshot.documentID);
 		// print("List item: ${snapshot.documentID}");
     // print(snapshot.data);
-    return SizedBox(
-      height: 150,
-      width: screenSize.width,
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        child: Column(
-            children: <Widget>[
-              ListTile(
-                leading: Container(
-                  child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) 
-                        :_image(snapshot['photo'][0], screenSize),
-                ),
-                title: Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}" , style: _biggerFont,),
-                subtitle: snapshot['description'].length>20? Text("${snapshot['description'].substring(0,20)}..."):Text(snapshot['description']),
-                trailing: IconButton(
-                  icon: alreadySaved? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
-                  color: alreadySaved? Colors.orangeAccent : null,  
-                  onPressed: () {
-                    setState(() {
-                        if (alreadySaved) {
-                          _saved.remove(snapshot.documentID);
-                        } else { 
-                          _saved.add(snapshot.documentID);
-                          
-                        }
-                      });
-                    },
+    return new GestureDetector(
+      onTap: (){
+            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
+            Navigator.of(context).push(route);
+
+          },
+      child: new Container(
+        padding: EdgeInsets.only(left: 5, right: 5,),
+        child: new Column(
+          children: <Widget>[
+            new Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) :_image(snapshot['photo'][0], screenSize),
+                new VerticalDivider(color: Colors.black,width: 16,),
+                new Container(
+                  width: screenSize.width-(screenSize.width/2.5) - 80,
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
+                      new Text(
+                        snapshot['description'],
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.grey),
+                        maxLines: 4,
+                      ),
+                      // snapshot['description'].length>20? new Text("${snapshot['description'].substring(0,20)}..."): new Text(snapshot['description']),
+                    ],
                   ),
-                onTap: (){
-                  Route route = MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
-                  Navigator.of(context).push(route);
-  
-                },
+                ),
+                new Spacer(),
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: new IconButton(
+                    icon: alreadySaved? new Icon(Icons.bookmark) : new Icon(Icons.bookmark_border),
+                    color: alreadySaved? Colors.orangeAccent : null,  
+                    onPressed: () {
+                      setState(() {
+                          if (alreadySaved) {
+                            _saved.remove(snapshot.documentID);
+                          } else { 
+                            _saved.add(snapshot.documentID);
+                            
+                          }
+                        });
+                      },
+                    ),
+                ),
+              ],
             ),
+            new Divider(),
           ],
-        ),
-      ),	
+        )
+      ),
     ); 
-    }
+  }
   Stream<QuerySnapshot> streamSelector(int num){
     switch (num) {
       case 1: return Firestore.instance.collection('Property').orderBy('name').snapshots();
@@ -136,21 +157,21 @@ class MyState extends State<MyHomePage> {
 			appBar: new AppBar(
 				title: new Text("Drawer Demo"),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
+          new IconButton(
+            icon: new Icon(Icons.search),
             onPressed: (){
               showSearch(context: context, delegate: Search());
             },
           ),
-          IconButton(
-            icon: Icon(Icons.filter_list),
+          new IconButton(
+            icon: new Icon(Icons.filter_list),
             onPressed: (){
               dropdownWidget();            
             },
           ),
         ],
 			),
-			body: StreamBuilder( 
+			body: new StreamBuilder( 
           stream: streamSelector(_value), //none                   
           builder: (context, snapshot) {
             Size screenSize = MediaQuery.of(context).size;
@@ -182,13 +203,13 @@ class MyState extends State<MyHomePage> {
             );
           }, 
         ), //<-------add lists here!!!
-      floatingActionButton: FloatingActionButton(
-				child: Icon(Icons.photo_filter), 
+      floatingActionButton: new FloatingActionButton(
+				child: new Icon(Icons.photo_filter), 
 				onPressed: () {
 					// Route route = MaterialPageRoute(builder: (context)=> AddAd());
 					Navigator.push(
             context,
-            MaterialPageRoute(
+            new MaterialPageRoute(
               builder: (context) => AddAd(),
             ),
           );
@@ -223,88 +244,88 @@ class _SortDialogState extends State<SortDialog>{
   }
   @override
   Widget build(BuildContext context){
-    final _radioButton = TextStyle(color: Colors.grey);
-    return AlertDialog(
+    final _radioButton = new TextStyle(color: Colors.grey);
+    return new AlertDialog(
       title: new Text('Sort by'),
-        content: Column(
+        content: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Row(
+            new Row(
               children: <Widget>[
-                Radio(
+                new Radio(
                   value: 0,
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Icon( Icons.not_interested),
-                Text('  None', style: _radioButton,),
+                new Icon( Icons.not_interested),
+                new Text('  None', style: _radioButton,),
               ],
             ),
-            Row(
+            new Row(
               children: <Widget>[
-                Radio(
+                new Radio(
                   value: 1,
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Icon(Icons.sort_by_alpha),
-                Text('  Name', style: _radioButton,),
+                new Icon(Icons.sort_by_alpha),
+                new Text('  Name', style: _radioButton,),
               ],
             ),
-            Row(
+            new Row(
               children: <Widget>[
-                Radio(
+                new Radio(
                   value: 2,
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Icon(Icons.fast_rewind),
-                Text('  Earliest First', style: _radioButton,),
+                new Icon(Icons.fast_rewind),
+                new Text('  Earliest', style: _radioButton,),
               ],
             ),
-            Row(
+            new Row(
               children: <Widget>[
-                Radio(
+                new Radio(
                   value: 3,
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Icon(Icons.fast_forward),
-                Text('  Latest First', style: _radioButton,),
+                new Icon(Icons.fast_forward),
+                new Text('  Latest', style: _radioButton,),
               ],
             ),
-            Row(
+            new Row(
               children: <Widget>[
-                Radio(
+                new Radio(
                   value: 4,
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Icon(Icons.monetization_on),
-                Text('  Most Expensive up', style: _radioButton,),
+                new Icon(Icons.monetization_on),
+                new Text('  Price up', style: _radioButton,),
               ],
             ),
-            Row(
+            new Row(
               children: <Widget>[
-                Radio(
+                new Radio(
                   value: 5,
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Icon(Icons.money_off),
-                Text('  Cheapest up', style: _radioButton,),
+                new Icon(Icons.money_off),
+                new Text('  Price down', style: _radioButton,),
               ],
             ),
-            Row(
+            new Row(
               children: <Widget>[
-                Radio(
+                new Radio(
                   value: 6,
                   onChanged: _handler,
                   groupValue: temp,
                 ),
-                Icon(Icons.location_on),
-                Text('  Closest to current location', style: _radioButton,),
+                new Icon(Icons.location_on),
+                new Text('  Location', style: _radioButton,),
               ],
             ),
           ],
@@ -318,7 +339,7 @@ class _SortDialogState extends State<SortDialog>{
           ),
           new FlatButton(
             color: Colors.orangeAccent,
-            child: Text('Done', style: TextStyle(color: Colors.white),),
+            child: new Text('Done', style: TextStyle(color: Colors.white),),
             onPressed: (){
               _value == temp? Navigator.of(context).pop(false) :Navigator.of(context).pop(true);
               _value = temp;
