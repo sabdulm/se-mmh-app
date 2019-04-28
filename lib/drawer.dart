@@ -61,14 +61,9 @@ class DrawerOnly extends StatelessWidget {
             new ListTile(
               leading: const Icon(Icons.inbox),
               title: const Text('Inbox'),
-              onTap: () =>{
-                Navigator.pushReplacement(
-                    ctxt,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) => new AdminUserPage()
-                    )
-                  )
-                },
+              onTap: (){
+                Navigator.of(ctxt).pushNamed('inbox');
+             },
             ),
             new ListTile(
               leading: const Icon(Icons.bookmark),
