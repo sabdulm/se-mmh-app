@@ -5,19 +5,15 @@ import 'drawer.dart';
 
 class PropertyPage extends StatelessWidget {
   PropertyPage(this._key);
-  String _key = "";
-	String _name = "hello";
-	String _address = "Address: " + "LUMS";
-	String _description = "Description: UNI Hell";
-	String _tags = "Tags: HELL";
-	String _price = "Price: 545645132";
-  String userID = "DHHl7uVMKgYdiBG0cMD1";
+  String _key ;
+	String _name ;
+	String _address;
+	String _description ;
+	String _tags ;
+	String _price ;
+  String userID ;
 
-
-  var imageUrls = <dynamic> [
-    'https://assets.site-static.com/userFiles/657/image/Camelot_Development_Northbridge.jpg',
-    'https://westvancouver.ca/sites/default/files/styles/grid-9/public/coachhouse_0.jpg?itok=G4DGtlrw',
-  ];
+  var imageUrls = <dynamic> [];
 
 
   List<NetworkImage> _buildNetworkImages(){

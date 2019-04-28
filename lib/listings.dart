@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
@@ -5,6 +7,7 @@ import 'search.dart';
 import 'package:location/location.dart';
 import 'dart:math';
 import 'property.dart';
+import 'addAd.dart';
 int _value =0;
 class MyState extends State<MyHomePage> {
 	final Set<String> _saved = new Set<String>(); 
@@ -52,14 +55,14 @@ class MyState extends State<MyHomePage> {
 	Widget _image (String url, Size screenSize){
 			if(url == ''){
         return SizedBox(
-          height: screenSize.height/5.5,
-				  width: screenSize.width/2,
+          height: screenSize.height/4.5,
+				  width: screenSize.width/3,
           child: Image.asset("no_img.png", fit: BoxFit.fill,)
         );
       }
       return new SizedBox(
-				height: screenSize.height/5.5,
-				width: screenSize.width/2,
+        height: screenSize.height/4.5,
+				width: screenSize.width/3,
 				child: Container(
 					decoration: BoxDecoration(
 						image: DecorationImage(
@@ -72,8 +75,10 @@ class MyState extends State<MyHomePage> {
 	}
 	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
 		final bool alreadySaved = _saved.contains(snapshot.documentID);
-		print("List item: ${snapshot.documentID}");
+		// print("List item: ${snapshot.documentID}");
+    // print(snapshot.data);
     return  Card(
+      
 			child: Column(
 					children: <Widget>[
 						ListTile(
@@ -82,7 +87,11 @@ class MyState extends State<MyHomePage> {
 											:_image(snapshot['photo'][0], screenSize),
 							),
 							title: Text(snapshot['name'] , style: _biggerFont,),
+<<<<<<< HEAD
 							subtitle: Text("${snapshot['description'].substring(0,20)}..."),
+=======
+							subtitle: snapshot['description'].length>20? Text("${snapshot['description'].substring(0,20)}..."):Text(snapshot['description']),
+>>>>>>> a2f6b59e9f7aae1e67d68d14a4aa93f3b1a7e3b0
 							trailing: IconButton(
 								icon: alreadySaved? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
 								color: alreadySaved? Colors.orangeAccent : null,  
@@ -119,7 +128,7 @@ class MyState extends State<MyHomePage> {
   }
 	@override
 	Widget build (BuildContext context) {
-		print("listings: ${_value}");
+		// print("listings: ${_value}");
     return new Scaffold(
 			drawer: new DrawerOnly(),
 			appBar: new AppBar(
@@ -175,7 +184,12 @@ class MyState extends State<MyHomePage> {
 				child: Icon(Icons.photo_filter), 
 				onPressed: () {
 					// Route route = MaterialPageRoute(builder: (context)=> AddAd());
-					Navigator.pushNamed(context, 'addAd');
+					Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddAd(),
+            ),
+          );
 				},
 			),
 		);
