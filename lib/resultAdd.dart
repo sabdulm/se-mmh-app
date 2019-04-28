@@ -7,7 +7,7 @@ class ResultAdd extends StatelessWidget {
 
   Widget _result(){
     if(check){
-      return Text('Your Property has been added.');
+      return Text('Your Property has been added for approval.');
     } else{
       return Text('An error occured, Please try again');
     }
@@ -18,8 +18,8 @@ class ResultAdd extends StatelessWidget {
       appBar: new AppBar(
         title: Text('Add Property'),
       ),
-      body: Center(
-        // alignment: Alignment.center,
+      body: Align(
+        alignment: Alignment.center,
         // child: Row(
         //   children: <Widget>[
           child:  Column(

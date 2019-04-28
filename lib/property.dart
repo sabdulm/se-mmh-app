@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:flutter_tags/selectable_tags.dart';
 import 'drawer.dart';
 
 class PropertyPage extends StatelessWidget {
   PropertyPage(this._key);
   String _key ;
 	String _name ;
-	String _address;
+	var _address;
 	String _description ;
-	String _tags ;
+	var _tags = [] ;
 	String _price ;
   String userID ;
+  var _user;
 
   var imageUrls = <dynamic> [];
 
@@ -47,25 +50,37 @@ class PropertyPage extends StatelessWidget {
 			textAlign: TextAlign.left,
     );
 
-  Widget _buildDescription() => Text(
-      _description,
-    );
+  Widget _buildDescription() {
+    return Text(_description);
+  }
 
-  Widget _buildTags() => Text(
-      _tags,
-    );
+  Widget _buildTags() {
+    var temp = <Tag> [];
+    for (var i = 0; i < _tags.length; i++) {
+      temp.add(Tag(title: _tags[i]));
+    }
 
-  Widget _buildPrice() => Text(
-      _price,
+    return SelectableTags(
+      tags: temp,
+      color: Colors.orangeAccent,
     );
+  }
+
+  Widget _buildPrice() {
+    return Card(
+      child: Text(_price),
+      borderOnForeground: true,
+    );
+  }
 
   void getData(DocumentSnapshot snapshot){
     _name = snapshot['name'];
-    _tags = snapshot['tags'].join(', ');
+    _tags = snapshot['tags'];
     _description = snapshot['description'];
     imageUrls = snapshot['photo'];
-    _address = snapshot['location'].toString();
+    _address = snapshot['location'];
     _price = snapshot['price'].toString();
+    _user = snapshot['user'];
   }
 
 	@override
@@ -82,24 +97,48 @@ class PropertyPage extends StatelessWidget {
           if(!snapshot.hasData) return new Center(
             child: new CircularProgressIndicator(),
           );
-          // print(snapshot.data['name']);
           getData(snapshot.data);
 
-          return new ListView(
-            padding: EdgeInsets.all(15),
-            children: <Widget>[
-              _buildName(),
-              Divider(),
-              _buildCoverImage(screenSize),
-              Divider(),
-              _buildAddress(),
-              Divider(),
-              _buildDescription(),
-              Divider(),
-              _buildTags(),
-              Divider(),
-              _buildPrice(),
-            ],	
+          return new Container(
+            child: new SingleChildScrollView(
+              child: new ConstrainedBox(
+                constraints: new BoxConstraints(
+                  minHeight: screenSize.height/1.2
+                ),
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    // crossAxisAlignment: CrossAxisAlignment.stretch,
+                    _buildCoverImage(screenSize),
+                    _buildName(),
+                    _buildDescription(),
+                    _buildTags(),
+                    _buildPrice(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        FlatButton.icon(
+                          onPressed: () {
+
+                          },
+                          icon: Icon(Icons.map),
+                          label: Text('View in Map'),
+                          color: Colors.orangeAccent,
+                        ),
+                        FlatButton.icon(
+                          onPressed: () {
+
+                          },
+                          icon: Icon(Icons.person),
+                          label: Text('View User'),
+                          color: Colors.orangeAccent,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
           );
         },
       )

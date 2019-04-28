@@ -67,7 +67,7 @@ class MyState extends State<MyHomePage> {
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(url),
+                image: new NetworkImage(url),
                 fit: BoxFit.fill,
               ),
             ),

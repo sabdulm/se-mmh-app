@@ -121,7 +121,7 @@ class _AddAdSecState extends State<AddAdSec> {
                       
                       var x = Random() ;
                       var price = x.nextInt(50000) + 10000;
-                      Firestore.instance.collection('Property').add({
+                      Firestore.instance.collection('unApprovedProps').add({
                         "time" : DateTime.now(),
                         "user" : ref,
                         "name" : temp.title,
