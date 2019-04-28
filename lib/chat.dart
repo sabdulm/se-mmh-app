@@ -194,8 +194,7 @@ class ChatScreenState extends State<ChatScreen>{
                   var newtext = controller.text;
                   var datenow = DateTime.now().toString();
                   Firestore.instance.runTransaction((transaction) async{
-                    await transaction.set(Firestore.instance.collection('message').document(), {
-                      chatkey+datenow :{
+                    await transaction.set(Firestore.instance.collection('message').document(chatkey+datenow), {
                         'key' : chatkey+datenow,
                         'message' : newtext,
                         'receiver' : otheremail,
@@ -203,7 +202,6 @@ class ChatScreenState extends State<ChatScreen>{
                         'sender' : email,
                         'sender_name' : name,
                         'time' : datenow
-                      }
                     });
                   });
                   Firestore.instance.collection('chat').document(chatkey).updateData({'messages': FieldValue.arrayUnion([chatkey+datenow])});
