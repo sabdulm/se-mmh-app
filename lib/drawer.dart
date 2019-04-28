@@ -48,8 +48,8 @@ class DrawerOnly extends StatelessWidget {
               ),
             ),
             new ListTile(
-              leading: const Icon(Icons.account_circle),
-              title: const Text('Listings'),
+              leading: const Icon(Icons.home),
+              title: const Text('Home'),
               onTap: () =>{
                 Navigator.push(
                   ctxt,
