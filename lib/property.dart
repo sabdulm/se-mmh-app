@@ -8,9 +8,10 @@ import 'Profile-Other.dart';
 import 'mapProp.dart';
 
 class PropertyPage extends StatelessWidget {
-  PropertyPage(this._key);
+  PropertyPage(this._key, this._col);
   String _key ;
 	String _name ;
+	String _col;
 	var _address;
 	String _description ;
 	var _tags = [] ;
@@ -94,7 +95,7 @@ class PropertyPage extends StatelessWidget {
 				title: new Text('Property Details'),
 			),
       body: StreamBuilder(
-        stream: Firestore.instance.collection('Property').document(_key).snapshots(),
+        stream: Firestore.instance.collection(_col).document(_key).snapshots(),
         builder: (context, snapshot){
           if(!snapshot.hasData) return new Center(
             child: new CircularProgressIndicator(),
