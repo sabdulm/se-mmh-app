@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import './drawer.dart';
 
-var snapshot;
+var _docId = '';
 
 class Profile extends StatefulWidget {
-  DocumentSnapshot snap;
-  Profile(this.snap);
+  String id;
+  Profile(this.id);
   @override
   ProfileState createState() {
-    snapshot = snap;
+    _docId = id;
     return ProfileState();
   }
 }
@@ -28,16 +28,14 @@ class ProfileState extends State<Profile> {
 }
 
 class UserProfilePage extends StatelessWidget {
-  final String _fullName = snapshot['name'];
-  final String _email = snapshot['email'];
-  Widget _buildUserProfileImage(){
+  Widget _buildUserProfileImage(DocumentSnapshot snap){
     return Center(
       child: Container(
         width: 140.0,
         height: 140.0,
         decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/profile.jpg'),
+              image: NetworkImage(snap['photo']),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(80.0),
@@ -50,15 +48,15 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildFullName() {
+  Widget _buildFullName(DocumentSnapshot snap) {
     TextStyle _nameTextStyle = TextStyle(
       color: Colors.black,
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
-    if (_fullName != null){
+    if (snap['name'] != null){
       return new Text(
-        _fullName,
+        snap['name'],
         style: _nameTextStyle,
       );
     }
@@ -66,7 +64,7 @@ class UserProfilePage extends StatelessWidget {
 
   }
 
-  Widget _buildContainer(){
+  Widget _buildContainer(DocumentSnapshot snap){
     return Container(
         height:60,
         margin:EdgeInsets.only(top:8.0),
@@ -126,7 +124,7 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildAds() {
+  Widget _buildAds(DocumentSnapshot snap) {
     return Column(
       children: <Widget>[
         RaisedButton(
@@ -153,19 +151,28 @@ class UserProfilePage extends StatelessWidget {
       ),
       body: Stack(
         children: <Widget>[
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: screenSize.height /20),
-                  _buildUserProfileImage(),
-                  _buildFullName(),
-                  _buildContainer(),
-                  _buildAds(),
-                ],
-              ),
-            ),
-          )
+          StreamBuilder(
+            stream: Firestore.instance.collection('users').document(_docId).snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text("Loading");
+              }
+              var userDocument = snapshot.data;
+              return SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: screenSize.height /20),
+                      _buildUserProfileImage(userDocument),
+                      _buildFullName(userDocument),
+                      _buildContainer(userDocument),
+                      _buildAds(userDocument),
+                    ],
+                  ),
+                ),
+              );
+            }
+          ),
         ],
       ),
     );
