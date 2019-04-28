@@ -1,44 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'property.dart';
 
 class Search extends SearchDelegate{
   Widget _image (String url, Size screenSize){
 			if(url == ''){
         return SizedBox(
-          height: screenSize.height/5.5,
-				  width: screenSize.width/2,
-          child: Image.asset("no_img.png", fit: BoxFit.fill,)
+          height: 150,
+				  width: screenSize.width/2.5,
+          child: ClipRect(child:Image.asset("no_img.png", fit: BoxFit.fill,)),
         );
       }
       return new SizedBox(
-				height: screenSize.height/5.5,
-				width: screenSize.width/2,
-				child: Container(
-					decoration: BoxDecoration(
-						image: DecorationImage(
-							image: NetworkImage(url),
-							fit: BoxFit.fill,
-						),
-					),
-				),
-			);
+        height: 150,
+				width: screenSize.width/2.5,
+				child: ClipRect(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(url),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+			  ),
+      );
 	}
 
 	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
-		return  Card(
-			child: Column(
-					children: <Widget>[
-						ListTile(
-							leading: Container(
-								child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) 
-											:_image(snapshot['photo'][0], screenSize),
-							),
-							title: Text(snapshot['name'] ),
-							subtitle: Text(snapshot['description'].substring(0,20)),
-					 ),
-				],
-			),
-		);	
+		return SizedBox(
+      height: 150,
+      width: screenSize.width,
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        child: Column(
+            children: <Widget>[
+              ListTile(
+                leading: Container(
+                  child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) 
+                        :_image(snapshot['photo'][0], screenSize),
+                ),
+                title: Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}" ),
+                subtitle: snapshot['description'].length>20? Text("${snapshot['description'].substring(0,20)}..."):Text(snapshot['description']),
+                onTap: (){
+                  Route route = MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
+                  Navigator.of(context).push(route);
+  
+                },
+            ),
+          ],
+        ),
+      ),	
+    );	
 	}
 
   @override
@@ -93,7 +106,7 @@ class Search extends SearchDelegate{
               }
               return new ListView.builder(
                 padding: EdgeInsets.all(2),
-                itemExtent: screenSize.height/4,
+                itemExtent: 140,
                 itemCount: temp.length,
                 itemBuilder: (context, index) => _listItemBuilder(context, temp[index], screenSize),
               );
