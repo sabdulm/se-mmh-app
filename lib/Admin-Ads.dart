@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
-import 'search.dart';
 import 'package:location/location.dart';
 import 'dart:math';
 import 'property.dart';
@@ -119,62 +117,82 @@ class _AdminAdPageState extends State<AdminAdPage> {
   }
   Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
     final bool alreadySaved = _saved.contains(snapshot.documentID);
-    print("List item: ${snapshot.documentID}");
-    return  Card(
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            leading: Container(
-              child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize)
-                  :_image(snapshot['photo'][0], screenSize),
-            ),
-            title: Text(snapshot['name'] , style: _biggerFont,),
-            subtitle: Text(snapshot['description'].substring(0,20)),
-            trailing: Column(
-              children: <Widget>[
-                IconButton(
-                  icon: alreadySaved? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
-                  color: alreadySaved? Colors.orangeAccent : null,
-                  onPressed: () {
-                    setState(() {
-                      if (alreadySaved) {
-                        _saved.remove(snapshot.documentID);
-                      } else {
-                         _saved.add(snapshot.documentID);
-                      }
-                    });
-                  },
-                ),
-                MaterialButton(
-                  onPressed: () {},
-                  textColor: Colors.white,
-                  color: Colors.orange,
-                  padding: const EdgeInsets.all(0.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text('Approve'),
-                  ),
-                ),
-              ],
-            ),
-            onTap: (){
-              Route route = MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
-              Navigator.of(context).push(route);
+    // print("List item: ${snapshot.documentID}");
+    // print(snapshot.data);
+    return new GestureDetector(
+      onTap: (){
+        Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'unApprovedProps'));
+        Navigator.of(context).push(route);
 
-            },
-          ),
-        ],
+      },
+      child: new Container(
+          padding: EdgeInsets.only(left: 5, right: 5,),
+          child: new Column(
+            children: <Widget>[
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) :_image(snapshot['photo'][0], screenSize),
+                  new VerticalDivider(color: Colors.black,width: 16,),
+                  new Container(
+                    width: screenSize.width-(screenSize.width/2.5) - 80,
+                    height: 120,
+                    child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
+                        new Text(
+                          snapshot['description'],
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.grey),
+                          maxLines: 2,
+                        ),
+                        Spacer(),
+                        Container(
+                          child:new Text("£${snapshot['price']}.00",style: TextStyle(color: Colors.black87),),
+                          alignment: Alignment.bottomRight,
+                        ),
+                        // snapshot['description'].length>20? new Text("${snapshot['description'].substring(0,20)}..."): new Text(snapshot['description']),
+                      ],
+                    ),
+                  ),
+                  new Spacer(),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: new IconButton(
+                      icon: alreadySaved? new Icon(Icons.bookmark) : new Icon(Icons.bookmark_border),
+                      color: alreadySaved? Colors.orangeAccent : null,
+                      onPressed: () {
+                        setState(() {
+                          if (alreadySaved) {
+                            _saved.remove(snapshot.documentID);
+                          } else {
+                            _saved.add(snapshot.documentID);
+
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              new Divider(),
+            ],
+          )
       ),
     );
   }
+
   Stream<QuerySnapshot> streamSelector(int num){
     switch (num) {
-      case 1: return Firestore.instance.collection('Property').orderBy('name').snapshots();
-      case 2: return Firestore.instance.collection('Property').orderBy('time', descending: false).snapshots();
-      case 3: return Firestore.instance.collection('Property').orderBy('time', descending: true).snapshots();// lates
-      case 4: return Firestore.instance.collection('Property').orderBy('price', descending: true).snapshots();// expensive
-      case 5: return Firestore.instance.collection('Property').orderBy('price', descending: false).snapshots();
-      default: return Firestore.instance.collection('Property').snapshots();
+      case 1: return Firestore.instance.collection('unApprovedProps').orderBy('name').snapshots();
+      case 2: return Firestore.instance.collection('unApprovedProps').orderBy('time', descending: false).snapshots();
+      case 3: return Firestore.instance.collection('unApprovedProps').orderBy('time', descending: true).snapshots();// lates
+      case 4: return Firestore.instance.collection('unApprovedProps').orderBy('price', descending: true).snapshots();// expensive
+      case 5: return Firestore.instance.collection('unApprovedProps').orderBy('price', descending: false).snapshots();
+      default: return Firestore.instance.collection('unApprovedProps').snapshots();
     }
   }
   @override
@@ -185,12 +203,6 @@ class _AdminAdPageState extends State<AdminAdPage> {
       appBar: new AppBar(
         title: new Text("Drawer Demo"),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: (){
-              showSearch(context: context, delegate: Search());
-            },
-          ),
           IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: (){
