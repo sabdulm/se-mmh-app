@@ -169,7 +169,7 @@ class ChatScreenState extends State<ChatScreen>{
   }
   Messagetile listbuilder(int i,_msgs){
     print(_msgs[i]+'\n\n\n');
-    return Messagetile(_msgs[i],name);
+    return Messagetile(_msgs[i],othername);
   }
   Widget Textcomposer(){
     return new Container(
@@ -179,7 +179,7 @@ class ChatScreenState extends State<ChatScreen>{
           new Container(
             margin: new EdgeInsets.symmetric(horizontal: 4.0),
             child: new IconButton(
-              icon: new Icon(Icons.photo_camera), onPressed: () {},
+              icon: new Icon(Icons.photo_camera),
             )
           ),
           new Flexible(
@@ -206,7 +206,13 @@ class ChatScreenState extends State<ChatScreen>{
                         'time' : datenow
                     });
                   });
-                  Firestore.instance.collection('chat').document(chatkey).updateData({'messages': FieldValue.arrayUnion([chatkey+datenow])});
+                  Firestore.instance.collection('chat').document(chatkey).updateData({
+                    'messages': FieldValue.arrayUnion([chatkey+datenow]),
+                    'read' : false,
+                    'last_time' : datenow,
+                    'lastsender' : email,
+                    'latest' : newtext
+                    });
                   controller.clear();
                 });
               },
@@ -218,36 +224,46 @@ class ChatScreenState extends State<ChatScreen>{
   }
   @override
   Widget build(BuildContext context){
-    return new Scaffold(
-      appBar: new AppBar(
-        title: Text(name),
-        centerTitle: true,
-        automaticallyImplyLeading: true,
-        leading: IconButton(icon:Icon(Icons.arrow_back),
-          onPressed:() {
-            Navigator.pop(context);
-          },
-        )
-      ),
-      body: new Container(
-        child: new Column(
-          children: <Widget>[
-            new Flexible(
-              child : StreamBuilder(
-                stream: Firestore.instance.collection('chat').where('key',isEqualTo:chatkey).snapshots(),
-                builder: (context,snapshot){
-                  var msgs = snapshot.data.documents[0]['messages'];
-                  return Msgsbuilder(msgs);
-                },
-              )
-            ),
-            new Divider(height: 1.0,),
-            new Container(
-              child: Textcomposer(),
-            )
-          ],
+    return new WillPopScope(
+      onWillPop: (){
+        Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('drawer'));
+      },
+      child : new Scaffold(
+        appBar: new AppBar(
+          title: Text(othername),
+          centerTitle: true,
+          automaticallyImplyLeading: true,
+          leading: IconButton(icon:Icon(Icons.arrow_back),
+            onPressed:() {
+              Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('drawer'));
+            },
+          )
         ),
-      ),
+        body: new Container(
+          child: new Column(
+            children: <Widget>[
+              new Flexible(
+                child : StreamBuilder(
+                  stream: Firestore.instance.collection('chat').where('key',isEqualTo:chatkey).snapshots(),
+                  builder: (context,snapshot){
+                    if(snapshot.data!=null){
+                      var msgs = snapshot.data.documents[0]['messages'];
+                      return Msgsbuilder(msgs);
+                    }
+                    else{
+                      return new Text('Loading...');
+                    }
+                  },
+                )
+              ),
+              new Divider(height: 1.0,),
+              new Container(
+                child: Textcomposer(),
+              )
+            ],
+          ),
+        ),
+      )
     );
   }
 }
