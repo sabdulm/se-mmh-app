@@ -1,13 +1,115 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'drawer.dart';
 import 'Admin-Ads.dart';
+import './Profile-Other.dart';
 
 class AdminUserPage extends StatefulWidget {
   @override
   _AdminUserPageState createState() => _AdminUserPageState();
 }
 
+
+
 class _AdminUserPageState extends State<AdminUserPage> {
+  Widget but(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () => {},
+              textColor: Colors.white,
+              color: Colors.orange,
+              padding: const EdgeInsets.all(0.0),
+              child: Container(
+                padding: const EdgeInsets.all(10.0),
+                child: Text('Users'),
+              ),
+            ),
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => AdminAdPage(),
+                  )),
+              textColor: Colors.white,
+              color: Colors.orange,
+              padding: const EdgeInsets.all(0.0),
+              child: Container(
+                padding: const EdgeInsets.all(10.0),
+                child: Text('Ads'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+  Widget _image(String url){
+    if(url == ''){
+      return SizedBox(
+          height: 50,
+          width: 50,
+          child: Image.asset("no_img.png", fit: BoxFit.fill,)
+      );
+    }
+    return Container(
+      width: 50.0,
+      height: 50.0,
+      decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/profile.jpg'),
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.circular(80.0),
+          border: Border.all(
+            color: Colors.white,
+            width: 4.0,
+          )
+      ),
+    );
+  }
+  Widget user(BuildContext context, DocumentSnapshot snapshot){
+    return InkWell(
+      child: Card(
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              leading: Container(
+                child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('')
+                    :_image(snapshot['photo'][0]),
+              ),
+              title: Text(snapshot['name']),
+              subtitle: Text(snapshot['email']),
+              trailing: RaisedButton(
+                onPressed: () {},
+                textColor: Colors.white,
+                color: Colors.orange,
+                padding: const EdgeInsets.all(0.0),
+                child: Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text('Delete'),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+      onTap:() => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => Profile(snapshot))
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,85 +118,24 @@ class _AdminUserPageState extends State<AdminUserPage> {
         title: Text('Users'),
       ),
 
-      body: Column(
+      body: new Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton(
-                    onPressed: () => {},
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    padding: const EdgeInsets.all(0.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text('Users'),
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton(
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => AdminAdPage(),
-                        )),
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    padding: const EdgeInsets.all(0.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text('Ads'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Card(
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  leading: Container(
-                    child: Container(
-                      width: 50.0,
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/profile.jpg'),
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.circular(80.0),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 4.0,
-                          )
-                      ),
-                    ),
-                  ),
-                  title: Text("Ammar Tahir"),
-                  subtitle: Text("at4567@outlook.com"),
-                  trailing: RaisedButton(
-                    onPressed: () {},
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    padding: const EdgeInsets.all(0.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text('Block'),
-                    ),
-                  ),
-                )
-              ],
+          but(),
+          Flexible(
+            child: StreamBuilder(
+              stream: Firestore.instance.collection('users').snapshots(),
+              builder: (context, snapshot){
+                Size screenSize = MediaQuery.of(context).size;
+                return new ListView.builder(
+                  padding: EdgeInsets.all(2),
+                  itemExtent: screenSize.height/8,
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index)=>user(context, snapshot.data.documents[index]),
+                );
+              }
             )
-          ),
+          )
         ],
       ),
     );
