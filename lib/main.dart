@@ -21,6 +21,8 @@ class MyApp extends StatelessWidget {
       initialRoute: 'home',
       routes: <String, WidgetBuilder>{
         'home': (context) => MyHomePage(),
+	'drawer': (context) => Drawer(),
+        'inbox' : (context) => InboxPage('Hadi', 'hadi@gmail.com') //Need name and email here
       },
 		);
 	}
