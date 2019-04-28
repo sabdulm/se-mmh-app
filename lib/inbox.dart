@@ -258,3 +258,4 @@ class message {
 	bool read;
   DateTime date;
 }
+
