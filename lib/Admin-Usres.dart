@@ -19,7 +19,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
+            MaterialButton(
               onPressed: () => {},
               textColor: Colors.white,
               color: Colors.orange,
@@ -34,7 +34,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
+            MaterialButton(
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -55,10 +55,20 @@ class _AdminUserPageState extends State<AdminUserPage> {
   }
   Widget _image(String url){
     if(url == ''){
-      return SizedBox(
+      return Container(
           height: 50,
           width: 50,
-          child: Image.asset("no_img.png", fit: BoxFit.fill,)
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('no_img.png'),
+              fit: BoxFit.cover,
+            ),
+            borderRadius: BorderRadius.circular(80.0),
+            border: Border.all(
+              color: Colors.white,
+              width: 4.0,
+            )
+        ),
       );
     }
     return Container(
@@ -66,7 +76,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
       height: 50.0,
       decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/profile.jpg'),
+            image: NetworkImage(url),
             fit: BoxFit.cover,
           ),
           borderRadius: BorderRadius.circular(80.0),
@@ -85,11 +95,11 @@ class _AdminUserPageState extends State<AdminUserPage> {
             ListTile(
               leading: Container(
                 child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('')
-                    :_image(snapshot['photo'][0]),
+                    :_image(snapshot['photo']),
               ),
               title: Text(snapshot['name']),
               subtitle: Text(snapshot['email']),
-              trailing: RaisedButton(
+              trailing: MaterialButton(
                 onPressed: () {},
                 textColor: Colors.white,
                 color: Colors.orange,
