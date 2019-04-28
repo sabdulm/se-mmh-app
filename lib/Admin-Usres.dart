@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'drawer.dart';
 import 'Admin-Ads.dart';
-import './Profile-Other.dart';
+import 'Profile-Other.dart';
 
 class AdminUserPage extends StatefulWidget {
   @override

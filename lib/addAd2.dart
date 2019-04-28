@@ -82,11 +82,7 @@ class _AddAdSecState extends State<AddAdSec> {
                       setState (() {
                           imgs.add(imgFile);
                       });
-                      // final StorageReference storageRef = FirebaseStorage.instance.ref().child(DateTime.now().toString());
-                      // final StorageUploadTask uploadTask = storageRef.putFile(imgFile);
-                      // final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
-                      // final String url = (await downloadUrl.ref.getDownloadURL());
-                      // imgUrls.add(url);
+
                     }
                     return;
                   }
@@ -121,7 +117,7 @@ class _AddAdSecState extends State<AddAdSec> {
                       
                       var x = Random() ;
                       var price = x.nextInt(50000) + 10000;
-                      Firestore.instance.collection('Property').add({
+                      Firestore.instance.collection('unApprovedProps').add({
                         "time" : DateTime.now(),
                         "user" : ref,
                         "name" : temp.title,

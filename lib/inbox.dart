@@ -33,7 +33,7 @@ class ChatTileState extends State<ChatTile>{
 
   @override
   Widget build(BuildContext context){
-    print(othername+"\n\n");
+    // print(othername+"\n\n");
     var formatter = new DateFormat().add_jm().add_yMMMMd();
     String subt = _msg.latest+"\n\n"+formatter.format(_msg.date);
     if(30<_msg.latest.length){
@@ -55,7 +55,8 @@ class ChatTileState extends State<ChatTile>{
       onTap: () {
         setState(() {
           if (!_msg.read)
-            _msg.read = !_msg.read;
+            Firestore.instance.collection('chat').document(chatkey).updateData({'read': true});
+            _msg.read = true;
         });
         Route route = MaterialPageRoute(builder: (context)=>ChatScreen(chatkey,name,email,othername,otheremail));
         Navigator.push(context, route);
@@ -64,6 +65,55 @@ class ChatTileState extends State<ChatTile>{
   }
 }
 
+class TempState extends StatefulWidget{
+  message _msg;
+  String chatkey;
+  String otheremail;
+  String othername;
+
+  TempState(this._msg,this.chatkey,this.otheremail,this.othername);
+  @override
+  State<StatefulWidget> createState(){
+    return TempStatestate(_msg,chatkey,otheremail,othername);
+  }
+}
+
+
+class TempStatestate extends State<TempState>{
+  message _msg;
+  String chatkey;
+  String otheremail;
+  String othername;
+
+  TempStatestate(this._msg,this.chatkey,this.otheremail,this.othername);
+  @override
+  Widget build (BuildContext context){
+    var clr = Colors.blue.shade50;
+    if(!_msg.read){
+      clr = Colors.white;
+    }
+    return Container(
+      child: StreamBuilder(
+        stream: Firestore.instance.collection('users').where('email',isEqualTo:otheremail).snapshots(),
+        builder: (context,snapshot){
+          if (snapshot.data!=null){
+            _msg.name = snapshot.data.documents[0]['name'];
+            othername = _msg.name;
+            return ChatTile(_msg, chatkey, otheremail, othername);
+          }
+          else{
+            return new Text('Loading...');
+          }
+        },
+      ),
+      decoration: new BoxDecoration(
+        color: clr
+        
+      ),
+    );
+  }
+  
+}
 
 class MessageList extends StatefulWidget{
   final List<String> allmsgs;
@@ -86,22 +136,32 @@ class MessageListState extends State<MessageList>{
   MessageListState(this.allmsgs,this.chatnames);
   @override
   Widget build (BuildContext context){
-    return new ListView.separated(
-      separatorBuilder : (context,index)=> Divider(
-        color : Colors.orange
+    return new Container(
+      child: ListView.builder(
+        // separatorBuilder : (context,index)=> Divider(
+        //   color : Colors.blue.shade100
+        // ),
+        itemCount: allmsgs.length,
+        itemBuilder: ((context,index)=>Container(
+          padding: EdgeInsets.symmetric(vertical: 0.0),
+          child: StreamBuilder(
+            stream: Firestore.instance.collection('chat').where('key',isEqualTo:allmsgs[index]).snapshots(),
+            builder: (context,snapshot){
+              if(snapshot.data!=null){
+                var newmsg = message(date: DateTime.parse(snapshot.data.documents[0]['last_time']), latest: snapshot.data.documents[0]['latest'],
+                  read: snapshot.data.documents[0]['read'] || (snapshot.data.documents[0]['lastsender']==email),name: "Place Holder");
+                return TempState(newmsg,allmsgs[index],chatnames[index],"Place Holder");
+              }
+              else{
+                return new Text('Loading...');
+              }
+            },
+          )
+        )),
       ),
-      itemCount: allmsgs.length,
-      itemBuilder: ((context,index)=>Padding(
-        padding: EdgeInsets.symmetric(vertical: 5.0),
-        child: StreamBuilder(
-          stream: Firestore.instance.collection('chat').where('key',isEqualTo:allmsgs[index]).snapshots(),
-          builder: (context,snapshot){
-            var newmsg = message(date: DateTime.parse(snapshot.data.documents[0]['last_time']), latest: snapshot.data.documents[0]['latest'],
-              read: snapshot.data.documents[0]['read'] || (snapshot.data.documents[0]['lastsender']==email),name: snapshot.data.documents[0]['name']);
-            return ChatTile(newmsg,allmsgs[index],chatnames[index],snapshot.data.documents[0]['name']);
-          },
-        )
-      )),
+      decoration: new BoxDecoration(
+        color: Colors.blue.shade50
+      ),
     );
   }
 }
@@ -136,7 +196,12 @@ class InboxPagescreen extends State<InboxPage>{
 			body: StreamBuilder(
         stream: Firestore.instance.collection('users').where('email',isEqualTo:email).snapshots(),
         builder: (context,snapshot){
-         return MessageList(Getchats(email, snapshot.data.documents[0]['inbox']),snapshot.data.documents[0]['inbox']);
+          if (snapshot.data!=null){
+            return MessageList(Getchats(email, snapshot.data.documents[0]['inbox']),snapshot.data.documents[0]['inbox']);
+          }
+          else{
+            return new Text('Loading...');
+          }
         },
       )
       //MessageList(listings), 
