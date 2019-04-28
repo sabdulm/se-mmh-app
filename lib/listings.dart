@@ -57,7 +57,7 @@ class MyState extends State<MyHomePage> {
         return new SizedBox(
           height: 120,
           width: screenSize.width/2.5,
-          child: ClipRect(child:new Image.asset("no_img.jpg", fit: BoxFit.fill,),)
+          child: ClipRect(child:new Container(child:new Image.asset("no_img.jpg", fit: BoxFit.fill,)),)
         );
       }
       return new SizedBox(
@@ -98,6 +98,7 @@ class MyState extends State<MyHomePage> {
                 new VerticalDivider(color: Colors.black,width: 16,),
                 new Container(
                   width: screenSize.width-(screenSize.width/2.5) - 80,
+                  height: 120,
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +108,12 @@ class MyState extends State<MyHomePage> {
                         snapshot['description'],
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(color: Colors.grey),
-                        maxLines: 4,
+                        maxLines: 2,
+                      ),
+                      Spacer(),
+                      Container(
+                        child:new Text("£${snapshot['price']}.00",style: TextStyle(color: Colors.black87),),
+                        alignment: Alignment.bottomRight,
                       ),
                       // snapshot['description'].length>20? new Text("${snapshot['description'].substring(0,20)}..."): new Text(snapshot['description']),
                     ],
