@@ -209,13 +209,16 @@ class ChatScreenState extends State<ChatScreen>{
                         'time' : datenow
                     });
                   });
-                  Firestore.instance.collection('chat').document(chatkey).updateData({
+                  Firestore.instance.runTransaction((transaction) async{
+                    DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('chat').document(chatkey));
+                    await transaction.update(freshsnap.reference,{
                     'messages': FieldValue.arrayUnion([chatkey+datenow]),
                     'read' : false,
                     'last_time' : datenow,
                     'lastsender' : email,
                     'latest' : newtext
                     });
+                  });
                   controller.clear();
                 });
               },
