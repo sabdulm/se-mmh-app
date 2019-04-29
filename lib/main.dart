@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         'home': (context) => MyHomePage(),
 	'drawer': (context) => Drawer(),
-        'inbox' : (context) => InboxPage('Hadi', 'hadi@gmail.com') //Need name and email here
+        'inbox' : (context) => InboxPage('Hadi', 'hadi@gmail.com'), //Need name and email here
+	'calendar': (context) =>Calendar()
       },
 		);
 	}
