@@ -106,7 +106,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
       onTap:() => Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => Profile(snapshot))
+              builder: (BuildContext context) => Profile(snapshot.documentID))
       ),
     );
   }

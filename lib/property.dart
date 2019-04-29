@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:flutter_tags/selectable_tags.dart';
 import 'drawer.dart';
 import 'Profile-Other.dart';
@@ -35,7 +34,7 @@ class PropertyPage extends StatelessWidget {
       boxFit: BoxFit.cover,
       images: _buildNetworkImages(),
       animationCurve: Curves.fastOutSlowIn,
-      animationDuration: Duration(seconds: 2),
+      animationDuration: Duration(seconds: 4),
       borderRadius: true,
       indicatorBgPadding: 0.0)
       : 
@@ -44,13 +43,7 @@ class PropertyPage extends StatelessWidget {
 
   Widget _buildName() => Text(
       _name,
-			textAlign: TextAlign.left,
-    );
-
-  Widget _buildAddress() => Text(
-      _address,
-			textAlign: TextAlign.left,
-    );
+  );
 
   Widget _buildDescription() {
     return Text(_description);
@@ -112,9 +105,13 @@ class PropertyPage extends StatelessWidget {
                   children: <Widget>[
                     // crossAxisAlignment: CrossAxisAlignment.stretch,
                     _buildCoverImage(screenSize),
+                    Divider(),
                     _buildName(),
+                    Divider(),
                     _buildDescription(),
+                    Divider(),
                     _buildTags(),
+                    Divider(),
                     _buildPrice(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -132,7 +129,9 @@ class PropertyPage extends StatelessWidget {
                         ),
                         FlatButton.icon(
                           onPressed: () {
-                            // DocumentSnapshot snap = _user.firestore.document(_user.documentID).snapshots().data;
+                            Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Profile(_user.documentID)),
+                            );
                           },
                           icon: Icon(Icons.person),
                           label: Text('View User'),
