@@ -182,7 +182,7 @@ class ChatScreenState extends State<ChatScreen>{
           new Container(
             margin: new EdgeInsets.symmetric(horizontal: 4.0),
             child: new IconButton(
-              icon: new Icon(Icons.photo_camera), onPressed: () {},
+              icon: new Icon(Icons.photo_camera),
             )
           ),
           new Flexible(
