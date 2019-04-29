@@ -35,7 +35,7 @@ class Search extends SearchDelegate{
 	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
 		return new GestureDetector(
       onTap: (){
-            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
+            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property'));
             Navigator.of(context).push(route);
 
           },

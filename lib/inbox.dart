@@ -30,15 +30,39 @@ class ChatTileState extends State<ChatTile>{
   String othername;
 
   ChatTileState(this._msg,this.chatkey,this.otheremail, this.othername);
-
+  String TranslateDate(DateTime date){
+    DateTime now = DateTime.now();
+    final difference = now.difference(date).inDays;
+    var formatter = new DateFormat().add_jm();
+    if(difference <1){
+      return "Today "+formatter.format(date);
+    }
+    else if (difference<2){
+      return "Yesterday "+formatter.format(date);
+    }
+    else if(difference<7){
+      var formatter2 = new DateFormat('EEEE');
+      return formatter2.format(date)+" "+formatter.format(date);
+    }
+    else if(difference<365){
+      var formatter2 = new DateFormat().add_MMMd();
+      return formatter2.format(date)+" "+formatter.format(date);      
+    }
+    else{
+      var formatter2 = new DateFormat().add_yMMMd().add_jm();
+      return formatter2.format(date);
+    }
+  }
   @override
   Widget build(BuildContext context){
     // print(othername+"\n\n");
     var formatter = new DateFormat().add_jm().add_yMMMMd();
-    String subt = _msg.latest+"\n\n"+formatter.format(_msg.date);
-    if(30<_msg.latest.length){
-      String subt = _msg.latest.substring(0,30)+"...\n\n"+formatter.format(_msg.date);
+    String time = TranslateDate(_msg.date);
+    String subt = "\n"+_msg.latest;
+    if(20<_msg.latest.length){
+      subt = "\n"+_msg.latest.substring(0,20)+"...";
     }
+    print(subt+_msg.latest.length.toString());
     Text nem = Text(_msg.name);
     Text mesg = Text(subt);
     if(_msg.read==false){
@@ -51,6 +75,7 @@ class ChatTileState extends State<ChatTile>{
       ),
       title: nem,
       subtitle: mesg,
+      trailing: new Text(time),
       isThreeLine: true,
       onTap: () {
         setState(() {
@@ -88,7 +113,7 @@ class TempStatestate extends State<TempState>{
   TempStatestate(this._msg,this.chatkey,this.otheremail,this.othername);
   @override
   Widget build (BuildContext context){
-    var clr = Colors.blue.shade50;
+    var clr = Colors.blue.shade100;
     if(!_msg.read){
       clr = Colors.white;
     }
@@ -102,13 +127,18 @@ class TempStatestate extends State<TempState>{
             return ChatTile(_msg, chatkey, otheremail, othername);
           }
           else{
-            return new Text('Loading...');
+            return new CircularProgressIndicator();
           }
         },
       ),
       decoration: new BoxDecoration(
-        color: clr
-        
+        color: clr,
+        borderRadius: new BorderRadius.only(
+            topLeft: const Radius.circular(10.0),
+            topRight: const Radius.circular(10.0),
+            bottomLeft: const Radius.circular(10.0),
+            bottomRight: const Radius.circular(10.0),
+          )
       ),
     );
   }
@@ -153,7 +183,7 @@ class MessageListState extends State<MessageList>{
                 return TempState(newmsg,allmsgs[index],chatnames[index],"Place Holder");
               }
               else{
-                return new Text('Loading...');
+                return new CircularProgressIndicator();
               }
             },
           )
@@ -200,7 +230,7 @@ class InboxPagescreen extends State<InboxPage>{
             return MessageList(Getchats(email, snapshot.data.documents[0]['inbox']),snapshot.data.documents[0]['inbox']);
           }
           else{
-            return new Text('Loading...');
+            return new CircularProgressIndicator();
           }
         },
       )
@@ -228,3 +258,4 @@ class message {
 	bool read;
   DateTime date;
 }
+

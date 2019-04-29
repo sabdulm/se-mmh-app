@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'inbox.dart';
 
-var email = "hadi@gmail.com";
+// var email = "hadi@gmail.com";
 // String name = "Hadi";
 var formatter = new DateFormat().add_jm().add_yMMMMd();
 class Messagetile extends StatelessWidget{
@@ -13,6 +13,9 @@ class Messagetile extends StatelessWidget{
   Messagetile(this.msgkey,this.chatee);
 
   List<Widget> SentMessageTile(_msg){
+    var length = _msg.msg.length;
+    length = 3*length;
+
     return <Widget>[
       new Expanded(
         child: new Container(
@@ -25,6 +28,7 @@ class Messagetile extends StatelessWidget{
                 new Container(
                   margin: const EdgeInsets.only(top: 10.0),
                   child: new Text(_msg.msg),
+                  
                 )
               ],
             ),
@@ -121,7 +125,7 @@ class Messagetile extends StatelessWidget{
           );
         }
         else{
-          return new Text('Loading...');
+          return new CircularProgressIndicator();
         }
         },
       )
@@ -168,7 +172,6 @@ class ChatScreenState extends State<ChatScreen>{
     );
   }
   Messagetile listbuilder(int i,_msgs){
-    print(_msgs[i]+'\n\n\n');
     return Messagetile(_msgs[i],othername);
   }
   Widget Textcomposer(){

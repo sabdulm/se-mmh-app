@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import './drawer.dart';
+import './property.dart';
 
 var _docId = '';
 
@@ -28,7 +29,32 @@ class ProfileState extends State<Profile> {
 }
 
 class UserProfilePage extends StatelessWidget {
+  final Set<String> _saved = new Set<String>();
+  final _biggerFont = const TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+  );
+
   Widget _buildUserProfileImage(DocumentSnapshot snap){
+    if (snap['photo'] == '') {
+      return Center(
+        child: Container(
+          width: 140.0,
+          height: 140.0,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('no_img.png'),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(80.0),
+              border: Border.all(
+                color: Colors.white,
+                width: 10.0,
+              )
+          ),
+        ),
+      );
+    }
     return Center(
       child: Container(
         width: 140.0,
@@ -123,21 +149,107 @@ class UserProfilePage extends StatelessWidget {
         )
     );
   }
-
-  Widget _buildAds(DocumentSnapshot snap) {
-    return Column(
-      children: <Widget>[
-        RaisedButton(
-          onPressed: () {},
-          textColor: Colors.white,
-          color: Colors.orange,
-          padding: const EdgeInsets.all(0.0),
-          child: Container(
-            padding: const EdgeInsets.all(10.0),
-            child: Text('View Ads'),
+  Widget _image (String url, Size screenSize){
+    if(url == ''){
+      return new SizedBox(
+          height: 120,
+          width: screenSize.width/2.5,
+          child: ClipRect(child:new Container(child:new Image.asset("no_img.jpg", fit: BoxFit.fill,)),)
+      );
+    }
+    return new SizedBox(
+      height: 120,
+      width: screenSize.width/2.5,
+      child: new ClipRect(
+        child: new Container(
+          decoration: new BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: new DecorationImage(
+              image: new NetworkImage(url),
+              fit: BoxFit.fill,
+            ),
           ),
         ),
-      ],
+      ),
+    );
+  }
+  Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
+    final bool alreadySaved = _saved.contains(snapshot.documentID);
+    print(snapshot['user']);
+    return new GestureDetector(
+      onTap: (){
+        Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property'));
+        Navigator.of(context).push(route);
+      },
+      child: new Container(
+          padding: EdgeInsets.only(left: 5, right: 5,),
+          child: new Column(
+            children: <Widget>[
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) :_image(snapshot['photo'][0], screenSize),
+                  new VerticalDivider(color: Colors.black,width: 16,),
+                  new Container(
+                    width: screenSize.width-(screenSize.width/2.5) - 80,
+                    height: 120,
+                    child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
+                        new Text(
+                          snapshot['description'],
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.grey),
+                          maxLines: 2,
+                        ),
+                        Spacer(),
+                        Container(
+                          child:new Text("£${snapshot['price']}.00",style: TextStyle(color: Colors.black87),),
+                          alignment: Alignment.bottomRight,
+                        ),
+                        // snapshot['description'].length>20? new Text("${snapshot['description'].substring(0,20)}..."): new Text(snapshot['description']),
+                      ],
+                    ),
+                  ),
+                  new Spacer(),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: new IconButton(
+                      icon: alreadySaved? new Icon(Icons.bookmark) : new Icon(Icons.bookmark_border),
+                      color: alreadySaved? Colors.orangeAccent : null,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
+              new Divider(),
+            ],
+          )
+      ),
+    );
+  }
+
+  Widget _buildAds() {
+    DocumentReference ref = Firestore.instance.collection('users').document(_docId);
+    return Flexible(
+      child: new StreamBuilder(
+        stream: Firestore.instance.collection('Property').where('user', isEqualTo: ref).snapshots(),
+        builder: (context, snapshot){
+          Size screenSize = MediaQuery.of(context).size;
+          if(!snapshot.hasData) return new Center(
+            child: new CircularProgressIndicator(),
+          );
+          return new ListView.builder(
+            padding: EdgeInsets.all(2),
+            itemExtent: 140,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
+          );
+        },
+      ),
     );
   }
 
@@ -158,18 +270,14 @@ class UserProfilePage extends StatelessWidget {
                 return Text("Loading");
               }
               var userDocument = snapshot.data;
-              return SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: screenSize.height /20),
-                      _buildUserProfileImage(userDocument),
-                      _buildFullName(userDocument),
-                      _buildContainer(userDocument),
-                      _buildAds(userDocument),
-                    ],
-                  ),
-                ),
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: screenSize.height /20),
+                  _buildUserProfileImage(userDocument),
+                  _buildFullName(userDocument),
+                  _buildContainer(userDocument),
+                  _buildAds(),
+                ],
               );
             }
           ),

@@ -82,7 +82,7 @@ class MyState extends State<MyHomePage> {
     // print(snapshot.data);
     return new GestureDetector(
       onTap: (){
-            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID));
+            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property'));
             Navigator.of(context).push(route);
 
           },
