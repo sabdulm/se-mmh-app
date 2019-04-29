@@ -60,7 +60,7 @@ class _AdminAdPageState extends State<AdminAdPage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
+                MaterialButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -77,7 +77,7 @@ class _AdminAdPageState extends State<AdminAdPage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
+                MaterialButton(
                   onPressed: () => {},
                   textColor: Colors.white,
                   color: Colors.orange,
@@ -134,51 +134,79 @@ class _AdminAdPageState extends State<AdminAdPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) :_image(snapshot['photo'][0], screenSize),
-                  new VerticalDivider(color: Colors.black,width: 16,),
-                  new Container(
-                    width: screenSize.width-(screenSize.width/2.5) - 80,
-                    height: 120,
-                    child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
-                        new Text(
-                          snapshot['description'],
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.grey),
-                          maxLines: 2,
-                        ),
-                        Spacer(),
-                        Container(
-                          child:new Text("£${snapshot['price']}.00",style: TextStyle(color: Colors.black87),),
-                          alignment: Alignment.bottomRight,
-                        ),
-                        // snapshot['description'].length>20? new Text("${snapshot['description'].substring(0,20)}..."): new Text(snapshot['description']),
-                      ],
-                    ),
-                  ),
-                  new Spacer(),
+                  //new VerticalDivider(color: Colors.black,width: 16,),
+//                  new Container(
+//                    width: screenSize.width-(screenSize.width/2.5) - 80,
+//                    height: 120,
+//                    child: new Column(
+//                      mainAxisAlignment: MainAxisAlignment.start,
+//                      crossAxisAlignment: CrossAxisAlignment.start,
+//                      children: <Widget>[
+//                        new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
+//                        new Text(
+//                          snapshot['description'],
+//                          overflow: TextOverflow.ellipsis,
+//                          style: TextStyle(color: Colors.grey),
+//                          maxLines: 2,
+//                        ),
+//                        Spacer(),
+//                        Container(
+//                          child:new Text("£${snapshot['price']}.00",style: TextStyle(color: Colors.black87),),
+//                          alignment: Alignment.bottomRight,
+//                        ),
+//                        // snapshot['description'].length>20? new Text("${snapshot['description'].substring(0,20)}..."): new Text(snapshot['description']),
+//                      ],
+//                    ),
+//                  ),
                   Container(
                     alignment: Alignment.centerRight,
-                    child: new IconButton(
-                      icon: alreadySaved? new Icon(Icons.bookmark) : new Icon(Icons.bookmark_border),
-                      color: alreadySaved? Colors.orangeAccent : null,
-                      onPressed: () {
-                        setState(() {
-                          if (alreadySaved) {
-                            _saved.remove(snapshot.documentID);
-                          } else {
-                            _saved.add(snapshot.documentID);
+                    child: Column(
+                      children: <Widget>[
+                        IconButton(
+                        icon: alreadySaved? new Icon(Icons.bookmark) : new Icon(Icons.bookmark_border),
+                        color: alreadySaved? Colors.orangeAccent : null,
+                        onPressed: () {
+                          setState(() {
+                            if (alreadySaved) {
+                              _saved.remove(snapshot.documentID);
+                            } else {
+                              _saved.add(snapshot.documentID);
 
-                          }
-                        });
-                      },
-                    ),
+                            }
+                          });
+                        },
+                      ),
+                      Row(
+                        children: <Widget>[
+                          MaterialButton(
+                            onPressed: () {_approve(snapshot);},
+                            textColor: Colors.white,
+                            color: Colors.orange,
+                            padding: const EdgeInsets.all(0.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Approve'),
+                            ),
+                          ),
+                          MaterialButton(
+                            onPressed: () {
+                              _delete(snapshot);
+                            },
+                            textColor: Colors.white,
+                            color: Colors.orange,
+                            padding: const EdgeInsets.all(0.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Delete'),
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    ],),
                   ),
                 ],
               ),
-              new Divider(),
             ],
           )
       ),
@@ -195,6 +223,25 @@ class _AdminAdPageState extends State<AdminAdPage> {
       default: return Firestore.instance.collection('unApprovedProps').snapshots();
     }
   }
+
+  void _approve(DocumentSnapshot snap){
+    Firestore.instance.collection('Property').add({
+      "time" : snap['time'],
+      "user" : snap['user'],
+      "name" : snap['name'],
+      "description" : snap['description'],
+      "photo" : snap['photo'],
+      "tags" : snap['tags'],
+      "location" : snap['location'],
+      "price" : snap['price'],
+    });
+    snap.reference.delete();
+  }
+
+  void _delete(DocumentSnapshot snap){
+    snap.reference.delete();
+  }
+
   @override
   Widget build (BuildContext context) {
     // print("listings: ${_value}");
