@@ -80,6 +80,9 @@ class DrawerOnly extends StatelessWidget {
             new ListTile(
               leading: const Icon(Icons.calendar_today),
               title: const Text('View Calender'),
+              onTap: (){
+                Navigator.of(ctxt).pushNamed('calendar');
+              },
             ),
             new ListTile(
               leading: const Icon(Icons.settings),
