@@ -62,17 +62,17 @@ class _SignUpPage2State extends State<SignUpPage2> {
         MaterialPageRoute(builder: (context) => SignUpPage3()),
       );
     }catch(re){
-      print(re.message);
-      // final snackBar = SnackBar(
-      //   content: Text(re.message),
-      //   action: SnackBarAction(
-      //     label: 'Undo',
-      //     onPressed: () {
-      //       // Some code to undo the change!
-      //     },
-      //   ),
-      // );
-      // _scaffoldKey.currentState.showSnackBar(snackBar);
+      // print(re.message);
+      final snackBar = SnackBar(
+        content: Text(re.message),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            // Some code to undo the change!
+          },
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(snackBar);
     }
   }
 
