@@ -7,10 +7,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    return  MyHomePage(title: 'Flutter Demo Home Page');
   }
 }
 
@@ -31,12 +28,12 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(1900, 1),
-        lastDate: DateTime.now()
+        lastDate: DateTime.now(),);
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
       });
-  }
+    }
 
   @override
   Widget build(BuildContext context) {

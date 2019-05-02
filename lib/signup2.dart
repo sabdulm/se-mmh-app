@@ -3,7 +3,7 @@ import 'dart:async';
 import 'signup3.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 
 
@@ -62,7 +62,6 @@ class _SignUpPage2State extends State<SignUpPage2> {
         MaterialPageRoute(builder: (context) => SignUpPage3()),
       );
     }catch(re){
-      // print(re.message);
       final snackBar = SnackBar(
         content: Text(re.message),
         action: SnackBarAction(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/input_tags.dart';
+import 'classes.dart';
 import 'maps.dart';
 class AddAdState extends State<AddAd> {
   TextStyle style = TextStyle(fontFamily: 'Roboto', fontSize: 19.0, color: Colors.black);
@@ -74,8 +75,13 @@ class AddAdState extends State<AddAd> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
           onPressed: () {
-            Route route = MaterialPageRoute(builder: (context)=> MyMap());
-            Navigator.push(context, route);
+            AddAd1 temp = AddAd1(namestr, description, tags);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyMap(temp),
+              ),
+            );
           },
           child: Text("Post",
           textAlign: TextAlign.center,
