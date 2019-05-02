@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'dart:async';
+import 'dart:async';
 import 'login.dart';
 
 
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<SignUpPage3> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(height: 250.0),
+                  SizedBox(height: ((MediaQuery.of(context).size.height)/592)*200.0),
                   Text(
                     "A confirmation email has been sent to you. Please confirm your account within 24 hours or the link in the email will expire.",
                     style: style,
