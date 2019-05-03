@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'Admin-Usres.dart';
 import 'Profile-Own.dart';
 import 'listings.dart';
+import 'main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 // import 'date.dart';
 // import 'property.dart';
 
 class DrawerOnly extends StatelessWidget {
+  final _drawerKey = GlobalKey<ScaffoldState>();
   @override
   Widget build (BuildContext ctxt) {
     return new Drawer(
+        key: _drawerKey,
         child: new ListView(
           children: <Widget>[
             new DrawerHeader(
@@ -91,6 +96,17 @@ class DrawerOnly extends StatelessWidget {
             new ListTile(
               leading: const Icon(Icons.power_settings_new),
               title: const Text('Logout'),
+              onTap: (){
+                try{
+                  FirebaseAuth.instance.signOut();
+                  Navigator.push(
+                    ctxt,
+                    MaterialPageRoute(builder: (ctxt) => MyApp()),
+                  );
+                }
+                catch(e){
+                }
+              }
             ),
             new ListTile(
               leading: const Icon(Icons.account_circle),
