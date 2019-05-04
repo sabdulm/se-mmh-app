@@ -182,7 +182,8 @@ class ChatScreenState extends State<ChatScreen>{
           new Container(
             margin: new EdgeInsets.symmetric(horizontal: 4.0),
             child: new IconButton(
-              icon: new Icon(Icons.photo_camera),
+              icon: new Icon(Icons.photo_camera), 
+              onPressed: () {},
             )
           ),
           new Flexible(
@@ -232,7 +233,7 @@ class ChatScreenState extends State<ChatScreen>{
   Widget build(BuildContext context){
     return new WillPopScope(
       onWillPop: (){
-        Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('drawer'));
+        Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('home'));
       },
       child : new Scaffold(
         appBar: new AppBar(
@@ -241,7 +242,7 @@ class ChatScreenState extends State<ChatScreen>{
           automaticallyImplyLeading: true,
           leading: IconButton(icon:Icon(Icons.arrow_back),
             onPressed:() {
-              Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('drawer'));
+              Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('home'));
             },
           )
         ),

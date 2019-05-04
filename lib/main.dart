@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'listings.dart';
 import 'package:flutter/services.dart';
-import 'drawer.dart';
+// import 'drawer.dart';
 import 'inbox.dart';
 
 void main() => runApp(MyApp());
@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
       initialRoute: 'home',
       routes: <String, WidgetBuilder>{
         'home': (context) => MyHomePage(),
-	'drawer': (context) => Drawer(),
-        'inbox' : (context) => InboxPage('Hadi', 'hadi@gmail.com'), //Need name and email here
-	'calendar': (context) =>Calendar()
+	      'drawer': (context) => Drawer(),
+        'inbox' : (context) => InboxPage('Ali bhai', 'ahad@lol.com'), //Need name and email here
+        // 'calendar': (context) =>Calendar()
       },
 		);
 	}

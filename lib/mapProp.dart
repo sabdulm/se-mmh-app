@@ -37,12 +37,12 @@ class PropMapState extends State<PropMap> {
   Location location = new Location();
   final Set<Marker> _markers = {};
   static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
-  LatLng _lastMapPosition = _center;
+  // LatLng _lastMapPosition = _center;
   MapType _currentMapType = MapType.normal;
 
 
   void _onCameraMove(CameraPosition position) {
-    _lastMapPosition = position.target;
+    // _lastMapPosition = position.target;
   }
 
   Future<void> _moveToPos() async {
