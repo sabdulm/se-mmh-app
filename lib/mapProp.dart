@@ -8,10 +8,9 @@ import 'package:location/location.dart';
 // import 'classes.dart';
 
 class PropertyMap extends StatelessWidget {
-  // AddAd1 temp;
-  // PropertyMap(this.temp);
-  GeoPoint point;
-  String name;
+
+  final GeoPoint point;
+  final String name;
   PropertyMap(this.point, this.name);
   @override
   Widget build(BuildContext context) {
@@ -20,8 +19,8 @@ class PropertyMap extends StatelessWidget {
 }
 
 class PropMap extends StatefulWidget {
-  GeoPoint point;
-  String name;
+  final GeoPoint point;
+  final String name;
   PropMap(this.point, this.name);
   @override
   State<PropMap> createState() => PropMapState(point, name);

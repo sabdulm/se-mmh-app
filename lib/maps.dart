@@ -5,7 +5,7 @@ import 'addAd2.dart';
 import 'classes.dart';
 
 class MyMap extends StatelessWidget {
-  AddAd1 temp;
+  final AddAd1 temp;
   MyMap(this.temp);
 
   @override
@@ -15,7 +15,7 @@ class MyMap extends StatelessWidget {
 }
 
 class MapSample extends StatefulWidget {
-  AddAd1 temp;
+  final AddAd1 temp;
   MapSample(this.temp);
   @override
   State<MapSample> createState() => MapSampleState(temp);

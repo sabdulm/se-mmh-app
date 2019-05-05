@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // import 'main.dart';
 
 class ResultAdd extends StatelessWidget {
-  bool check;
+  final bool check;
   ResultAdd(this.check);
 
   Widget _result(){

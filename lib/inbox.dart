@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'drawer.dart';
 import 'chat.dart';
-import 'dart:developer';
-import 'login.dart';
+// import 'dart:developer';
+// import 'login.dart';
 
 var email = 'hadi@gmail.com';
 var name = 'Hadi Q';

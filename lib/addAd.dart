@@ -48,23 +48,23 @@ class AddAdState extends State<AddAd> {
           border:
               OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
     );
-    final signUpRdr = InkWell(
-      child: Text('Not a member? Sign up!'),
-      onTap: () {
-        final snackBar = SnackBar(
-            content: Text("Redirect to the sign up page."),
-            action: SnackBarAction(
-              label: 'Undo',
-              onPressed: () {
-                // Some code to undo the change!
-              },
-            ),
-          );
+    // final signUpRdr = InkWell(
+    //   child: Text('Not a member? Sign up!'),
+    //   onTap: () {
+    //     final snackBar = SnackBar(
+    //         content: Text("Redirect to the sign up page."),
+    //         action: SnackBarAction(
+    //           label: 'Undo',
+    //           onPressed: () {
+    //             // Some code to undo the change!
+    //           },
+    //         ),
+    //       );
 
-          // Find the Scaffold in the Widget tree and use it to show a SnackBar!
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-      }
-    );
+    //       // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+    //       _scaffoldKey.currentState.showSnackBar(snackBar);
+    //   }
+    // );
     final nextButon = Container(
       padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width - 250.0, 0, 0, 0),    
       child: Material(
