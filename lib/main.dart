@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
 import 'listings.dart';
-import 'package:flutter/services.dart';
-// import 'drawer.dart';
-import 'inbox.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 void main() => runApp(MyApp());
+
+
+
 class MyApp extends StatelessWidget {
-	// This widget is the root of your application.
-	@override
-	Widget build(BuildContext context) {
-		SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-    return MaterialApp(
-			title: 'Listings:',
-			theme: ThemeData(
-				primarySwatch: Colors.orange,
-			),
-			home: new MyHomePage(),
-
-      initialRoute: 'home',
-      routes: <String, WidgetBuilder>{
-        'home': (context) => MyHomePage(),
-	      'drawer': (context) => Drawer(),
-        'inbox' : (context) => InboxPage('Ali bhai', 'ahad@lol.com'), //Need name and email here
-        // 'calendar': (context) =>Calendar()
-      },
-		);
-	}
-}
-
+      // This widget is the root of your application.
+      @override
+      Widget build(BuildContext context) {
+        return MaterialApp(
+          title: 'Market My House',
+          theme: ThemeData(
+            primarySwatch: Colors.orange,
+          ),
+          home: FutureBuilder(
+            future: FirebaseAuth.instance.currentUser(),
+            builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+              if (snapshot.hasData) {
+                return MyHomePage();
+              }
+              else {
+                return LoginPage(title: 'Market My House Login');
+              }
+            }
+          )
+        );
+      }
+    }

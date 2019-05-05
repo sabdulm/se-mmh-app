@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
@@ -161,7 +160,7 @@ class MyState extends State<MyHomePage> {
     return new Scaffold(
 			drawer: new DrawerOnly(),
 			appBar: new AppBar(
-				title: new Text("Drawer Demo"),
+				title: new Text("Listings"),
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.search),
