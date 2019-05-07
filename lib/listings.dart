@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
@@ -224,8 +224,16 @@ class MyState extends State<MyHomePage> {
 		);
 	}
 }
+
+
+
+
+
 class MyHomePage extends StatefulWidget {
-	@override
+	const MyHomePage({Key key, this.user}) : super(key: key);
+  final FirebaseUser user;
+
+  @override
 	MyState createState() => new MyState();
 }
 

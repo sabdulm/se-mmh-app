@@ -21,7 +21,8 @@ class MyApp extends StatelessWidget {
             future: FirebaseAuth.instance.currentUser(),
             builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
               if (snapshot.hasData) {
-                return MyHomePage();
+                FirebaseUser user = snapshot.data;
+                return MyHomePage(user: user);
               }
               else {
                 return LoginPage(title: 'Market My House Login');
