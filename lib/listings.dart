@@ -161,7 +161,7 @@ class MyState extends State<MyHomePage> {
     return new Scaffold(
 			drawer: new DrawerOnly(),
 			appBar: new AppBar(
-				title: new Text("Drawer Demo"),
+				title: new Text("Listings"),
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.search),

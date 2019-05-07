@@ -11,7 +11,7 @@ import 'resultAdd.dart';
 
 
 class AddAdSec extends StatefulWidget {
-  AddAd2 temp;
+  final AddAd2 temp;
   AddAdSec(this.temp);
   @override
   _AddAdSecState createState() => _AddAdSecState(temp);

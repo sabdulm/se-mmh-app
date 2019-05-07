@@ -8,10 +8,9 @@ import 'package:location/location.dart';
 // import 'classes.dart';
 
 class PropertyMap extends StatelessWidget {
-  // AddAd1 temp;
-  // PropertyMap(this.temp);
-  GeoPoint point;
-  String name;
+
+  final GeoPoint point;
+  final String name;
   PropertyMap(this.point, this.name);
   @override
   Widget build(BuildContext context) {
@@ -20,8 +19,8 @@ class PropertyMap extends StatelessWidget {
 }
 
 class PropMap extends StatefulWidget {
-  GeoPoint point;
-  String name;
+  final GeoPoint point;
+  final String name;
   PropMap(this.point, this.name);
   @override
   State<PropMap> createState() => PropMapState(point, name);
@@ -37,12 +36,12 @@ class PropMapState extends State<PropMap> {
   Location location = new Location();
   final Set<Marker> _markers = {};
   static LatLng _center = new LatLng(31.489120999999997, 74.3294085);
-  LatLng _lastMapPosition = _center;
+  // LatLng _lastMapPosition = _center;
   MapType _currentMapType = MapType.normal;
 
 
   void _onCameraMove(CameraPosition position) {
-    _lastMapPosition = position.target;
+    // _lastMapPosition = position.target;
   }
 
   Future<void> _moveToPos() async {

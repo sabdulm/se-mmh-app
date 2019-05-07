@@ -12,7 +12,7 @@ class AdminUserPage extends StatefulWidget {
 
 
 class _AdminUserPageState extends State<AdminUserPage> {
-  Widget but(){
+  Widget but(Size screenSize){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -53,11 +53,11 @@ class _AdminUserPageState extends State<AdminUserPage> {
       ],
     );
   }
-  Widget _image(String url){
+  Widget _image(String url, Size screenSize){
     if(url == ''){
       return Container(
-          height: 50,
-          width: 50,
+          height: screenSize.height/5,
+          width: screenSize.height/5,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('no_img.png'),
@@ -72,8 +72,8 @@ class _AdminUserPageState extends State<AdminUserPage> {
       );
     }
     return Container(
-      width: 50.0,
-      height: 50.0,
+      width: screenSize.width/5,
+      height: screenSize.height/5,
       decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(url),
@@ -87,15 +87,15 @@ class _AdminUserPageState extends State<AdminUserPage> {
       ),
     );
   }
-  Widget user(BuildContext context, DocumentSnapshot snapshot){
+  Widget user(BuildContext context, DocumentSnapshot snapshot, Size screenSize){
     return InkWell(
       child: Card(
         child: Column(
           children: <Widget>[
             ListTile(
               leading: Container(
-                child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('')
-                    :_image(snapshot['photo']),
+                child: snapshot['photo'].length<1 || snapshot['photo']==null ? _image('', screenSize)
+                    :_image(snapshot['photo'], screenSize),
               ),
               title: Text(snapshot['name']),
               subtitle: Text(snapshot['email']),
@@ -122,6 +122,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
   }
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       drawer: DrawerOnly(),
       appBar: AppBar(
@@ -131,7 +132,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
       body: new Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          but(),
+          but(screenSize),
           Flexible(
             child: StreamBuilder(
               stream: Firestore.instance.collection('users').snapshots(),
@@ -141,7 +142,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
                   padding: EdgeInsets.all(2),
                   itemExtent: screenSize.height/8,
                   itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index)=>user(context, snapshot.data.documents[index]),
+                  itemBuilder: (context, index)=>user(context, snapshot.data.documents[index], screenSize),
                 );
               }
             )

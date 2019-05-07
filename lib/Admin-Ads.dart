@@ -9,10 +9,10 @@ import 'property.dart';
 int _value =0;
 class _AdminAdPageState extends State<AdminAdPage> {
   final Set<String> _saved = new Set<String>();
-  final _biggerFont = const TextStyle(
-    fontSize: 18.0,
-    fontWeight: FontWeight.bold,
-  );
+  // final _biggerFont = const TextStyle(
+  //   fontSize: 18.0,
+  //   fontWeight: FontWeight.bold,
+  // );
   var location =new Location();
 
   double _currLat= 0;
