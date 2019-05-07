@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import './drawer.dart';
 import './property.dart';
@@ -6,16 +7,19 @@ import './property.dart';
 var _docId = '';
 
 class Profile extends StatefulWidget {
+  final FirebaseUser user;
   String id;
-  Profile(this.id);
+  Profile(this.id, this.user);
   @override
   ProfileState createState() {
     _docId = id;
-    return ProfileState();
+    return ProfileState(user);
   }
 }
 
 class ProfileState extends State<Profile> {
+  final FirebaseUser user;
+  ProfileState(this.user);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,12 +27,14 @@ class ProfileState extends State<Profile> {
       theme: ThemeData(
         primaryColor: Colors.orange,
       ),
-      home : UserProfilePage(),
+      home : UserProfilePage(user),
     );
   }
 }
 
 class UserProfilePage extends StatelessWidget {
+  final FirebaseUser user;
+  UserProfilePage(this.user);
   final Set<String> _saved = new Set<String>();
   final _biggerFont = const TextStyle(
     fontSize: 18.0,
@@ -178,7 +184,7 @@ class UserProfilePage extends StatelessWidget {
     print(snapshot['user']);
     return new GestureDetector(
       onTap: (){
-        Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property'));
+        Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property', user));
         Navigator.of(context).push(route);
       },
       child: new Container(
@@ -257,7 +263,7 @@ class UserProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      drawer: DrawerOnly(),
+      drawer: DrawerOnly(user),
       appBar: AppBar(
         title: Text('Profile'),
       ),

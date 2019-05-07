@@ -10,6 +10,8 @@ import 'property.dart';
 import 'addAd.dart';
 int _value =0;
 class MyState extends State<MyHomePage> {
+  final FirebaseUser user;
+  MyState(this.user);
 	final Set<String> _saved = new Set<String>(); 
 	final _biggerFont = const TextStyle(
 															fontSize: 18.0,
@@ -82,7 +84,7 @@ class MyState extends State<MyHomePage> {
     // print(snapshot.data);
     return new GestureDetector(
       onTap: (){
-            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property'));
+            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property', user));
             Navigator.of(context).push(route);
 
           },
@@ -159,14 +161,14 @@ class MyState extends State<MyHomePage> {
 	Widget build (BuildContext context) {
 		// print("listings: ${_value}");
     return new Scaffold(
-			drawer: new DrawerOnly(),
+			drawer: new DrawerOnly(user),
 			appBar: new AppBar(
 				title: new Text("Listings"),
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.search),
             onPressed: (){
-              showSearch(context: context, delegate: Search());
+              showSearch(context: context, delegate: Search(user));
             },
           ),
           new IconButton(
@@ -234,7 +236,7 @@ class MyHomePage extends StatefulWidget {
   final FirebaseUser user;
 
   @override
-	MyState createState() => new MyState();
+	MyState createState() => new MyState(user);
 }
 
 

@@ -20,13 +20,13 @@ class MyApp extends StatelessWidget {
           home: FutureBuilder(
             future: FirebaseAuth.instance.currentUser(),
             builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
-              if (snapshot.hasData) {
-                FirebaseUser user = snapshot.data;
-                return MyHomePage(user: user);
-              }
-              else {
+//              if (snapshot.hasData) {
+//                FirebaseUser user = snapshot.data;
+//                return MyHomePage(user: user);
+//              }
+//              else {
                 return LoginPage(title: 'Market My House Login');
-              }
+//              }
             }
           )
         );

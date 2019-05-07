@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'drawer.dart';
@@ -200,26 +201,27 @@ class MessageListState extends State<MessageList>{
 class InboxPage extends StatefulWidget{
   String name1;
   String email1;
-
-  InboxPage(this.name1,this.email1);
+  final FirebaseUser user;
+  InboxPage(this.name1,this.email1, this.user);
 
   @override
   InboxPagescreen createState() {
     name = name1;
     email = email1;
-    return InboxPagescreen(); 
+    return InboxPagescreen(user);
   }
 }
 
 class InboxPagescreen extends State<InboxPage>{
-
+  InboxPagescreen(this.user);
+  final FirebaseUser user;
   List<message> listings;
 	@override
 	Widget build (BuildContext ctxt) {
     // print("hereeee\n\n"+listings.toString());
       // print("listings[0].latest+\n\n");
       return new Scaffold(
-			drawer: new DrawerOnly(),
+			drawer: new DrawerOnly(user),
 			appBar: new AppBar(
 				title: new Text("Inbox"),
 			),
@@ -242,6 +244,7 @@ class InboxPagescreen extends State<InboxPage>{
 
 List<String> Getchats(email,list){
   List<String> toret = [];
+  if(list[0] == null){return toret;}
   for(var i=0; i<list.length; i++){
     // print(list[i]+'\n\n\n');
     List<String> temp = [email,list[i]];
