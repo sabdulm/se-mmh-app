@@ -39,7 +39,7 @@ class _SignUpPage2State extends State<SignUpPage2> {
       print("Signed up.");
       user.sendEmailVerification();
       print(user.uid);
-      Firestore.instance.collection('users').add({
+      Firestore.instance.collection('users').document(user.uid).setData({
         "title" : titlestr,
         "user" : user.uid,
         "email" : e.replaceAll(new RegExp(r"\s+\b|\b\s|\s|\b"), ""),
