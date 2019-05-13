@@ -25,7 +25,7 @@ class ResultAdd extends StatelessWidget {
               _result(),
               FlatButton.icon(
                 onPressed: () {
-                  Navigator.popUntil(context, ModalRoute.withName('home'));
+                  Navigator.popUntil(context, ModalRoute.withName('listings'));
                 }, 
                 icon: Icon(Icons.home),
                 label: Text('Return to home'),

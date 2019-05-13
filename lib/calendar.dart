@@ -1,6 +1,5 @@
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class Calendar extends StatefulWidget{
   @override

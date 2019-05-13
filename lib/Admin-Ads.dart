@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
 import 'package:location/location.dart';
@@ -8,6 +9,8 @@ import 'property.dart';
 
 int _value =0;
 class _AdminAdPageState extends State<AdminAdPage> {
+  _AdminAdPageState(this.user);
+  final FirebaseUser user;
   final Set<String> _saved = new Set<String>();
   // final _biggerFont = const TextStyle(
   //   fontSize: 18.0,
@@ -121,7 +124,7 @@ class _AdminAdPageState extends State<AdminAdPage> {
     // print(snapshot.data);
     return new GestureDetector(
       onTap: (){
-        Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'unApprovedProps'));
+        Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'unApprovedProps', user));
         Navigator.of(context).push(route);
 
       },
@@ -246,7 +249,7 @@ class _AdminAdPageState extends State<AdminAdPage> {
   Widget build (BuildContext context) {
     // print("listings: ${_value}");
     return new Scaffold(
-      drawer: new DrawerOnly(),
+      drawer: new DrawerOnly(user),
       appBar: new AppBar(
         title: new Text("Drawer Demo"),
         actions: <Widget>[
@@ -300,8 +303,10 @@ class _AdminAdPageState extends State<AdminAdPage> {
   }
 }
 class AdminAdPage extends StatefulWidget {
+  AdminAdPage(this.user);
+  final FirebaseUser user;
   @override
-  _AdminAdPageState createState() => new _AdminAdPageState();
+  _AdminAdPageState createState() => new _AdminAdPageState(user);
 }
 
 

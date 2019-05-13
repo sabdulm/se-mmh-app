@@ -4,128 +4,210 @@ import 'Profile-Own.dart';
 import 'listings.dart';
 import 'main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'inbox.dart';
 
 // import 'date.dart';
 // import 'property.dart';
 
 class DrawerOnly extends StatelessWidget {
+  DrawerOnly(this.user);
+  final FirebaseUser user;
   final _drawerKey = GlobalKey<ScaffoldState>();
+
+  Widget _admin(BuildContext ctxt, DocumentSnapshot snap) {
+    if (snap['isAdmin']) {
+      return new ListTile(
+        leading: const Icon(Icons.account_circle),
+        title: const Text('Admin Page'),
+        onTap: () =>
+        {
+        Navigator.push(
+            ctxt,
+            new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                new AdminUserPage(user)
+            )
+        )
+        },
+      );
+    }
+    else {
+      return new ListTile();
+    }
+  }
+
   @override
   Widget build (BuildContext ctxt) {
-    return new Drawer(
-        key: _drawerKey,
-        child: new ListView(
-          children: <Widget>[
-            new DrawerHeader(
-              //child: new Text("DRAWER HEADER..",style : TextStyle(fontWeight: FontWeight.bold)),
-              child: new Column(
-                children: <Widget>[
-                  InkWell(
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/profile.jpg'),
-                            fit: BoxFit.cover,
+    if (user != null){
+      return new Drawer(
+          key: _drawerKey,
+          child: StreamBuilder(
+              stream: Firestore.instance.collection('users').where(
+                  'user', isEqualTo: user.uid).snapshots(),
+              builder: (context, snapshot) {
+                return new ListView(
+                  children: <Widget>[
+                    new DrawerHeader(
+                      //child: new Text("DRAWER HEADER..",style : TextStyle(fontWeight: FontWeight.bold)),
+                      child: new Column(
+                        children: <Widget>[
+                          InkWell(
+                            child: Container(
+                              width: 100.0,
+                              height: 100.0,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(
+                                        snapshot.data.documents[0]['photo']),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  borderRadius: BorderRadius.circular(80.0),
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 10.0,
+                                  )
+                              ),
+                            ),
+                            onTap: () =>
+                            {
+                            Navigator.push(
+                                ctxt,
+                                new MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                    new Profile(
+                                        snapshot.data.documents[0].documentID,
+                                        user)
+                                )
+                            )
+                            },
                           ),
-                          borderRadius: BorderRadius.circular(80.0),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 10.0,
-                          )
+                          Text(snapshot.data.documents[0]['name'],
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                      decoration: new BoxDecoration(
+                          color: Colors.orange[700]
                       ),
                     ),
-                    onTap: () => {
-                      Navigator.pushReplacement(
+                    new ListTile(
+                      leading: const Icon(Icons.home),
+                      title: const Text('Home'),
+                      onTap: () =>
+                      {
+                        Navigator.popUntil(context, ModalRoute.withName('listings'))
+                      },
+                    ),
+                    new ListTile(
+                      leading: const Icon(Icons.inbox),
+                      title: const Text('Inbox'),
+                      onTap: () =>
+                      {
+                      Navigator.push(
                           ctxt,
-                          new MaterialPageRoute(
-                              builder: (BuildContext context) => new UserProfilePage()
-                          )
+                          MaterialPageRoute(
+                              builder: (ctxt) =>
+                                  InboxPage(snapshot.data.documents[0]['name'],
+                                      snapshot.data.documents[0]['email'],
+                                      user))
                       )
-                    },
-                  ),
-                  Text("DRAWER HEADER..",style : TextStyle(fontWeight: FontWeight.bold)),
-                ],
-              ),
-              decoration: new BoxDecoration(
-                  color: Colors.orange[700]
-              ),
-            ),
-            new ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () =>{
-                Navigator.popUntil(ctxt, ModalRoute.withName('home'))
-              },
-            ),
-            new ListTile(
-              leading: const Icon(Icons.inbox),
-              title: const Text('Inbox'),
-              onTap: (){
-                Navigator.of(ctxt).pushNamed('inbox');
-             },
-            ),
-            new ListTile(
-              leading: const Icon(Icons.bookmark),
-              title: const Text('Bookmarks'),
-//              onTap: () =>{
-//                Navigator.pushReplacement(
-//                    ctxt,
-//                    new MaterialPageRoute(
-//                        builder: (BuildContext context) => new MyApp()
-//                    )
-//                )
-//              },
-            ),
-            new ListTile(
-              leading: const Icon(Icons.calendar_today),
-              title: const Text('View Calender'),
-              onTap: (){
-                Navigator.of(ctxt).pushNamed('calendar');
-              },
-            ),
-            new ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-            ),
-            new ListTile(
-              leading: const Icon(Icons.power_settings_new),
-              title: const Text('Logout'),
-              onTap: (){
-                try{
-                  FirebaseAuth.instance.signOut();
-                  Navigator.push(
-                    ctxt,
-                    MaterialPageRoute(builder: (ctxt) => MyApp()),
-                  );
-                }
-                catch(e){
-                }
+                      },
+                    ),
+                    new ListTile(
+                      leading: const Icon(Icons.bookmark),
+                      title: const Text('Bookmarks'),
+                      //              onTap: () =>{
+                      //                Navigator.pushReplacement(
+                      //                    ctxt,
+                      //                    new MaterialPageRoute(
+                      //                        builder: (BuildContext context) => new MyApp()
+                      //                    )
+                      //                )
+                      //              },
+                    ),
+                    new ListTile(
+                      leading: const Icon(Icons.calendar_today),
+                      title: const Text('View Calender'),
+                      onTap: () {
+                        Navigator.of(ctxt).pushNamed('calendar');
+                      },
+                    ),
+                    new ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text('Settings'),
+                    ),
+                    new ListTile(
+                        leading: const Icon(Icons.power_settings_new),
+                        title: const Text('Logout'),
+                        onTap: () {
+                          try {
+                            FirebaseAuth.instance.signOut();
+                            Navigator.push(
+                              ctxt,
+                              MaterialPageRoute(builder: (ctxt) => MyApp()),
+                            );
+                          }
+                          catch (e) {}
+                        }
+                    ),
+                    _admin(ctxt, snapshot.data.documents[0]),
+                  ],
+                );
               }
-            ),
-            new ListTile(
-              leading: const Icon(Icons.account_circle),
-              title: const Text('Admin Page'),
-              onTap: () =>{
-                Navigator.pushReplacement(
-                    ctxt,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) => new AdminUserPage()
-                    )
-                )
-              },
-            ),
-            // new ListTile(
-            //   title: new Text("Item => 2"),
-            //   onTap: () {
-            //     Navigator.pop(ctxt);
-            //     Navigator.push(ctxt,
-            //         new MaterialPageRoute(builder: (ctxt) => new SecondPage()));
-            //   },
-            // ),
-          ],
-        )
-    );
+          )
+      );
+    }
+    else {
+      return new Drawer(
+          key: _drawerKey,
+          child:new ListView(
+                  children: <Widget>[
+                    new DrawerHeader(
+                      child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          new Text("GUEST",style : TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                       ),
+                      decoration: new BoxDecoration(
+                          color: Colors.orange[700]
+                      ),
+                    ),
+                    new ListTile(
+                      leading: const Icon(Icons.home),
+                      title: const Text('Home'),
+                      onTap: () =>
+                      {
+                      Navigator.push(
+                          ctxt,
+                          MaterialPageRoute(
+                              builder: (ctxt) => MyHomePage(user: user))
+                      )
+                      },
+                    ),
+                    new ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text('Settings'),
+                    ),
+                    new ListTile(
+                        leading: const Icon(Icons.power_settings_new),
+                        title: const Text('Logout'),
+                        onTap: () {
+                          try {
+                            FirebaseAuth.instance.signOut();
+                            Navigator.push(
+                              ctxt,
+                              MaterialPageRoute(builder: (ctxt) => MyApp()),
+                            );
+                          }
+                          catch (e) {}
+                        }
+                    ),
+
+                  ],
+                ),
+
+      );
+    }
   }
 }

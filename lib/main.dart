@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'listings.dart';
+import 'calendar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
@@ -17,15 +18,21 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.orange,
           ),
+          initialRoute: '/',
+          routes: {
+            'listings' : (context) => MyHomePage(),
+            'calender' : (context) => Calendar(),
+          },
           home: FutureBuilder(
             future: FirebaseAuth.instance.currentUser(),
             builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
-              if (snapshot.hasData) {
-                return MyHomePage();
-              }
-              else {
+             if (snapshot.hasData) {
+               FirebaseUser user = snapshot.data;
+               return MyHomePage(user: user);
+             }
+             else {
                 return LoginPage(title: 'Market My House Login');
-              }
+             }
             }
           )
         );

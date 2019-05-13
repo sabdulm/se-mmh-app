@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
@@ -7,8 +8,12 @@ import 'package:location/location.dart';
 import 'dart:math';
 import 'property.dart';
 import 'addAd.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 int _value =0;
 class MyState extends State<MyHomePage> {
+  final FirebaseUser user;
+  MyState(this.user);
 	final Set<String> _saved = new Set<String>(); 
 	final _biggerFont = const TextStyle(
 															fontSize: 18.0,
@@ -64,12 +69,8 @@ class MyState extends State<MyHomePage> {
 				width: screenSize.width/2.5,
 				child: new ClipRect(
           child: new Container(
-            decoration: new BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: new DecorationImage(
-                image: new NetworkImage(url),
-                fit: BoxFit.fill,
-              ),
+            child: new CachedNetworkImage(imageUrl: url, 
+              placeholder: (context, url) => new CircularProgressIndicator(),
             ),
           ),
 			  ),
@@ -81,7 +82,7 @@ class MyState extends State<MyHomePage> {
     // print(snapshot.data);
     return new GestureDetector(
       onTap: (){
-            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property'));
+            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property', user));
             Navigator.of(context).push(route);
 
           },
@@ -158,14 +159,14 @@ class MyState extends State<MyHomePage> {
 	Widget build (BuildContext context) {
 		// print("listings: ${_value}");
     return new Scaffold(
-			drawer: new DrawerOnly(),
+			drawer: new DrawerOnly(user),
 			appBar: new AppBar(
 				title: new Text("Listings"),
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.search),
             onPressed: (){
-              showSearch(context: context, delegate: Search());
+              showSearch(context: context, delegate: Search(user));
             },
           ),
           new IconButton(
@@ -223,9 +224,17 @@ class MyState extends State<MyHomePage> {
 		);
 	}
 }
+
+
+
+
+
 class MyHomePage extends StatefulWidget {
-	@override
-	MyState createState() => new MyState();
+	const MyHomePage({Key key, this.user}) : super(key: key);
+  final FirebaseUser user;
+
+  @override
+	MyState createState() => new MyState(user);
 }
 
 

@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
         print("Signed in.");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
+          MaterialPageRoute(builder: (context) => MyHomePage(user: user)),
         );
       }catch(e){
         final snackBar = SnackBar(
@@ -198,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
           );
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MyHomePage()),
+            MaterialPageRoute(builder: (context) => MyHomePage(user: null)),
           );
           // Find the Scaffold in the Widget tree and use it to show a SnackBar!
           _scaffoldKey.currentState.showSnackBar(snackBar);
@@ -210,16 +210,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    void checklogin() async{
-      FirebaseUser usercheck = await FirebaseAuth.instance.currentUser();
-      if (usercheck != null){       
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
-        );
-
-      }
-    }
 
     Stack mainbody(){
       // checklogin();

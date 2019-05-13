@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'property.dart';
 
 class Search extends SearchDelegate{
+  final FirebaseUser user;
+  Search(this.user);
   final _biggerFont = const TextStyle(
 															fontSize: 18.0,
 															fontWeight: FontWeight.bold,
@@ -35,7 +38,7 @@ class Search extends SearchDelegate{
 	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
 		return new GestureDetector(
       onTap: (){
-            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property'));
+            Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property', user));
             Navigator.of(context).push(route);
 
           },

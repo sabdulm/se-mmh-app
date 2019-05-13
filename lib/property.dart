@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_tags/selectable_tags.dart';
 import 'drawer.dart';
 import 'Profile-Other.dart';
 import 'mapProp.dart';
 
 class PropertyPage extends StatelessWidget {
-  PropertyPage(this._key, this._col);
+  PropertyPage(this._key, this._col, this.user);
+  final FirebaseUser user;
   String _key ;
 	String _name ;
 	String _col;
@@ -83,7 +85,7 @@ class PropertyPage extends StatelessWidget {
 	Widget build (BuildContext context) {
 		Size screenSize = MediaQuery.of(context).size;
 		return new Scaffold(
-			drawer: new DrawerOnly(),
+			drawer: new DrawerOnly(user),
 			appBar: new AppBar(
 				title: new Text('Property Details'),
 			),
@@ -131,7 +133,7 @@ class PropertyPage extends StatelessWidget {
                         FlatButton.icon(
                           onPressed: () {
                             Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Profile(_user.documentID)),
+                              MaterialPageRoute(builder: (context) => Profile(_user.documentID, user)),
                             );
                           },
                           icon: Icon(Icons.person),
