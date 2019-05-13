@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'main.dart';
 
 class ResultAdd extends StatelessWidget {
   final bool check;
@@ -20,24 +19,21 @@ class ResultAdd extends StatelessWidget {
       ),
       body: Align(
         alignment: Alignment.center,
-        // child: Row(
-        //   children: <Widget>[
           child:  Column(
-              children: <Widget>[
-                _result(),
-                FlatButton.icon(
-                  onPressed: () {
-                    Navigator.popUntil(context, ModalRoute.withName('home'));
-                  }, 
-                  icon: Icon(Icons.home),
-                  label: Text('Return to home'),
-                  color: Colors.orangeAccent,
-                  
-                )
-              ],
-            ),
-        //   ],
-        // ),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _result(),
+              FlatButton.icon(
+                onPressed: () {
+                  Navigator.popUntil(context, ModalRoute.withName('home'));
+                }, 
+                icon: Icon(Icons.home),
+                label: Text('Return to home'),
+                color: Colors.orangeAccent,
+                
+              )
+            ],
+          ),
       ),
     );
   }

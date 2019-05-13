@@ -56,11 +56,7 @@ class DrawerOnly extends StatelessWidget {
               leading: const Icon(Icons.home),
               title: const Text('Home'),
               onTap: () =>{
-                Navigator.push(
-                  ctxt,
-                  MaterialPageRoute(
-                    builder: (ctxt) => MyHomePage())
-                )
+                Navigator.popUntil(ctxt, ModalRoute.withName('home'))
               },
             ),
             new ListTile(
