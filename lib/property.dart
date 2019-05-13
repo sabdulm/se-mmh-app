@@ -71,8 +71,6 @@ class PropertyPage extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildRowHelper(BuildContext context, bool isAdmin){
     if(isAdmin){
       return Row(
@@ -101,7 +99,27 @@ class PropertyPage extends StatelessWidget {
           ),
           FlatButton.icon(
             onPressed: (){
-
+              showDialog(
+                context: context,
+                builder: (_) =>  new AlertDialog(
+                  title: new Text('Delete Property Ad?'),
+                  content: new Text('The ad will be permanently deleted throught this action.'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: (){
+                        Navigator.of(context).pop();                        
+                      },
+                      child: new Text('Delete'),
+                    ),
+                    FlatButton(
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                      child: new Text('Cancel'),
+                    ),
+                  ],
+                ),
+              );
             },
             icon: Icon(Icons.delete),
             label: Text('Delete Ad'),
@@ -140,14 +158,19 @@ class PropertyPage extends StatelessWidget {
   }
   
   Widget _buildRow(BuildContext context){
-    return Container(
-      child: StreamBuilder(
-        stream: Firestore.instance.collection('users').where('user', isEqualTo: user.uid).snapshots(),
-        builder: (context, snapshot){
-          return _buildRowHelper(context, snapshot.data.documents[0]['isAdmin']);
-        },
-      ),
-    );
+    if(user == null){
+      return _buildRowHelper(context, false);
+    } else{
+      return Container(
+        child: StreamBuilder(
+          stream: Firestore.instance.collection('users').where('user', isEqualTo: user.uid).snapshots(),
+          builder: (context, snapshot){
+            return _buildRowHelper(context, (snapshot.data.documents[0]['isAdmin'] || user.uid==userID));
+          },
+        ),
+      );
+    }
+    
   }
 
   void getData(DocumentSnapshot snapshot){
