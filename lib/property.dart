@@ -71,6 +71,85 @@ class PropertyPage extends StatelessWidget {
     );
   }
 
+
+
+  Widget _buildRowHelper(BuildContext context, bool isAdmin){
+    if(isAdmin){
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          FlatButton.icon(
+            onPressed: () {
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PropertyMap(_address, _name)),
+              );
+
+            },
+            icon: Icon(Icons.map),
+            label: Text('View in Map'),
+            color: Colors.orangeAccent,
+          ),
+          FlatButton.icon(
+            onPressed: () {
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => Profile(_user.documentID, user)),
+              );
+            },
+            icon: Icon(Icons.person),
+            label: Text('View User'),
+            color: Colors.orangeAccent,
+          ),
+          FlatButton.icon(
+            onPressed: (){
+
+            },
+            icon: Icon(Icons.delete),
+            label: Text('Delete Ad'),
+            color: Colors.orangeAccent,
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          FlatButton.icon(
+            onPressed: () {
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PropertyMap(_address, _name)),
+              );
+
+            },
+            icon: Icon(Icons.map),
+            label: Text('View in Map'),
+            color: Colors.orangeAccent,
+          ),
+          FlatButton.icon(
+            onPressed: () {
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => Profile(_user.documentID, user)),
+              );
+            },
+            icon: Icon(Icons.person),
+            label: Text('View User'),
+            color: Colors.orangeAccent,
+          ),
+        ],
+      );
+    }
+  }
+  
+  Widget _buildRow(BuildContext context){
+    return Container(
+      child: StreamBuilder(
+        stream: Firestore.instance.collection('users').where('user', isEqualTo: user.uid).snapshots(),
+        builder: (context, snapshot){
+          return _buildRowHelper(context, snapshot.data.documents[0]['isAdmin']);
+        },
+      ),
+    );
+  }
+
   void getData(DocumentSnapshot snapshot){
     _name = snapshot['name'];
     _tags = snapshot['tags'];
@@ -116,32 +195,8 @@ class PropertyPage extends StatelessWidget {
                     _buildTags(),
                     Divider(),
                     _buildPrice(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        FlatButton.icon(
-                          onPressed: () {
-                            Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => PropertyMap(_address, _name)),
-                            );
-
-                          },
-                          icon: Icon(Icons.map),
-                          label: Text('View in Map'),
-                          color: Colors.orangeAccent,
-                        ),
-                        FlatButton.icon(
-                          onPressed: () {
-                            Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Profile(_user.documentID, user)),
-                            );
-                          },
-                          icon: Icon(Icons.person),
-                          label: Text('View User'),
-                          color: Colors.orangeAccent,
-                        ),
-                      ],
-                    )
+                    Divider(),
+                    _buildRow(context),
                   ],
                 ),
               ),
