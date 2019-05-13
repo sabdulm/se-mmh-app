@@ -97,7 +97,7 @@ class MapSampleState extends State<MapSample> {
                 heroTag: 'btn3',
                 onPressed: () {
                   if (_markers.length == 1) {
-                    AddAd2 t = AddAd2(temp.title, temp.description, temp.tags, droppedPin);
+                    AddAd2 t = AddAd2(temp.user, temp.title, temp.description, temp.tags, droppedPin);
                     Navigator.push(context,
                       MaterialPageRoute(builder: (context) => AddAdSec(t)),
                     );

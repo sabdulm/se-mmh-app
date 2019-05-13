@@ -56,12 +56,13 @@ class MyState extends State<MyHomePage> {
       }
     });
   }
+
 	Widget _image (String url, Size screenSize){
 			if(url == ''){
         return new SizedBox(
           height: 120,
           width: screenSize.width/2.5,
-          child: ClipRect(child:new Container(child:new Image.asset("no_img.jpg", fit: BoxFit.fill,)),)
+          child: ClipRect(child:new Container(child:new Image.asset("no_img.png", fit: BoxFit.fill,)),)
         );
       }
       return new SizedBox(
@@ -69,8 +70,7 @@ class MyState extends State<MyHomePage> {
 				width: screenSize.width/2.5,
 				child: new ClipRect(
           child: new Container(
-            child: new CachedNetworkImage(imageUrl: url, 
-              placeholder: (context, url) => new CircularProgressIndicator(),
+            child: new CachedNetworkImage(imageUrl: url,
             ),
           ),
 			  ),
@@ -210,13 +210,13 @@ class MyState extends State<MyHomePage> {
           }, 
         ), //<-------add lists here!!!
       floatingActionButton: new FloatingActionButton(
-				child: new Icon(Icons.photo_filter), 
+				child: new Icon(Icons.add), 
 				onPressed: () {
 					// Route route = MaterialPageRoute(builder: (context)=> AddAd());
 					Navigator.push(
             context,
             new MaterialPageRoute(
-              builder: (context) => AddAd(),
+              builder: (context) => AddAd(user),
             ),
           );
 				},

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/input_tags.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'classes.dart';
 import 'maps.dart';
 class AddAdState extends State<AddAd> {
+  final FirebaseUser user;
+  AddAdState(this.user);
   TextStyle style = TextStyle(fontFamily: 'Roboto', fontSize: 19.0, color: Colors.black);
   TextStyle butt = TextStyle(fontFamily: 'Roboto', fontSize: 23.0, color: Colors.white);
   TextStyle signupstyle = TextStyle(fontFamily: 'Roboto', fontSize: 34.0, color: Color(0xff009aba));
@@ -75,7 +78,7 @@ class AddAdState extends State<AddAd> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
           onPressed: () {
-            AddAd1 temp = AddAd1(namestr, description, tags);
+            AddAd1 temp = AddAd1('',namestr, description, tags);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -137,6 +140,8 @@ class AddAdState extends State<AddAd> {
 
 
 class AddAd extends StatefulWidget {
+  final FirebaseUser user;
+  AddAd(this.user);
   @override
-  AddAdState createState() => new AddAdState();
+  AddAdState createState() => new AddAdState(user);
 }
