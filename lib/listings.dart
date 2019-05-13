@@ -11,8 +11,9 @@ import 'addAd.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 int _value =0;
-class MyState extends State<MyHomePage> {
-  final FirebaseUser user;
+class MyState extends State<MyStateTemp> {
+  
+  FirebaseUser user;
   MyState(this.user);
 	final Set<String> _saved = new Set<String>(); 
 	final _biggerFont = const TextStyle(
@@ -158,6 +159,9 @@ class MyState extends State<MyHomePage> {
 	@override
 	Widget build (BuildContext context) {
 		// print("listings: ${_value}");
+
+    
+
     return new Scaffold(
 			drawer: new DrawerOnly(user),
 			appBar: new AppBar(
@@ -229,13 +233,28 @@ class MyState extends State<MyHomePage> {
 
 
 
-class MyHomePage extends StatefulWidget {
-	const MyHomePage({Key key, this.user}) : super(key: key);
-  final FirebaseUser user;
+class MyHomePage extends StatelessWidget {
+  // final FirebaseUser user;
+  static const routeName = 'listings';
+
+	// MyHomePage(this.user);
 
   @override
-	MyState createState() => new MyState(user);
+  Widget build(BuildContext context) {
+    final FirebaseUser user = ModalRoute.of(context).settings.arguments;
+
+    
+    return MyStateTemp(user);
+  }
 }
+
+class MyStateTemp extends StatefulWidget {
+  final FirebaseUser user;
+  MyStateTemp(this.user);
+  @override
+  MyState createState() => MyState(user);
+}
+
 
 
 class SortDialog extends StatefulWidget {

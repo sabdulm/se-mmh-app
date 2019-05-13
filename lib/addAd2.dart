@@ -112,8 +112,7 @@ class _AddAdSecState extends State<AddAdSec> {
 
                       Geoflutterfire geoPoint = Geoflutterfire();
                       GeoFirePoint point = geoPoint.point(latitude: temp.pin.latitude, longitude: temp.pin.longitude);
-                      String key = "DHHl7uVMKgYdiBG0cMD1";
-                      DocumentReference ref = Firestore.instance.collection('users').document(key);
+                      DocumentReference ref = Firestore.instance.collection('users').document(temp.user);
                       
                       var x = Random() ;
                       var price = x.nextInt(50000) + 10000;

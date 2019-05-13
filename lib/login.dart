@@ -65,9 +65,10 @@ class _LoginPageState extends State<LoginPage> {
       try{
         FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailstr.replaceAll(new RegExp(r"\s+\b|\b\s|\s|\b"), ""), password: passstr);
         print("Signed in.");
-        Navigator.push(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(builder: (context) => MyHomePage(user: user)),
+          MyHomePage.routeName,
+          arguments: user,
         );
       }catch(e){
         final snackBar = SnackBar(
@@ -196,9 +197,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
             
           );
-          Navigator.push(
+          Navigator.pushNamed(
             context,
-            MaterialPageRoute(builder: (context) => MyHomePage(user: null)),
+            MyHomePage.routeName,
+            arguments: null,
           );
           // Find the Scaffold in the Widget tree and use it to show a SnackBar!
           _scaffoldKey.currentState.showSnackBar(snackBar);

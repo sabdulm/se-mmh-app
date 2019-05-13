@@ -20,19 +20,19 @@ class MyApp extends StatelessWidget {
           ),
           initialRoute: '/',
           routes: {
-            'listings' : (context) => MyHomePage(),
+            MyHomePage.routeName : (context) => MyHomePage(),
             'calender' : (context) => Calendar(),
           },
           home: FutureBuilder(
             future: FirebaseAuth.instance.currentUser(),
             builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
-             if (snapshot.hasData) {
-               FirebaseUser user = snapshot.data;
-               return MyHomePage(user: user);
-             }
-             else {
+            //  if (snapshot.hasData) {
+            //   //  FirebaseUser user = snapshot.data;
+            //    return MyHomePage();
+            //  }
+            //  else {
                 return LoginPage(title: 'Market My House Login');
-             }
+            //  }
             }
           )
         );

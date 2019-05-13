@@ -178,11 +178,11 @@ class DrawerOnly extends StatelessWidget {
                       title: const Text('Home'),
                       onTap: () =>
                       {
-                      Navigator.push(
+                        Navigator.pushNamed(
                           ctxt,
-                          MaterialPageRoute(
-                              builder: (ctxt) => MyHomePage(user: user))
-                      )
+                          MyHomePage.routeName,
+                          arguments: user,
+                        )
                       },
                     ),
                     new ListTile(

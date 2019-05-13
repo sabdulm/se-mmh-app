@@ -78,7 +78,7 @@ class AddAdState extends State<AddAd> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
           onPressed: () {
-            AddAd1 temp = AddAd1('',namestr, description, tags);
+            AddAd1 temp = AddAd1(user.uid,namestr, description, tags);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -86,7 +86,7 @@ class AddAdState extends State<AddAd> {
               ),
             );
           },
-          child: Text("Post",
+          child: Text("Next",
           textAlign: TextAlign.center,
           style: butt.copyWith(
           color: Colors.white, fontWeight: FontWeight.bold)),
