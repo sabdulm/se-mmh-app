@@ -229,7 +229,12 @@ class InboxPagescreen extends State<InboxPage>{
         stream: Firestore.instance.collection('users').where('email',isEqualTo:email).snapshots(),
         builder: (context,snapshot){
           if (snapshot.data!=null){
-            return MessageList(Getchats(email, snapshot.data.documents[0]['inbox']),snapshot.data.documents[0]['inbox']);
+            if(snapshot.data.documents[0]['inbox'].length>0){
+              return MessageList(Getchats(email, snapshot.data.documents[0]['inbox']),snapshot.data.documents[0]['inbox']);
+            }
+            else{
+              return new Center(child: new Text("Inbox is Empty"));
+            }
           }
           else{
             return new CircularProgressIndicator();
