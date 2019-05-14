@@ -125,13 +125,17 @@ class _AddAdSecState extends State<AddAdSec> {
                         "tags" : temp.tags,
                         "location" : point.geoPoint,
                         "price" : price,
-                          
-                      })
-                      .then((res) => Navigator.push(context, MaterialPageRoute(builder: (context) => ResultAdd(true))))
+                      }).then((res) =>
+                      Firestore.instance.runTransaction((transaction) async{
+                        DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(temp.user));
+                        await transaction.update(freshsnap.reference,{
+                          'properties': FieldValue.arrayUnion([res.documentID]),
+                        });
+                      }).then((r) => Navigator.push(context, MaterialPageRoute(builder: (context) => ResultAdd(true))))
                       .catchError((err)=>{
                         print(err),
                         Navigator.push(context, MaterialPageRoute(builder: (context) => ResultAdd(false))),
-                        });
+                        }));
                     // }
                 }
               ),

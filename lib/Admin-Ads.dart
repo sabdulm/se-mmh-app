@@ -11,11 +11,10 @@ int _value =0;
 class _AdminAdPageState extends State<AdminAdPage> {
   _AdminAdPageState(this.user);
   final FirebaseUser user;
-  final Set<String> _saved = new Set<String>();
-  // final _biggerFont = const TextStyle(
-  //   fontSize: 18.0,
-  //   fontWeight: FontWeight.bold,
-  // );
+   final _biggerFont = const TextStyle(
+     fontSize: 18.0,
+     fontWeight: FontWeight.bold,
+   );
   var location =new Location();
 
   double _currLat= 0;
@@ -101,13 +100,13 @@ class _AdminAdPageState extends State<AdminAdPage> {
     if(url == ''){
       return SizedBox(
           height: screenSize.height/5.5,
-          width: screenSize.width/2,
+          width: screenSize.width/3,
           child: Image.asset("no_img.png", fit: BoxFit.fill,)
       );
     }
     return new SizedBox(
       height: screenSize.height/5.5,
-      width: screenSize.width/2,
+      width: screenSize.width/3,
       child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -119,70 +118,38 @@ class _AdminAdPageState extends State<AdminAdPage> {
     );
   }
   Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
-    final bool alreadySaved = _saved.contains(snapshot.documentID);
-    // print("List item: ${snapshot.documentID}");
-    // print(snapshot.data);
     return new GestureDetector(
       onTap: (){
         Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'unApprovedProps', user));
         Navigator.of(context).push(route);
-
       },
       child: new Container(
-          padding: EdgeInsets.only(left: 5, right: 5,),
-          child: new Column(
-            children: <Widget>[
-              new Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) :_image(snapshot['photo'][0], screenSize),
-                  //new VerticalDivider(color: Colors.black,width: 16,),
-//                  new Container(
-//                    width: screenSize.width-(screenSize.width/2.5) - 80,
-//                    height: 120,
-//                    child: new Column(
-//                      mainAxisAlignment: MainAxisAlignment.start,
-//                      crossAxisAlignment: CrossAxisAlignment.start,
-//                      children: <Widget>[
-//                        new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
-//                        new Text(
-//                          snapshot['description'],
-//                          overflow: TextOverflow.ellipsis,
-//                          style: TextStyle(color: Colors.grey),
-//                          maxLines: 2,
-//                        ),
-//                        Spacer(),
-//                        Container(
-//                          child:new Text("£${snapshot['price']}.00",style: TextStyle(color: Colors.black87),),
-//                          alignment: Alignment.bottomRight,
-//                        ),
-//                        // snapshot['description'].length>20? new Text("${snapshot['description'].substring(0,20)}..."): new Text(snapshot['description']),
-//                      ],
-//                    ),
-//                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    child: Column(
-                      children: <Widget>[
-                        IconButton(
-                        icon: alreadySaved? new Icon(Icons.bookmark) : new Icon(Icons.bookmark_border),
-                        color: alreadySaved? Colors.orangeAccent : null,
-                        onPressed: () {
-                          setState(() {
-                            if (alreadySaved) {
-                              _saved.remove(snapshot.documentID);
-                            } else {
-                              _saved.add(snapshot.documentID);
-
-                            }
-                          });
-                        },
+        padding: EdgeInsets.only(left: 5, right: 5,),
+        child: new Column(
+          children: <Widget>[
+            new Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) :_image(snapshot['photo'][0], screenSize),
+                new VerticalDivider(color: Colors.black,width: screenSize.width/20,),
+                new Container(
+                  width: screenSize.width-(screenSize.width/3) - (screenSize.width/10),
+                  height: 120,
+                  child: Column(
+                    children: <Widget>[
+                      new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
+                      new Text(
+                        snapshot['description'],
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.grey),
+                        maxLines: 2,
                       ),
+                      Spacer(),
                       Row(
                         children: <Widget>[
                           MaterialButton(
-                            onPressed: () {_approve(snapshot);},
+                            onPressed: () {_approve(snapshot.documentID);},
                             textColor: Colors.white,
                             color: Colors.orange,
                             padding: const EdgeInsets.all(0.0),
@@ -193,7 +160,7 @@ class _AdminAdPageState extends State<AdminAdPage> {
                           ),
                           MaterialButton(
                             onPressed: () {
-                              _delete(snapshot);
+                              _delete(snapshot.documentID);
                             },
                             textColor: Colors.white,
                             color: Colors.orange,
@@ -203,15 +170,15 @@ class _AdminAdPageState extends State<AdminAdPage> {
                               child: Text('Delete'),
                             ),
                           ),
-
                         ],
                       ),
-                    ],),
+                    ],
                   ),
-                ],
-              ),
-            ],
-          )
+                ),
+              ],
+            ),
+          ],
+        )
       ),
     );
   }
@@ -227,31 +194,50 @@ class _AdminAdPageState extends State<AdminAdPage> {
     }
   }
 
-  void _approve(DocumentSnapshot snap){
+  void _approve(String snap) async {
+    DocumentReference ref = Firestore.instance.collection('unApprovedProps').document(snap);
+    DocumentSnapshot snapshot = await ref.get();
     Firestore.instance.collection('Property').add({
-      "time" : snap['time'],
-      "user" : snap['user'],
-      "name" : snap['name'],
-      "description" : snap['description'],
-      "photo" : snap['photo'],
-      "tags" : snap['tags'],
-      "location" : snap['location'],
-      "price" : snap['price'],
+      "time" : snapshot['time'],
+      "user" : snapshot['user'],
+      "name" : snapshot['name'],
+      "description" : snapshot['description'],
+      "photo" : snapshot['photo'],
+      "tags" : snapshot['tags'],
+      "location" : snapshot['location'],
+      "price" : snapshot['price'],
+    }).then((res) =>
+        Firestore.instance.runTransaction((transaction) async{
+          DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user.uid));
+          await transaction.update(freshsnap.reference,{
+            'properties': FieldValue.arrayUnion([res.documentID]),
+          });
+        }));
+    ref.delete();
+    Firestore.instance.runTransaction((transaction) async{
+      DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user.uid));
+      await transaction.update(freshsnap.reference,{
+        'properties': FieldValue.arrayRemove([ref.documentID]),
+      });
     });
-    snap.reference.delete();
   }
 
-  void _delete(DocumentSnapshot snap){
-    snap.reference.delete();
+  void _delete(String snap) async{
+    DocumentReference ref = Firestore.instance.collection('unApprovedProps').document(snap);
+    Firestore.instance.runTransaction((transaction) async{
+      DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user.uid));
+      await transaction.update(freshsnap.reference,{
+        'properties': FieldValue.arrayRemove([ref.documentID]),
+      });
+    });
+    ref.delete();
   }
 
   @override
   Widget build (BuildContext context) {
-    // print("listings: ${_value}");
     return new Scaffold(
       drawer: new DrawerOnly(user),
       appBar: new AppBar(
-        title: new Text("Drawer Demo"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
@@ -265,41 +251,41 @@ class _AdminAdPageState extends State<AdminAdPage> {
         children: <Widget> [
           but(),
           Flexible(
-          child: StreamBuilder(
-            stream: streamSelector(_value), //none
-            builder: (context, snapshot) {
-              Size screenSize = MediaQuery.of(context).size;
-              if(!snapshot.hasData) return new Center(
-               child: new CircularProgressIndicator(),
-              );
-              var temp = snapshot.data.documents;
-              if(_hasLocation && _value == 6){
-                temp.sort((a,b){
-                  GeoPoint loca1 = a['location'];
-                  GeoPoint loca2 = b['location'];
-                  var first = sqrt(pow(loca1.latitude-_currLat , 2) + pow(loca1.longitude-_currLon , 2));
-                  var second = sqrt(pow(loca2.latitude-_currLat , 2) + pow(loca2.longitude-_currLon , 2));
-                  return first.compareTo(second);
-                });
+            child: StreamBuilder(
+              stream: streamSelector(_value), //none
+              builder: (context, snapshot) {
+                Size screenSize = MediaQuery.of(context).size;
+                if(!snapshot.hasData) return new Center(
+                 child: new CircularProgressIndicator(),
+                );
+                var temp = snapshot.data.documents;
+                if(_hasLocation && _value == 6){
+                  temp.sort((a,b){
+                    GeoPoint loca1 = a['location'];
+                    GeoPoint loca2 = b['location'];
+                    var first = sqrt(pow(loca1.latitude-_currLat , 2) + pow(loca1.longitude-_currLon , 2));
+                    var second = sqrt(pow(loca2.latitude-_currLat , 2) + pow(loca2.longitude-_currLon , 2));
+                    return first.compareTo(second);
+                  });
+                  return new ListView.builder(
+                    padding: EdgeInsets.all(2),
+                    itemExtent: screenSize.height/4,
+                    itemCount: temp.length,
+                    itemBuilder: (context, index)=>_listItemBuilder(context, temp[index], screenSize),
+                  );
+                }
                 return new ListView.builder(
                   padding: EdgeInsets.all(2),
                   itemExtent: screenSize.height/4,
-                  itemCount: temp.length,
-                  itemBuilder: (context, index)=>_listItemBuilder(context, temp[index], screenSize),
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
                 );
-              }
-              return new ListView.builder(
-                padding: EdgeInsets.all(2),
-                itemExtent: screenSize.height/4,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
-              );
-            },
-          ),
+              },
+            ),
           ),
         ],
       ),
-    ); //<-------add lists here!!!
+    );
   }
 }
 class AdminAdPage extends StatefulWidget {
