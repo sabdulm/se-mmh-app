@@ -15,7 +15,7 @@ class MyState extends State<MyStateTemp> {
   
   FirebaseUser user;
   MyState(this.user);
-	final Set<String> _saved = new Set<String>(); 
+	final Set<DocumentReference> _saved = new Set<DocumentReference>(); 
 	final _biggerFont = const TextStyle(
 															fontSize: 18.0,
 															fontWeight: FontWeight.bold,
@@ -30,10 +30,29 @@ class MyState extends State<MyStateTemp> {
 			super.initState();
       
       getUserLocation();
+      if(this.user!=null) getUser();
+      print("done");
 	}
 	void bookmark(){
 
 	}
+  void getUser(){
+    Stream<QuerySnapshot> user =   Firestore.instance.collection('users').where('user', isEqualTo: this.user.uid).snapshots();
+    user.listen((data) {
+      if(data!=null){
+        setState(() {
+          data.documents[0]['bookmarks'].forEach((x) => _saved.add(x));
+          data.documents[0]['bookmarks'].forEach((x) => print(x.toString()));
+        });
+      }
+      // data!=null?print("DataReceived: ${data.documents[0]['name']}"):print('null');
+    }, onDone: () {
+      print("Task Done");
+    }, onError: (error) {
+      print("Some Error");
+    });
+    // print("${user.data.documents[0]['name']} <--here it is");
+  }
   void getUserLocation() async {
     var currentLocation = <String, double>{};
     try {
@@ -78,7 +97,7 @@ class MyState extends State<MyStateTemp> {
       );
 	}
 	Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
-		final bool alreadySaved = _saved.contains(snapshot.documentID);
+		final bool alreadySaved = _saved.contains(snapshot.reference);
 		// print("List item: ${snapshot.documentID}");
     // print(snapshot.data);
     return new GestureDetector(
@@ -121,6 +140,7 @@ class MyState extends State<MyStateTemp> {
                   ),
                 ),
                 new Spacer(),
+                user!=null?
                 Container(
                   alignment: Alignment.centerRight,
                   child: new IconButton(
@@ -129,15 +149,18 @@ class MyState extends State<MyStateTemp> {
                     onPressed: () {
                       setState(() {
                           if (alreadySaved) {
-                            _saved.remove(snapshot.documentID);
+                            _saved.remove(snapshot.reference);
+                            Firestore.instance.collection('users').document(user.uid).updateData({"bookmarks":FieldValue.arrayRemove([snapshot.reference])});
                           } else { 
-                            _saved.add(snapshot.documentID);
-                            
+                            _saved.add(snapshot.reference);
+                            Firestore.instance.collection('users').document(user.uid).updateData({"bookmarks":FieldValue.arrayUnion([snapshot.reference])});                            
                           }
                         });
                       },
                     ),
-                ),
+                )
+                :
+                Container(),
               ],
             ),
             new Divider(),

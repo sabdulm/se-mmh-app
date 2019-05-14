@@ -30,10 +30,9 @@ class _SignUpPage2State extends State<SignUpPage2> {
     print("Preparing to register.");
     try{
       // DocumentReference ref = Firestore.instance.collection("Property").document("whRWznBFcTX9fTx6ySpY");
-      DocumentReference ref = null;
-      var prop = [ref];
-      var chat = [ref];
-      var bookmark = [ref];
+      List <DocumentReference>prop = [];
+      List <DocumentReference>chat = [];
+      List <DocumentReference>bookmark = [];
 
       FirebaseUser user = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: e.replaceAll(new RegExp(r"\s+\b|\b\s|\s|\b"), ""), password: p);
       print("Signed up.");
