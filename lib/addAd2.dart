@@ -129,7 +129,7 @@ class _AddAdSecState extends State<AddAdSec> {
                       Firestore.instance.runTransaction((transaction) async{
                         DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(temp.user));
                         await transaction.update(freshsnap.reference,{
-                          'properties': FieldValue.arrayUnion([res]),
+                          'properties': FieldValue.arrayUnion([res.documentID]),
                         });
                       }).then((r) => Navigator.push(context, MaterialPageRoute(builder: (context) => ResultAdd(true))))
                       .catchError((err)=>{

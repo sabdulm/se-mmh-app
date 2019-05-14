@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import './drawer.dart';
 import './property.dart';
+import 'chat.dart';
 
 var _docId = '';
 
@@ -96,7 +97,20 @@ class UserProfilePage extends StatelessWidget {
 
   }
 
-  Widget _buildContainer(DocumentSnapshot snap){
+  void _chat(String _snap, BuildContext context) async{
+    DocumentSnapshot snap = await Firestore.instance.collection('users').document(_snap).get();
+    DocumentSnapshot snapshot = await Firestore.instance.collection('users').document(user.uid).get();
+    List<String> emails= [snap['email'], snapshot['email']];
+    emails.sort();
+    var key = emails[0] + emails[1];
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => ChatScreen(key, snapshot['name'], snapshot['email'], snap['name'],snap['email']))
+    );
+  }
+
+  Widget _buildContainer(String snap, BuildContext context){
     return Container(
         height:60,
         margin:EdgeInsets.only(top:8.0),
@@ -110,7 +124,9 @@ class UserProfilePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _chat(snap, context);
+                  },
                   textColor: Colors.white,
                   color: Colors.orange,
                   padding: const EdgeInsets.all(0.0),
@@ -281,7 +297,7 @@ class UserProfilePage extends StatelessWidget {
                   SizedBox(height: screenSize.height /20),
                   _buildUserProfileImage(userDocument),
                   _buildFullName(userDocument),
-                  _buildContainer(userDocument),
+                  _buildContainer(userDocument.documentID, context),
                   _buildAds(),
                 ],
               );

@@ -11,10 +11,10 @@ int _value =0;
 class _AdminAdPageState extends State<AdminAdPage> {
   _AdminAdPageState(this.user);
   final FirebaseUser user;
-  // final _biggerFont = const TextStyle(
-  //   fontSize: 18.0,
-  //   fontWeight: FontWeight.bold,
-  // );
+   final _biggerFont = const TextStyle(
+     fontSize: 18.0,
+     fontWeight: FontWeight.bold,
+   );
   var location =new Location();
 
   double _currLat= 0;
@@ -134,14 +134,22 @@ class _AdminAdPageState extends State<AdminAdPage> {
                 snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) :_image(snapshot['photo'][0], screenSize),
                 new VerticalDivider(color: Colors.black,width: screenSize.width/20,),
                 new Container(
-                  width: screenSize.width-(screenSize.width/3) - (screenSize.width/15),
+                  width: screenSize.width-(screenSize.width/3) - (screenSize.width/10),
                   height: 120,
                   child: Column(
                     children: <Widget>[
+                      new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
+                      new Text(
+                        snapshot['description'],
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.grey),
+                        maxLines: 2,
+                      ),
+                      Spacer(),
                       Row(
                         children: <Widget>[
                           MaterialButton(
-                            onPressed: () {_approve(snapshot);},
+                            onPressed: () {_approve(snapshot.documentID);},
                             textColor: Colors.white,
                             color: Colors.orange,
                             padding: const EdgeInsets.all(0.0),
@@ -186,26 +194,40 @@ class _AdminAdPageState extends State<AdminAdPage> {
     }
   }
 
-  void _approve(DocumentSnapshot snap){
+  void _approve(String snap) async {
+    DocumentReference ref = Firestore.instance.collection('unApprovedProps').document(snap);
+    DocumentSnapshot snapshot = await ref.get();
     Firestore.instance.collection('Property').add({
-      "time" : snap['time'],
-      "user" : snap['user'],
-      "name" : snap['name'],
-      "description" : snap['description'],
-      "photo" : snap['photo'],
-      "tags" : snap['tags'],
-      "location" : snap['location'],
-      "price" : snap['price'],
+      "time" : snapshot['time'],
+      "user" : snapshot['user'],
+      "name" : snapshot['name'],
+      "description" : snapshot['description'],
+      "photo" : snapshot['photo'],
+      "tags" : snapshot['tags'],
+      "location" : snapshot['location'],
+      "price" : snapshot['price'],
+    }).then((res) =>
+        Firestore.instance.runTransaction((transaction) async{
+          DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user.uid));
+          await transaction.update(freshsnap.reference,{
+            'properties': FieldValue.arrayUnion([res.documentID]),
+          });
+        }));
+    ref.delete();
+    Firestore.instance.runTransaction((transaction) async{
+      DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user.uid));
+      await transaction.update(freshsnap.reference,{
+        'properties': FieldValue.arrayRemove([ref.documentID]),
+      });
     });
-    snap.reference.delete();
   }
 
   void _delete(String snap) async{
     DocumentReference ref = Firestore.instance.collection('unApprovedProps').document(snap);
     Firestore.instance.runTransaction((transaction) async{
-      DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('user').document(user.uid));
+      DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user.uid));
       await transaction.update(freshsnap.reference,{
-        'properties': FieldValue.arrayRemove([ref]),
+        'properties': FieldValue.arrayRemove([ref.documentID]),
       });
     });
     ref.delete();

@@ -58,6 +58,19 @@ class _AdminUserPageState extends State<AdminUserPage> {
       ],
     );
   }
+
+  void _delete(String snap) async{
+    DocumentReference ref = Firestore.instance.collection('users').document(snap);
+    DocumentSnapshot snapshot = await ref.get();
+    for(var i = 0; i < snapshot['properties'].length; i++){
+      DocumentReference prop = Firestore.instance.collection('Property').document(snapshot['properties'][i]);
+      if(prop == null){
+        prop = Firestore.instance.collection('unApprovedProps').document(snapshot['properties'][i]);
+      }
+      prop.delete();
+    }
+    ref.delete();
+  }
   Widget _image(String url, Size screenSize){
     if(url == ''){
       return Container(
@@ -105,7 +118,9 @@ class _AdminUserPageState extends State<AdminUserPage> {
               title: Text(snapshot['name']),
               subtitle: Text(snapshot['email']),
               trailing: MaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  _delete(snapshot.documentID);
+                },
                 textColor: Colors.white,
                 color: Colors.orange,
                 padding: const EdgeInsets.all(0.0),
