@@ -1,17 +1,40 @@
 import 'package:flutter/material.dart';
-import './Admin-Usres.dart';
+import 'login.dart';
+import 'listings.dart';
+import 'calendar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 void main() => runApp(MyApp());
 
+
+
 class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.orange,
-      ),
-      home: AdminUserPage()
-    );
-  }
-}
+      // This widget is the root of your application.
+      @override
+      Widget build(BuildContext context) {
+        return MaterialApp(
+          title: 'Market My House',
+          theme: ThemeData(
+            primarySwatch: Colors.orange,
+          ),
+          initialRoute: '/',
+          routes: {
+            MyHomePage.routeName : (context) => MyHomePage(),
+            'calender' : (context) => Calendar(),
+          },
+          home: FutureBuilder(
+            future: FirebaseAuth.instance.currentUser(),
+            builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+            //  if (snapshot.hasData) {
+            //   //  FirebaseUser user = snapshot.data;
+            //    return MyHomePage();
+            //  }
+            //  else {
+                return LoginPage(title: 'Market My House Login');
+            //  }
+            }
+          )
+        );
+      }
+    }

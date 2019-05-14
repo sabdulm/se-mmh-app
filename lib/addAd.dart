@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/input_tags.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'classes.dart';
 import 'maps.dart';
 class AddAdState extends State<AddAd> {
+  final FirebaseUser user;
+  AddAdState(this.user);
   TextStyle style = TextStyle(fontFamily: 'Roboto', fontSize: 19.0, color: Colors.black);
   TextStyle butt = TextStyle(fontFamily: 'Roboto', fontSize: 23.0, color: Colors.white);
   TextStyle signupstyle = TextStyle(fontFamily: 'Roboto', fontSize: 34.0, color: Color(0xff009aba));
@@ -47,23 +51,23 @@ class AddAdState extends State<AddAd> {
           border:
               OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
     );
-    final signUpRdr = InkWell(
-      child: Text('Not a member? Sign up!'),
-      onTap: () {
-        final snackBar = SnackBar(
-            content: Text("Redirect to the sign up page."),
-            action: SnackBarAction(
-              label: 'Undo',
-              onPressed: () {
-                // Some code to undo the change!
-              },
-            ),
-          );
+    // final signUpRdr = InkWell(
+    //   child: Text('Not a member? Sign up!'),
+    //   onTap: () {
+    //     final snackBar = SnackBar(
+    //         content: Text("Redirect to the sign up page."),
+    //         action: SnackBarAction(
+    //           label: 'Undo',
+    //           onPressed: () {
+    //             // Some code to undo the change!
+    //           },
+    //         ),
+    //       );
 
-          // Find the Scaffold in the Widget tree and use it to show a SnackBar!
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-      }
-    );
+    //       // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+    //       _scaffoldKey.currentState.showSnackBar(snackBar);
+    //   }
+    // );
     final nextButon = Container(
       padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width - 250.0, 0, 0, 0),    
       child: Material(
@@ -74,10 +78,15 @@ class AddAdState extends State<AddAd> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
           onPressed: () {
-            Route route = MaterialPageRoute(builder: (context)=> MyMap());
-            Navigator.push(context, route);
+            AddAd1 temp = AddAd1(user.uid,namestr, description, tags);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyMap(temp),
+              ),
+            );
           },
-          child: Text("Post",
+          child: Text("Next",
           textAlign: TextAlign.center,
           style: butt.copyWith(
           color: Colors.white, fontWeight: FontWeight.bold)),
@@ -131,6 +140,8 @@ class AddAdState extends State<AddAd> {
 
 
 class AddAd extends StatefulWidget {
+  final FirebaseUser user;
+  AddAd(this.user);
   @override
-  AddAdState createState() => new AddAdState();
+  AddAdState createState() => new AddAdState(user);
 }

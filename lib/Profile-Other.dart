@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import './Profile-Edit.dart';
+import 'package:flutter/material.dart';
 import './drawer.dart';
 import './property.dart';
 
@@ -98,48 +97,64 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _buildContainer(DocumentSnapshot snap){
-
-    TextStyle _statCountTextStyle = TextStyle(
-      color: Colors.black54,
-      fontSize: 14.0,
-      fontWeight: FontWeight.bold,
-    );
-
-
     return Container(
-      height:60,
-      margin:EdgeInsets.only(top:8.0),
-      decoration: BoxDecoration(
-        color: Color(0xFFEFF4F7),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[Text(snap['email'], style: _statCountTextStyle),
-            ],),
-
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton(
-                onPressed: () {},
-                textColor: Colors.white,
-                color: Colors.orange,
-                padding: const EdgeInsets.all(0.0),
-                child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text('Create Ad'),
+        height:60,
+        margin:EdgeInsets.only(top:8.0),
+        decoration: BoxDecoration(
+          color: Color(0xFFEFF4F7),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  onPressed: () {},
+                  textColor: Colors.white,
+                  color: Colors.orange,
+                  padding: const EdgeInsets.all(0.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text('Message'),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  onPressed: () {},
+                  textColor: Colors.white,
+                  color: Colors.orange,
+                  padding: const EdgeInsets.all(0.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text('Appointments'),
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  onPressed: () {},
+                  textColor: Colors.white,
+                  color: Colors.orange,
+                  padding: const EdgeInsets.all(0.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text('Block'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        )
     );
   }
-
   Widget _image (String url, Size screenSize){
     if(url == ''){
       return new SizedBox(
@@ -251,39 +266,26 @@ class UserProfilePage extends StatelessWidget {
       drawer: DrawerOnly(user),
       appBar: AppBar(
         title: Text('Profile'),
-        actions: <Widget>[
-          MaterialButton(
-            onPressed: (){
-              Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder: (context) => Edit(user),
-                ),
-              );
-            }
-          ),
-        ],
       ),
       body: Stack(
         children: <Widget>[
           StreamBuilder(
-              stream: Firestore.instance.collection('users').document(_docId).snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Text("Loading");
-                }
-                var userDocument = snapshot.data;
-                return Column(
-                  children: <Widget>[
-                    SizedBox(height: screenSize.height /20),
-                    SizedBox(height: screenSize.height /20),
-                    _buildUserProfileImage(userDocument),
-                    _buildFullName(userDocument),
-                    _buildContainer(userDocument),
-                    _buildAds(),
-                  ],
-                );
+            stream: Firestore.instance.collection('users').document(_docId).snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text("Loading");
               }
+              var userDocument = snapshot.data;
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: screenSize.height /20),
+                  _buildUserProfileImage(userDocument),
+                  _buildFullName(userDocument),
+                  _buildContainer(userDocument),
+                  _buildAds(),
+                ],
+              );
+            }
           ),
         ],
       ),

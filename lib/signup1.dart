@@ -96,22 +96,26 @@ class _SignUpPage1State extends State<SignUpPage1> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
           onPressed: () {
-            final snackBar = SnackBar(
-              content: Text("Name entered: " + namestr + ", Email entered: " + emailstr + ", Pass entered: " + passstr + ", CPass entered: " + cpassstr),
-              action: SnackBarAction(
-                label: 'Undo',
-                onPressed: () {
-                  // Some code to undo the change!
-                },
-              ),
-            );
+            if(passstr != cpassstr){
+              final snackBar = SnackBar(
+                content: Text("Error: Both password fields should match"),
+                action: SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () {
+                    // Some code to undo the change!
+                  },
+                ),
+              );
 
-            // Find the Scaffold in the Widget tree and use it to show a SnackBar!
-            _scaffoldKey.currentState.showSnackBar(snackBar);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SignUpPage2()),
-            );  
+              // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+              _scaffoldKey.currentState.showSnackBar(snackBar);
+            }
+            else{
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignUpPage2(n: namestr, e: emailstr, p: passstr)),
+              );
+            }  
           },
           child: Text("Next",
               textAlign: TextAlign.center,
@@ -136,25 +140,25 @@ class _SignUpPage1State extends State<SignUpPage1> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(height: 50.0),
+                  SizedBox(height: ((MediaQuery.of(context).size.height)/592)*40.0),
                   Text(
                     "Sign Up",
                     style: signupstyle,
                   ),
-                  SizedBox(height: 50.0),
+                  SizedBox(height: ((MediaQuery.of(context).size.height)/592)*40.0),
                   nameField,
-                  SizedBox(height: 10.0),
+                  SizedBox(height: ((MediaQuery.of(context).size.height)/592)*8.0),
                   emailField,
-                  SizedBox(height: 10.0),
+                  SizedBox(height: ((MediaQuery.of(context).size.height)/592)*8.0),
                   passwordField,
-                  SizedBox(height: 10.0),
+                  SizedBox(height: ((MediaQuery.of(context).size.height)/592)*8.0),
                   cpasswordField,
                   SizedBox(
-                    height: 20.0,
+                    height: ((MediaQuery.of(context).size.height)/592)*16.0,
                   ),
                   nextButon,
                   SizedBox(
-                    height: 15.0,
+                    height: ((MediaQuery.of(context).size.height)/592)*13.0,
                   ),
                 ],
               ),

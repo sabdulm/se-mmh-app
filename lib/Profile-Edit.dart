@@ -1,16 +1,20 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import './drawer.dart';
+import 'drawer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-void main() => runApp(Edit());
-
 class Edit extends StatefulWidget {
+  final FirebaseUser user ;
+  Edit(this.user);
   @override
-  EditProfile createState() => EditProfile();
+  EditProfile createState() => EditProfile(user);
 }
 
 class EditProfile extends State<Edit> {
+  final FirebaseUser user ;
+  EditProfile(this.user);
   String nameStr = "";
   String emailStr = "";
   String passwordStr = "";
@@ -172,7 +176,7 @@ class EditProfile extends State<Edit> {
       );
     }
     return Scaffold(
-      drawer: DrawerOnly(),
+      drawer: DrawerOnly(user),
       appBar: AppBar(
         title: Text('Edit Profile'),
       ),
