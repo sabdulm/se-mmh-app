@@ -6,7 +6,7 @@ import 'main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'inbox.dart';
-
+import 'bookmark.dart';
 // import 'date.dart';
 // import 'property.dart';
 
@@ -22,13 +22,13 @@ class DrawerOnly extends StatelessWidget {
         title: const Text('Admin Page'),
         onTap: () =>
         {
-        Navigator.push(
+          Navigator.push(
             ctxt,
             new MaterialPageRoute(
                 builder: (BuildContext context) =>
                 new AdminUserPage(user)
             )
-        )
+          )
         },
       );
     }
@@ -46,6 +46,9 @@ class DrawerOnly extends StatelessWidget {
               stream: Firestore.instance.collection('users').where(
                   'user', isEqualTo: user.uid).snapshots(),
               builder: (context, snapshot) {
+                if(!snapshot.hasData) return new Center(
+                  child: new CircularProgressIndicator(),
+                );
                 return new ListView(
                   children: <Widget>[
                     new DrawerHeader(
@@ -116,14 +119,13 @@ class DrawerOnly extends StatelessWidget {
                     new ListTile(
                       leading: const Icon(Icons.bookmark),
                       title: const Text('Bookmarks'),
-                      //              onTap: () =>{
-                      //                Navigator.pushReplacement(
-                      //                    ctxt,
-                      //                    new MaterialPageRoute(
-                      //                        builder: (BuildContext context) => new MyApp()
-                      //                    )
-                      //                )
-                      //              },
+                      onTap: () =>{
+                        Navigator.pushNamed(
+                          ctxt,
+                          MyBookmarkPage.routeName,
+                          arguments: user,
+                        )
+                      },
                     ),
                     new ListTile(
                       leading: const Icon(Icons.calendar_today),
@@ -190,8 +192,8 @@ class DrawerOnly extends StatelessWidget {
                       title: const Text('Settings'),
                     ),
                     new ListTile(
-                        leading: const Icon(Icons.power_settings_new),
-                        title: const Text('Logout'),
+                        leading: const Icon(Icons.create),
+                        title: const Text('Login/Signup'),
                         onTap: () {
                           try {
                             FirebaseAuth.instance.signOut();
