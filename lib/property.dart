@@ -7,21 +7,27 @@ import 'drawer.dart';
 import 'Profile-Other.dart';
 import 'mapProp.dart';
 
-class PropertyPage extends StatelessWidget {
+class PropertyPage extends StatefulWidget {
   PropertyPage(this._key, this._col, this.user);
   final FirebaseUser user;
   String _key ;
-	String _name ;
 	String _col;
+
+  @override
+  _PropertyPageState createState() => _PropertyPageState();
+}
+
+class _PropertyPageState extends State<PropertyPage> {
+	String _name ;
 	var _address;
 	String _description ;
 	var _tags = [] ;
 	String _price ;
   String userID ;
   DocumentReference _user;
+  bool finsihing = false;
 
   var imageUrls = <dynamic> [];
-
 
   List<NetworkImage> _buildNetworkImages(){
     List<NetworkImage> lst = new List<NetworkImage>();
@@ -71,7 +77,7 @@ class PropertyPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRowHelper(BuildContext context, bool isAdmin){
+  Widget _buildRowHelper(BuildContext context, bool isAdmin, DocumentSnapshot snap){
     if(isAdmin){
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -84,17 +90,17 @@ class PropertyPage extends StatelessWidget {
 
             },
             icon: Icon(Icons.map),
-            label: Text('View in Map'),
+            label: Text('Map'),
             color: Colors.orangeAccent,
           ),
           FlatButton.icon(
             onPressed: () {
               Navigator.push(context,
-                MaterialPageRoute(builder: (context) => Profile(_user.documentID, user)),
+                MaterialPageRoute(builder: (context) => Profile(_user.documentID, widget.user)),
               );
             },
             icon: Icon(Icons.person),
-            label: Text('View User'),
+            label: Text('Profile'),
             color: Colors.orangeAccent,
           ),
           FlatButton.icon(
@@ -107,19 +113,30 @@ class PropertyPage extends StatelessWidget {
                   actions: <Widget>[
                     FlatButton(
                       onPressed: (){
-                        Navigator.of(context).pop();                        
+                        Navigator.of(context).pop(true);                        
                       },
                       child: new Text('Delete'),
                     ),
                     FlatButton(
                       onPressed: (){
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(false);
                       },
                       child: new Text('Cancel'),
                     ),
                   ],
                 ),
-              );
+              ).then((toDO) async {
+                if(toDO){
+                  setState((){
+                    finsihing = true;
+                  });
+                  // DocumentReference ref = Firestore.instance.collection('Property').document()
+                  await Firestore.instance.runTransaction((Transaction myTransaction) async {
+                    await myTransaction.delete(snap.reference);
+                  });
+                  Navigator.popUntil(context, ModalRoute.withName('listings'));
+                }
+              });
             },
             icon: Icon(Icons.delete),
             label: Text('Delete Ad'),
@@ -145,7 +162,7 @@ class PropertyPage extends StatelessWidget {
           FlatButton.icon(
             onPressed: () {
               Navigator.push(context,
-                MaterialPageRoute(builder: (context) => Profile(_user.documentID, user)),
+                MaterialPageRoute(builder: (context) => Profile(_user.documentID, widget.user)),
               );
             },
             icon: Icon(Icons.person),
@@ -156,16 +173,16 @@ class PropertyPage extends StatelessWidget {
       );
     }
   }
-  
-  Widget _buildRow(BuildContext context){
-    if(user == null){
-      return _buildRowHelper(context, false);
+
+  Widget _buildRow(BuildContext context, DocumentSnapshot snap){
+    if(widget.user == null){
+      return _buildRowHelper(context, false, snap);
     } else{
       return Container(
         child: StreamBuilder(
-          stream: Firestore.instance.collection('users').where('user', isEqualTo: user.uid).snapshots(),
+          stream: Firestore.instance.collection('users').where('user', isEqualTo: widget.user.uid).snapshots(),
           builder: (context, snapshot){
-            return _buildRowHelper(context, (snapshot.data.documents[0]['isAdmin'] || user.uid==userID));
+            return _buildRowHelper(context, (snapshot.data.documents[0]['isAdmin'] || widget.user.uid==userID), snap);
           },
         ),
       );
@@ -186,19 +203,26 @@ class PropertyPage extends StatelessWidget {
 	@override
 	Widget build (BuildContext context) {
 		Size screenSize = MediaQuery.of(context).size;
-		return new Scaffold(
-			drawer: new DrawerOnly(user),
+
+    if(finsihing){
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+  
+  	return new Scaffold(
+			drawer: new DrawerOnly(widget.user),
 			appBar: new AppBar(
 				title: new Text('Property Details'),
 			),
       body: StreamBuilder(
-        stream: Firestore.instance.collection(_col).document(_key).snapshots(),
+        stream: Firestore.instance.collection(widget._col).document(widget._key).snapshots(),
         builder: (context, snapshot){
           if(!snapshot.hasData) return new Center(
             child: new CircularProgressIndicator(),
           );
           getData(snapshot.data);
-
+          // String docId = snapshot.data.DocumentReference.
           return new Container(
             child: new SingleChildScrollView(
               child: new ConstrainedBox(
@@ -219,7 +243,7 @@ class PropertyPage extends StatelessWidget {
                     Divider(),
                     _buildPrice(),
                     Divider(),
-                    _buildRow(context),
+                    _buildRow(context, snapshot.data),
                   ],
                 ),
               ),
