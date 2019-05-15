@@ -27,7 +27,17 @@ class _SignUpPage2State extends State<SignUpPage2> {
 
  
   Future<void> register() async{
-    print("Preparing to register.");
+    print("Preparing to register."); 
+    _scaffoldKey.currentState.showSnackBar(
+      new SnackBar(duration: new Duration(seconds: 4), content:
+        new Row(
+          children: <Widget>[
+            new CircularProgressIndicator(),
+            new Text("  Signing up, please wait..."),
+          ],
+        ),
+      )
+    );
     try{
       // DocumentReference ref = Firestore.instance.collection("Property").document("whRWznBFcTX9fTx6ySpY");
       List <DocumentReference>prop = [];
