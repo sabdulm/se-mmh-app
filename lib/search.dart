@@ -15,7 +15,7 @@ class Search extends SearchDelegate{
         return new SizedBox(
           height: 120,
           width: screenSize.width/2.5,
-          child: ClipRect(child:new Container(child:new Image.asset("no_img.jpg", fit: BoxFit.fill,)),)
+          child: ClipRect(child:new Container(child:new Image.asset("no_img.png", fit: BoxFit.fill,)),)
         );
       }
       return new SizedBox(
@@ -123,12 +123,28 @@ class Search extends SearchDelegate{
               print(query);
               var temp =[];
               for (var doc in snapshot.data.documents) {
-                if(queryKeys.contains( doc['name'].toLowerCase())){
+                if(
+                    queryKeys
+                    .map((f)=>doc['name']
+                      .toLowerCase()
+                      .split(" ")
+                      .contains(f)
+                      )
+                    .reduce((curr,next)=> curr||next )
+                  ){
                   temp.add(doc);
                   continue;
                 }
                 for (var item in doc['tags']) {
-                  if(queryKeys.contains(item.toLowerCase())){
+                  if(
+                      queryKeys
+                      .map((f)=>item
+                        .toLowerCase()
+                        .split(" ")
+                        .contains(f)
+                        )
+                      .reduce((curr,next)=> curr||next )
+                    ){
                     temp.add(doc);
                     break;
                   } 
