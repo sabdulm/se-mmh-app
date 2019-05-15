@@ -131,7 +131,11 @@ class DrawerOnly extends StatelessWidget {
                       leading: const Icon(Icons.calendar_today),
                       title: const Text('View Calender'),
                       onTap: () {
-                        Navigator.of(ctxt).pushNamed('calendar');
+                        Navigator.push(ctxt,
+                         MaterialPageRoute(
+                           builder: (ctxt)=>AppointmentRenderer(snapshot.data.documents[0]['email'])
+                         )
+                         );
                       },
                     ),
                     new ListTile(
