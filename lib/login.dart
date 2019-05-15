@@ -78,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
             content: Text('You have been blocked. Contact us for more information.'),
             action: SnackBarAction(
               label: 'blocked',
+              onPressed: (){},
             ),
           );
           _scaffoldKey.currentState.showSnackBar(snackBar);

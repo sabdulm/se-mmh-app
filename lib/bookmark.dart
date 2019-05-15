@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'drawer.dart';
 import 'property.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class _Bookmarks extends State<Bookmarks> {
   _Bookmarks(this.user);
@@ -48,7 +47,12 @@ class _Bookmarks extends State<Bookmarks> {
 				width: screenSize.width/2.5,
 				child: new ClipRect(
           child: new Container(
-            child: new CachedNetworkImage(imageUrl: url,
+            decoration: new BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: new DecorationImage(
+                image: new NetworkImage(url),
+                fit: BoxFit.fill,
+              ),
             ),
           ),
 			  ),

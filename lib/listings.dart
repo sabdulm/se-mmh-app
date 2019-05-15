@@ -8,7 +8,6 @@ import 'package:location/location.dart';
 import 'dart:math';
 import 'property.dart';
 import 'addAd.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 int _value =0;
 class MyState extends State<MyStateTemp> {
@@ -90,7 +89,12 @@ class MyState extends State<MyStateTemp> {
 				width: screenSize.width/2.5,
 				child: new ClipRect(
           child: new Container(
-            child: new CachedNetworkImage(imageUrl: url,
+            decoration: new BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: new DecorationImage(
+                image: new NetworkImage(url),
+                fit: BoxFit.fill,
+              ),
             ),
           ),
 			  ),
