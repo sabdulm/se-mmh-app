@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'signup1.dart';
 import 'listings.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
@@ -65,11 +65,23 @@ class _LoginPageState extends State<LoginPage> {
       try{
         FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailstr.replaceAll(new RegExp(r"\s+\b|\b\s|\s|\b"), ""), password: passstr);
         print("Signed in.");
-        Navigator.pushNamed(
-          context,
-          MyHomePage.routeName,
-          arguments: user,
-        );
+        DocumentSnapshot snap = await Firestore.instance.collection('users').document(user.uid).get();
+        if(snap['block'] == false){
+          Navigator.pushNamed(
+            context,
+            MyHomePage.routeName,
+            arguments: user,
+          );
+        } else {
+          final snackBar = SnackBar(
+            duration: new Duration(seconds: 4),
+            content: Text('You have been blocked. Contact us for more information.'),
+            action: SnackBarAction(
+              label: 'blocked',
+            ),
+          );
+          _scaffoldKey.currentState.showSnackBar(snackBar);
+        }
       }catch(e){
         final snackBar = SnackBar(
           content: renameErr(e.message),
