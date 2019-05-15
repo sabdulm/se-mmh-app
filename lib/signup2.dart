@@ -27,13 +27,22 @@ class _SignUpPage2State extends State<SignUpPage2> {
 
  
   Future<void> register() async{
-    print("Preparing to register.");
+    print("Preparing to register."); 
+    _scaffoldKey.currentState.showSnackBar(
+      new SnackBar(duration: new Duration(seconds: 4), content:
+        new Row(
+          children: <Widget>[
+            new CircularProgressIndicator(),
+            new Text("  Signing up, please wait..."),
+          ],
+        ),
+      )
+    );
     try{
       // DocumentReference ref = Firestore.instance.collection("Property").document("whRWznBFcTX9fTx6ySpY");
-      DocumentReference ref = null;
-      var prop = [ref];
-      var chat = [ref];
-      var bookmark = [ref];
+      List <DocumentReference>prop = [];
+      List <DocumentReference>chat = [];
+      List <DocumentReference>bookmark = [];
 
       FirebaseUser user = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: e.replaceAll(new RegExp(r"\s+\b|\b\s|\s|\b"), ""), password: p);
       print("Signed up.");
@@ -53,7 +62,7 @@ class _SignUpPage2State extends State<SignUpPage2> {
         "inbox" : chat,
         "bookmarks" : bookmark,
         "photo" : "https://firebasestorage.googleapis.com/v0/b/mmhapp-576cd.appspot.com/o/person-placeholder.png?alt=media&token=6f309a54-b83b-4074-b27b-b5366b7796bf",
-
+        "block" : false,
       });
                       
       Navigator.push(

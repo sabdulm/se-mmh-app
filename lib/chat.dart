@@ -6,6 +6,8 @@ import 'inbox.dart';
 // var email = "hadi@gmail.com";
 // String name = "Hadi";
 var formatter = new DateFormat().add_jm().add_yMMMMd();
+bool newchat = false;
+
 class Messagetile extends StatelessWidget{
   String msgkey;
   String chatee;
@@ -50,7 +52,11 @@ class Messagetile extends StatelessWidget{
           new Container(
             margin: const EdgeInsets.only(left: 8.0),
             child: new CircleAvatar(
-              child: new Text(name[0]),
+              child: new Text(name[0],
+              style: TextStyle(
+                color: Colors.black
+              ),),
+              backgroundColor: Colors.orange.shade100,
             ),
           )
         ],
@@ -196,10 +202,53 @@ class ChatScreenState extends State<ChatScreen>{
             child: new IconButton(
               icon: new Icon(Icons.send),
               onPressed: (){
-                setState(() {
+                setState(() async{
                   var newtext = controller.text;
                   var datenow = DateTime.now().toString();
-                  Firestore.instance.runTransaction((transaction) async{
+                  if(newchat){
+                    await Firestore.instance.runTransaction((transaction) async{
+                      CollectionReference ref = Firestore.instance.collection('users');
+                      QuerySnapshot qs = await ref.where('email',isEqualTo:email).getDocuments();
+                      String user1 = qs.documents[0]['user'];
+                      DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user1));
+                      await transaction.update(freshsnap.reference, {
+                        'inbox': FieldValue.arrayUnion([otheremail])
+                      });
+                    });
+                    await Firestore.instance.runTransaction((transaction) async{
+                      CollectionReference ref = Firestore.instance.collection('users');
+                      QuerySnapshot qs = await ref.where('email',isEqualTo:otheremail).getDocuments();
+                      String user1 = qs.documents[0]['user'];
+                      DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user1));
+                      await transaction.update(freshsnap.reference, {
+                        'inbox': FieldValue.arrayUnion([email])
+                      });
+                    });
+                    await Firestore.instance.runTransaction((transaction) async{
+                      await transaction.set(Firestore.instance.collection('chat').document(chatkey), {
+                        'key' : chatkey,
+                        'last_time' : datenow,
+                        'lastsender' : email,
+                        'latest' : newtext,
+                        'read' : false,
+                        'messages': [chatkey+datenow]
+                      });
+                    });
+                    newchat = false;
+                  }
+                  else{
+                    await Firestore.instance.runTransaction((transaction) async{
+                      DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('chat').document(chatkey));
+                      await transaction.update(freshsnap.reference,{
+                        'messages': FieldValue.arrayUnion([chatkey+datenow]),
+                        'read' : false,
+                        'last_time' : datenow,
+                        'lastsender' : email,
+                        'latest' : newtext
+                      });
+                    });
+                  }
+                  await Firestore.instance.runTransaction((transaction) async{
                     await transaction.set(Firestore.instance.collection('message').document(chatkey+datenow), {
                         'key' : chatkey+datenow,
                         'message' : newtext,
@@ -208,16 +257,6 @@ class ChatScreenState extends State<ChatScreen>{
                         'sender' : email,
                         'sender_name' : name,
                         'time' : datenow
-                    });
-                  });
-                  Firestore.instance.runTransaction((transaction) async{
-                    DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('chat').document(chatkey));
-                    await transaction.update(freshsnap.reference,{
-                    'messages': FieldValue.arrayUnion([chatkey+datenow]),
-                    'read' : false,
-                    'last_time' : datenow,
-                    'lastsender' : email,
-                    'latest' : newtext
                     });
                   });
                   controller.clear();
@@ -233,7 +272,8 @@ class ChatScreenState extends State<ChatScreen>{
   Widget build(BuildContext context){
     return new WillPopScope(
       onWillPop: (){
-        Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('home'));
+        // Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('home'));
+        Navigator.pop(context);
       },
       child : new Scaffold(
         appBar: new AppBar(
@@ -254,8 +294,16 @@ class ChatScreenState extends State<ChatScreen>{
                   stream: Firestore.instance.collection('chat').where('key',isEqualTo:chatkey).snapshots(),
                   builder: (context,snapshot){
                     if(snapshot.data!=null){
-                      var msgs = snapshot.data.documents[0]['messages'];
-                      return Msgsbuilder(msgs);
+                      if(snapshot.data.documents.length>0){
+                        var msgs = snapshot.data.documents[0]['messages'];
+                        return Msgsbuilder(msgs);
+                      }
+                      else{
+                        newchat = true;
+                        return new Center(
+                          child: new Text("Send a message and start conversation!"),
+                        );
+                      }
                     }
                     else{
                       return new Text('Loading...');
