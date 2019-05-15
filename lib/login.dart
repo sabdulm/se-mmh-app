@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key, this.title}) : super(key: key);
+  LoginPage({this.title});
   final String title;
   @override
   
