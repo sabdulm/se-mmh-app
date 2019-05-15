@@ -2,11 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'inbox.dart';
+import 'appointment.dart';
 
 // var email = "hadi@gmail.com";
 // String name = "Hadi";
-var formatter = new DateFormat().add_jm().add_yMMMMd();
+var formatter = new DateFormat().add_yMMMMd();
 bool newchat = false;
+
+
+String ckey,nem,emel,odernem,oderemel;
 
 class Messagetile extends StatelessWidget{
   String msgkey;
@@ -14,7 +18,26 @@ class Messagetile extends StatelessWidget{
 
   Messagetile(this.msgkey,this.chatee);
 
-  List<Widget> SentMessageTile(_msg){
+  Widget Sentaptrqst(_msg,apt){
+    apt = formatter.format(DateTime.parse(apt));
+    return new Container(
+      child: new Column(
+        children: <Widget>[
+          new Center(
+            child: new Container(
+            child: new Text("Appointment Request", style: new TextStyle(fontStyle: FontStyle.italic,fontWeight: FontWeight.w900),),
+          ),
+          ),
+          new Container(
+            child: new Text("Date: "+apt, style: new TextStyle(fontWeight: FontWeight.w900),),
+          ),
+          new Text("Detail: "+_msg.msg)
+        ],
+      ),
+    );
+  }
+
+  List<Widget> SentMessageTile(_msg,apt){
     var length = _msg.msg.length;
     length = 3*length;
 
@@ -29,7 +52,9 @@ class Messagetile extends StatelessWidget{
               children: <Widget>[
                 new Container(
                   margin: const EdgeInsets.only(top: 10.0),
-                  child: new Text(_msg.msg),
+                  child: apt!=''?
+                  Sentaptrqst(_msg,apt):
+                  new Text(_msg.msg),
                   
                 )
               ],
@@ -65,7 +90,98 @@ class Messagetile extends StatelessWidget{
     ];
   }
 
-  List<Widget> ReceivedMessageTile(_msg){
+Widget Recvaptrqst(_msg,apt_,context){
+  String apt = formatter.format(DateTime.parse(apt_));
+  return new Container(
+    child: new Column(
+      children: <Widget>[
+        new Center(
+            child: new Container(
+            child: new Text("Appointment Request", style: new TextStyle(fontStyle: FontStyle.italic,fontWeight: FontWeight.w900),),
+          ),
+        ),
+        new Container(
+          child:  new Text("Date: "+apt, style: new TextStyle(fontWeight: FontWeight.w900),),
+        ),
+        new Text("Detail: "+_msg.msg),
+        new Column(
+          children: <Widget>[
+            new RaisedButton(
+              child: new Text("Accept"),
+              color: Colors.green.shade300,
+              onPressed: () async{
+                String datenow = DateTime.now().toString();
+                await Firestore.instance.runTransaction((transaction) async{
+                  await transaction.set(Firestore.instance.collection('appointments').document(ckey+datenow), {
+                      'key' : ckey+datenow,
+                      'detail' : _msg.msg,
+                      'date' : apt_,
+                      'user1' : nem,
+                      'user2' : odernem,
+                      'email1' : emel,
+                      'email2' : oderemel
+                  });
+                });
+                await Firestore.instance.runTransaction((transaction) async{
+                  CollectionReference ref = await Firestore.instance.collection('users');
+                  QuerySnapshot qs = await ref.where('email',isEqualTo:emel).getDocuments();
+                  String user1 = qs.documents[0]['user'];
+                  DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user1));
+                  await transaction.update(freshsnap.reference, {
+                    'appointment': FieldValue.arrayUnion([ckey+datenow])
+                  });
+                });
+                await Firestore.instance.runTransaction((transaction) async{
+                  CollectionReference ref = await Firestore.instance.collection('users');
+                  QuerySnapshot qs = await ref.where('email',isEqualTo:oderemel).getDocuments();
+                  String user1 = qs.documents[0]['user'];
+                  DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user1));
+                  await transaction.update(freshsnap.reference, {
+                    'appointment': FieldValue.arrayUnion([ckey+datenow])
+                  });
+                });
+                String nmsg = "This message was automatically generated for an appointment: "+_msg.msg+"\nSTATUS: ACCEPTED\nCheck Calendar for your appointments";
+                await Firestore.instance.runTransaction((transaction) async{
+                  DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('message').document(msgkey));
+                  await transaction.update(freshsnap.reference,{
+                    'message' : nmsg,
+                    'appointment' : ''
+                  });
+                });
+              },
+            ),
+            new RaisedButton(
+              child: new Text("Reject"),
+              color: Colors.red.shade300,
+              onPressed: () async{
+                String nmsg = "This message was automatically generated for an appointment: "+_msg.msg+"\nSTATUS: REJECTED";
+                await Firestore.instance.runTransaction((transaction) async{
+                  DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('message').document(msgkey));
+                  await transaction.update(freshsnap.reference,{
+                    'message' : nmsg,
+                    'appointment' : ''
+                  });
+                });
+              },
+            ),
+            new RaisedButton(
+              child: new Text("Postpone"),
+              color: Colors.yellow.shade300,
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context)=>ApointmentRequestPage(ckey, nem, emel, odernem, oderemel))
+                );
+              },
+            )
+          ],
+        )
+      ],
+    ),
+  );
+}
+
+  List<Widget> ReceivedMessageTile(_msg,apt,context){
     return <Widget>[
       new Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -94,7 +210,9 @@ class Messagetile extends StatelessWidget{
               children: <Widget>[
                 new Container(
                   margin: const EdgeInsets.only(top: 10.0),
-                  child: new Text(_msg.msg),
+                  child: apt!=''?
+                  Recvaptrqst(_msg,apt,context):
+                  new Text(_msg.msg),
                 )
               ],
             ),
@@ -112,7 +230,6 @@ class Messagetile extends StatelessWidget{
       )
     ];
   }
-
   @override
   Widget build(BuildContext context){
     return new Container(
@@ -124,10 +241,14 @@ class Messagetile extends StatelessWidget{
           print(chatee+msgkey+snapshot.data.documents.toString());
           var newchatmsg = Chatmessage(chatee: chatee, msg: snapshot.data.documents[0]['message'],email: snapshot.data.documents[0]['sender'],
           date:DateTime.parse(snapshot.data.documents[0]['time']));
+          String apt = snapshot.data.documents[0]['appointment'];
+          if (apt==null){
+            apt = '';
+          }
           return new Row(
             children: email == newchatmsg.email?
-              SentMessageTile(newchatmsg):
-              ReceivedMessageTile(newchatmsg),
+              SentMessageTile(newchatmsg,apt):
+              ReceivedMessageTile(newchatmsg,apt,context),
           );
         }
         else{
@@ -150,7 +271,11 @@ class ChatScreen extends StatefulWidget{
 
   @override
   State<StatefulWidget> createState() {
-    
+    ckey = chatkey;
+    nem = name;
+    emel = email;
+    odernem = othername;
+    oderemel = otheremail;
     return ChatScreenState(chatkey,name,email,othername,otheremail);
   }
 }
@@ -207,7 +332,7 @@ class ChatScreenState extends State<ChatScreen>{
                   var datenow = DateTime.now().toString();
                   if(newchat){
                     await Firestore.instance.runTransaction((transaction) async{
-                      CollectionReference ref = Firestore.instance.collection('users');
+                      CollectionReference ref = await Firestore.instance.collection('users');
                       QuerySnapshot qs = await ref.where('email',isEqualTo:email).getDocuments();
                       String user1 = qs.documents[0]['user'];
                       DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user1));
@@ -216,7 +341,7 @@ class ChatScreenState extends State<ChatScreen>{
                       });
                     });
                     await Firestore.instance.runTransaction((transaction) async{
-                      CollectionReference ref = Firestore.instance.collection('users');
+                      CollectionReference ref = await Firestore.instance.collection('users');
                       QuerySnapshot qs = await ref.where('email',isEqualTo:otheremail).getDocuments();
                       String user1 = qs.documents[0]['user'];
                       DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(user1));
