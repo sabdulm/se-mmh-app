@@ -109,7 +109,19 @@ class UserProfilePage extends StatelessWidget {
             builder: (BuildContext context) => ChatScreen(key, snapshot['name'], snapshot['email'], snap['name'],snap['email']))
     );
   }
-
+  void _chat2(String _snap, BuildContext context) async{
+    DocumentSnapshot snap = await Firestore.instance.collection('users').document(_snap).get();
+    DocumentSnapshot snapshot = await Firestore.instance.collection('users').document(user.uid).get();
+    List<String> emails= [snap['email'], snapshot['email']];
+    emails.sort();
+    var key = emails[0] + emails[1];
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => ApointmentRequestPage(key, snapshot['name'], snapshot['email'], snap['name'],snap['email']))
+    );
+  }
+  
   Widget _buildContainer(String snap, BuildContext context){
     return Container(
         height:60,
@@ -141,7 +153,9 @@ class UserProfilePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _chat2(snap, context);
+                  },
                   textColor: Colors.white,
                   color: Colors.orange,
                   padding: const EdgeInsets.all(0.0),
