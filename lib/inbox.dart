@@ -197,6 +197,56 @@ class MessageListState extends State<MessageList>{
   }
 }
 
+class Tempo extends StatefulWidget{
+  List<String> keys;
+  var cn;
+  Tempo(this.keys, this.cn);
+
+  @override
+  Tempostate createState(){
+    return Tempostate(keys,cn);
+  }
+}
+
+class Dateandkey{
+  DateTime date;
+  String key;
+  Dateandkey(this.date,this.key);
+}
+
+class Tempostate extends State<Tempo>{
+  List<String> keys;
+  var cn;
+  Tempostate(this.keys,this.cn);
+  List<String> Sortbydate(List<dynamic> docs){
+    List<Dateandkey> temp = [];
+    List<dynamic> ncn = [];
+    for(int i=0; i<docs.length; i++){
+      if(keys.contains(docs[i]['key'])){
+        var k = Dateandkey(DateTime.parse(docs[i]['last_time']),docs[i]['key']);
+        temp.add(k);
+      }
+    }
+    temp.sort((a,b)=>a.date.compareTo(b.date));
+    List<String> ret = [];
+    for(int i=0; i<temp.length; i++){
+      ret.add(temp[i].key);
+      ncn.add(cn[keys.indexOf(temp[i].key)]);
+    }
+    cn = ncn.reversed.toList();
+    return ret.reversed.toList();
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return new StreamBuilder(
+      stream: Firestore.instance.collection('chat').snapshots(),
+      builder: (context,snapshot){
+        return MessageList(Sortbydate(snapshot.data.documents), cn);
+      },
+    );
+  }
+}
 
 class InboxPage extends StatefulWidget{
   String name1;
@@ -230,7 +280,7 @@ class InboxPagescreen extends State<InboxPage>{
         builder: (context,snapshot){
           if (snapshot.data!=null){
             if(snapshot.data.documents[0]['inbox'].length>0){
-              return MessageList(Getchats(email, snapshot.data.documents[0]['inbox']),snapshot.data.documents[0]['inbox']);
+              return Tempo(Getchats(email, snapshot.data.documents[0]['inbox']),snapshot.data.documents[0]['inbox']);
             }
             else{
               return new Center(child: new Text("Inbox is Empty"));
