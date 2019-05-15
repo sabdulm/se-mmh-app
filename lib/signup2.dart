@@ -58,6 +58,7 @@ class _SignUpPage2State extends State<SignUpPage2> {
         "dateOfBirth" : dob,
         "createdOn" : DateTime.now(),
         "isAdmin" : false,
+        "block" : false,
         "properties": prop,
         "inbox" : chat,
         "bookmarks" : bookmark,
