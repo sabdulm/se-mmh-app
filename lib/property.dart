@@ -112,31 +112,23 @@ class _PropertyPageState extends State<PropertyPage> {
                   content: new Text('The ad will be permanently deleted throught this action.'),
                   actions: <Widget>[
                     FlatButton(
-                      onPressed: (){
-                        Navigator.of(context).pop(true);                        
+                      onPressed: () async {
+                        await Firestore.instance.runTransaction((Transaction myTransaction) async {
+                          await myTransaction.delete(snap.reference);
+                        });                      
+                        Navigator.of(context).pop();  
                       },
                       child: new Text('Delete'),
                     ),
                     FlatButton(
                       onPressed: (){
-                        Navigator.of(context).pop(false);
+                        Navigator.of(context).pop();
                       },
                       child: new Text('Cancel'),
                     ),
                   ],
                 ),
-              ).then((toDO) async {
-                if(toDO){
-                  setState((){
-                    finsihing = true;
-                  });
-                  // DocumentReference ref = Firestore.instance.collection('Property').document()
-                  await Firestore.instance.runTransaction((Transaction myTransaction) async {
-                    await myTransaction.delete(snap.reference);
-                  });
-                  Navigator.popUntil(context, ModalRoute.withName('listings'));
-                }
-              });
+              );
             },
             icon: Icon(Icons.delete),
             label: Text('Delete Ad'),

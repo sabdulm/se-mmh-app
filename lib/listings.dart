@@ -12,7 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 int _value =0;
 class MyState extends State<MyStateTemp> {
-  
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   FirebaseUser user;
   MyState(this.user);
 	final Set<DocumentReference> _saved = new Set<DocumentReference>(); 
@@ -239,13 +239,27 @@ class MyState extends State<MyStateTemp> {
       floatingActionButton: new FloatingActionButton(
 				child: new Icon(Icons.add), 
 				onPressed: () {
-					// Route route = MaterialPageRoute(builder: (context)=> AddAd());
-					Navigator.push(
-            context,
-            new MaterialPageRoute(
-              builder: (context) => AddAd(user),
+          if(user == null){
+             final snackBar = SnackBar(
+            content: Text("Guest users can not access this feature, please sign up or log in."),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change!
+              },
             ),
           );
+            _scaffoldKey.currentState.showSnackBar(snackBar);
+          }
+          else{
+            // Route route = MaterialPageRoute(builder: (context)=> AddAd());
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => AddAd(user),
+              ),
+            );
+          }
 				},
 			),
 		);

@@ -5,22 +5,25 @@
 // // gestures. You can also use WidgetTester to find child widgets in the widget
 // // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
+// import 'dart:io';
+
+// import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:market_my_house/main.dart';
-import 'package:market_my_house/login.dart';
+// import 'package:market_my_house/main.dart';
+import 'package:market_my_house/listings.dart';
 
 // import 'package:second/main.dart';
 
 void main() {
   testWidgets('Testing Login', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(MyHomePage());
     expect(find.text('Email'), findsOneWidget);
-    await tester.enterText(find.byType(TextField).at(0), 'mannanabdul.ams@gmail.com');
-    await tester.enterText(find.byType(TextField).at(1), '123456');
-    await tester.tap(find.byType(Material).at(0));
-    expect(find.byType(FloatingActionButton), findsOneWidget);
+    // await tester.tapAt(find.byType(Material).at(0));
+    // await tester.enterText(find.byType(TextField).at(0), 'mannanabdul.ams@gmail.com');
+    // await tester.enterText(find.byType(TextField).at(1), '123456');
+    // sleep(const Duration(seconds:5));
+    expect(find.text('Listings'), findsNothing);
     // await tester.tap(find.byType(InkWell));
     // await tester.enterText(find.byType(TextField), 'hello');
 
