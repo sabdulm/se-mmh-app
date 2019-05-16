@@ -35,8 +35,8 @@ class ApointmentRequestState extends State<ApointmentRequestPage>{
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
       firstDate: DateTime.now(),
+      initialDate: DateTime.now(),
       lastDate: DateTime(2030));
       if (picked != null && picked != DateTime.now())
       setState(() {
