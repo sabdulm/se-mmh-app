@@ -107,8 +107,8 @@ Widget Recvaptrqst(_msg,apt_,context){
         new Column(
           children: <Widget>[
             new RaisedButton(
-              child: new Text("Accept"),
-              color: Colors.green.shade300,
+              child: new Text("Accept",style: TextStyle(color: Colors.white),),
+              color: Colors.orange,
               onPressed: () async{
                 String datenow = DateTime.now().toString();
                 await Firestore.instance.runTransaction((transaction) async{
@@ -151,8 +151,8 @@ Widget Recvaptrqst(_msg,apt_,context){
               },
             ),
             new RaisedButton(
-              child: new Text("Reject"),
-              color: Colors.red.shade300,
+              child: new Text("Reject",style: TextStyle(color: Colors.white),),
+              color: Colors.black,
               onPressed: () async{
                 String nmsg = "This message was automatically generated for an appointment: "+_msg.msg+"\nSTATUS: REJECTED";
                 await Firestore.instance.runTransaction((transaction) async{
@@ -165,8 +165,8 @@ Widget Recvaptrqst(_msg,apt_,context){
               },
             ),
             new RaisedButton(
-              child: new Text("Postpone"),
-              color: Colors.yellow.shade300,
+              child: new Text("Postpone",style: TextStyle(color: Colors.orange),),
+              color: Colors.white,
               onPressed: (){
                 Navigator.push(
                   context,
@@ -407,7 +407,7 @@ class ChatScreenState extends State<ChatScreen>{
           automaticallyImplyLeading: true,
           leading: IconButton(icon:Icon(Icons.arrow_back),
             onPressed:() {
-              Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName(MyHomePage.routeName));
+              Navigator.of(context).pop();
             },
           )
         ),

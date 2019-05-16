@@ -249,96 +249,102 @@ class MyState extends State<MyStateTemp> {
   Widget build(BuildContext context) {
     // print("listings: ${_value}");
 
-    return new Scaffold(
-      drawer: new DrawerOnly(user),
-      appBar: new AppBar(
-        title: new Text("Listings"),
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: Search(user));
-            },
-          ),
-          new IconButton(
-            icon: new Icon(Icons.filter_list),
-            onPressed: () {
-              dropdownWidget();
-            },
-          ),
-        ],
-      ),
-      body: new StreamBuilder(
-        stream: streamSelector(_value), //none
-        builder: (context, snapshot) {
-          Size screenSize = MediaQuery.of(context).size;
-          if (!snapshot.hasData)
-            return new Center(
-              child: new CircularProgressIndicator(),
-            );
-          var temp = snapshot.data.documents;
-          if (_hasLocation && _value == 6) {
-            temp.sort((a, b) {
-              GeoPoint loca1 = a['location'];
-              GeoPoint loca2 = b['location'];
+    return new WillPopScope(
+      onWillPop: () async {
+          Future.value(
+              false); //return a `Future` with false value so this route cant be popped or closed.
+        },
+      child: new Scaffold(
+        drawer: new DrawerOnly(user),
+        appBar: new AppBar(
+          title: new Text("Listings"),
+          actions: <Widget>[
+            new IconButton(
+              icon: new Icon(Icons.search),
+              onPressed: () {
+                showSearch(context: context, delegate: Search(user));
+              },
+            ),
+            new IconButton(
+              icon: new Icon(Icons.filter_list),
+              onPressed: () {
+                dropdownWidget();
+              },
+            ),
+          ],
+        ),
+        body: new StreamBuilder(
+          stream: streamSelector(_value), //none
+          builder: (context, snapshot) {
+            Size screenSize = MediaQuery.of(context).size;
+            if (!snapshot.hasData)
+              return new Center(
+                child: new CircularProgressIndicator(),
+              );
+            var temp = snapshot.data.documents;
+            if (_hasLocation && _value == 6) {
+              temp.sort((a, b) {
+                GeoPoint loca1 = a['location'];
+                GeoPoint loca2 = b['location'];
 
-              var first = sqrt(pow(loca1.latitude - _currLat, 2) +
-                  pow(loca1.longitude - _currLon, 2));
-              var second = sqrt(pow(loca2.latitude - _currLat, 2) +
-                  pow(loca2.longitude - _currLon, 2));
-              return first.compareTo(second);
-            });
+                var first = sqrt(pow(loca1.latitude - _currLat, 2) +
+                    pow(loca1.longitude - _currLon, 2));
+                var second = sqrt(pow(loca2.latitude - _currLat, 2) +
+                    pow(loca2.longitude - _currLon, 2));
+                return first.compareTo(second);
+              });
+              return new ListView.builder(
+                padding: EdgeInsets.all(2),
+                itemExtent: 140,
+                itemCount: temp.length,
+                itemBuilder: (context, index) =>
+                    _listItemBuilder(context, temp[index], screenSize),
+              );
+            }
             return new ListView.builder(
               padding: EdgeInsets.all(2),
               itemExtent: 140,
-              itemCount: temp.length,
-              itemBuilder: (context, index) =>
-                  _listItemBuilder(context, temp[index], screenSize),
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) => _listItemBuilder(
+                  context, snapshot.data.documents[index], screenSize),
             );
-          }
-          return new ListView.builder(
-            padding: EdgeInsets.all(2),
-            itemExtent: 140,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) => _listItemBuilder(
-                context, snapshot.data.documents[index], screenSize),
-          );
-        },
-      ), //<-------add lists here!!!
-      floatingActionButton: new FloatingActionButton(
-        child: new Icon(Icons.add),
-        onPressed: () {
-          if (user == null) {
-            final snackBar = SnackBar(
-              content: Text(
-                  "Guest users can not access this feature, please sign up or log in."),
-              action: SnackBarAction(
-                label: 'Undo',
-                onPressed: () {
-                  // Some code to undo the change!
-                },
-              ),
-            );
-            _scaffoldKey.currentState.showSnackBar(snackBar);
-          }
-          // Route route = MaterialPageRoute(builder: (context)=> AddAd());
-          // Navigator.push(
-          //   context,
-          //   new MaterialPageRoute(
-          //     builder: (context) => AddAd(user),
-          //   ),
-          // );
-          // _scaffoldKey.currentState.showSnackBar(snackBar);
-          else {
+          },
+        ), //<-------add lists here!!!
+        floatingActionButton: new FloatingActionButton(
+          child: new Icon(Icons.add),
+          onPressed: () {
+            if (user == null) {
+              final snackBar = SnackBar(
+                content: Text(
+                    "Guest users can not access this feature, please sign up or log in."),
+                action: SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () {
+                    // Some code to undo the change!
+                  },
+                ),
+              );
+              _scaffoldKey.currentState.showSnackBar(snackBar);
+            }
             // Route route = MaterialPageRoute(builder: (context)=> AddAd());
-            Navigator.push(
-              context,
-              new MaterialPageRoute(
-                builder: (context) => AddAd(user),
-              ),
-            );
-          }
-        },
+            // Navigator.push(
+            //   context,
+            //   new MaterialPageRoute(
+            //     builder: (context) => AddAd(user),
+            //   ),
+            // );
+            // _scaffoldKey.currentState.showSnackBar(snackBar);
+            else {
+              // Route route = MaterialPageRoute(builder: (context)=> AddAd());
+              Navigator.push(
+                context,
+                new MaterialPageRoute(
+                  builder: (context) => AddAd(user),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

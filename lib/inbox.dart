@@ -168,17 +168,18 @@ class MessageListState extends State<MessageList>{
   @override
   Widget build (BuildContext context){
     return new Container(
-      child: ListView.builder(
+      child: ListView.separated(
         // separatorBuilder : (context,index)=> Divider(
         //   color : Colors.blue.shade100
         // ),
+        separatorBuilder: (BuildContext context, int index) => Divider(height: 5),
         itemCount: allmsgs.length,
         itemBuilder: ((context,index)=>Container(
           padding: EdgeInsets.symmetric(vertical: 0.0),
           child: StreamBuilder(
             stream: Firestore.instance.collection('chat').where('key',isEqualTo:allmsgs[index]).snapshots(),
             builder: (context,snapshot){
-              if(snapshot.data!=null){
+              if(snapshot!=null && snapshot.data!=null){
                 var newmsg = message(date: DateTime.parse(snapshot.data.documents[0]['last_time']), latest: snapshot.data.documents[0]['latest'],
                   read: snapshot.data.documents[0]['read'] || (snapshot.data.documents[0]['lastsender']==email),name: "Place Holder");
                 return TempState(newmsg,allmsgs[index],chatnames[index],"Place Holder");
@@ -242,7 +243,13 @@ class Tempostate extends State<Tempo>{
     return new StreamBuilder(
       stream: Firestore.instance.collection('chat').snapshots(),
       builder: (context,snapshot){
-        return MessageList(Sortbydate(snapshot.data.documents), cn);
+        if(snapshot.data!=null){
+          return MessageList(Sortbydate(snapshot.data.documents), cn);
+        }
+        else
+        {
+          return CircularProgressIndicator();
+        }
       },
     );
   }

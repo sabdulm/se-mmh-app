@@ -41,9 +41,10 @@ class _MyHomePageState extends State<SignUpPage3> {
 
             // Find the Scaffold in the Widget tree and use it to show a SnackBar!
             _scaffoldKey.currentState.showSnackBar(snackBar);
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginPage()),
+            (Route<dynamic> route) => false
             ); 
           },
           child: Text("Back",

@@ -23,12 +23,17 @@ class DrawerOnly extends StatelessWidget {
         title: const Text('Admin Page'),
         onTap: () =>
         {
-          Navigator.pushReplacement(
+          Navigator.pushNamedAndRemoveUntil(
             ctxt,
-            new MaterialPageRoute(
+            MyHomePage.routeName,
+            (Route<dynamic> route) => false,
+            arguments: user,
+          ),
+          Navigator.push(ctxt, 
+          new MaterialPageRoute(
                 builder: (BuildContext context) =>
                 new AdminUserPage(user)
-            )
+            ),
           )
         },
       );
@@ -75,7 +80,13 @@ class DrawerOnly extends StatelessWidget {
                             ),
                             onTap: () =>
                             {
-                            Navigator.pushReplacement(
+                              Navigator.pushNamedAndRemoveUntil(
+                                ctxt,
+                                MyHomePage.routeName,
+                                (Route<dynamic> route) => false,
+                                arguments: user,
+                              ),
+                              Navigator.push(
                                 ctxt,
                                 new MaterialPageRoute(
                                     builder: (BuildContext context) =>
@@ -99,11 +110,12 @@ class DrawerOnly extends StatelessWidget {
                       title: const Text('Home'),
                       onTap: () =>
                       {
-                        Navigator.pushReplacementNamed(
+                        Navigator.pushNamedAndRemoveUntil(
                           ctxt,
                           MyHomePage.routeName,
+                          (Route<dynamic> route) => false,
                           arguments: user,
-                        )
+                        ),
                       },
                     ),
                      _admin(ctxt, snapshot.data.documents[0]),
@@ -112,7 +124,13 @@ class DrawerOnly extends StatelessWidget {
                       title: const Text('Inbox'),
                       onTap: () =>
                       {
-                      Navigator.pushReplacement(
+                        Navigator.pushNamedAndRemoveUntil(
+                          ctxt,
+                          MyHomePage.routeName,
+                          (Route<dynamic> route) => false,
+                          arguments: user,
+                        ),
+                      Navigator.push(
                           ctxt,
                           MaterialPageRoute(
                               builder: (ctxt) =>
@@ -126,7 +144,13 @@ class DrawerOnly extends StatelessWidget {
                       leading: const Icon(Icons.bookmark),
                       title: const Text('Bookmarks'),
                       onTap: () =>{
-                        Navigator.pushReplacementNamed(
+                        Navigator.pushNamedAndRemoveUntil(
+                          ctxt,
+                          MyHomePage.routeName,
+                          (Route<dynamic> route) => false,
+                          arguments: user,
+                        ),
+                        Navigator.pushNamed(
                           ctxt,
                           MyBookmarkPage.routeName,
                           arguments: user,
@@ -137,7 +161,13 @@ class DrawerOnly extends StatelessWidget {
                       leading: const Icon(Icons.calendar_today),
                       title: const Text('View Calender'),
                       onTap: () {
-                        Navigator.pushReplacement(ctxt,
+                        Navigator.pushNamedAndRemoveUntil(
+                          ctxt,
+                          MyHomePage.routeName,
+                          (Route<dynamic> route) => false,
+                          arguments: user,
+                        );
+                        Navigator.push(ctxt,
                          MaterialPageRoute(
                            builder: (ctxt)=>AppointmentRenderer(snapshot.data.documents[0]['email'], user)
                          )
@@ -154,9 +184,10 @@ class DrawerOnly extends StatelessWidget {
                         onTap: () {
                           try {
                             FirebaseAuth.instance.signOut();
-                            Navigator.pushReplacement(
+                            Navigator.pushAndRemoveUntil(
                               ctxt,
                               MaterialPageRoute(builder: (ctxt) => MyApp()),
+                              (Route<dynamic> route) => false,
                             );
                           }
                           catch (e) {}
@@ -190,9 +221,10 @@ class DrawerOnly extends StatelessWidget {
                       title: const Text('Home'),
                       onTap: () =>
                       {
-                        Navigator.pushReplacementNamed(
+                        Navigator.pushNamedAndRemoveUntil(
                           ctxt,
                           MyHomePage.routeName,
+                          (Route<dynamic> route) => false,
                           arguments: user,
                         )
                       },
@@ -207,9 +239,10 @@ class DrawerOnly extends StatelessWidget {
                         onTap: () {
                           try {
                             FirebaseAuth.instance.signOut();
-                            Navigator.pushReplacement(
+                            Navigator.pushAndRemoveUntil(
                               ctxt,
                               MaterialPageRoute(builder: (ctxt) => MyApp()),
+                              (Route<dynamic> route)=> false,
                             );
                           }
                           catch (e) {}

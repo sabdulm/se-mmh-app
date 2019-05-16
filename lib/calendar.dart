@@ -73,8 +73,12 @@ class Tempstate extends State<Tempclass>{
     return new StreamBuilder(
       stream: Firestore.instance.collection('appointments').snapshots(),
       builder: (context,snapshot){
-        if(snapshot.data!=null){
+        if(snapshot!=null && snapshot.data!=null){
           return Calendar(ToDate(snapshot.data.documents));
+        }
+        else
+        {
+          return CircularProgressIndicator();
         }
       },
     );
@@ -107,7 +111,7 @@ class AppointState extends State<AppointmentRenderer>{
       body: StreamBuilder(
         stream: Firestore.instance.collection('users').where('email',isEqualTo:email).snapshots(),
         builder: (context,snapshot){
-          if(snapshot.data!=null){
+          if(snapshot!=null && snapshot.data!=null){
             return Tempclass(snapshot.data.documents[0]['appointment']);
           }
           else{
