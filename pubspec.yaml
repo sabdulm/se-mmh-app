@@ -21,7 +21,7 @@ dependencies:
   cached_network_image : ^0.8.0
 
   carousel_pro: ^0.0.1
-  intl: ^0.15.8
+  intl: ^0.15.7
 
   google_maps_flutter: ^0.5.7
   location: 1.4.1
@@ -33,6 +33,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter  
+  test: any
 
 
 flutter:
