@@ -102,6 +102,7 @@ class DrawerOnly extends StatelessWidget {
                         Navigator.popUntil(context, ModalRoute.withName('listings'))
                       },
                     ),
+                     _admin(ctxt, snapshot.data.documents[0]),
                     new ListTile(
                       leading: const Icon(Icons.inbox),
                       title: const Text('Inbox'),
@@ -157,7 +158,7 @@ class DrawerOnly extends StatelessWidget {
                           catch (e) {}
                         }
                     ),
-                    _admin(ctxt, snapshot.data.documents[0]),
+                   
                   ],
                 );
               }
