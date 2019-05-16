@@ -75,11 +75,13 @@ class ApointmentRequestState extends State<ApointmentRequestPage>{
                   },
                 child: new Text(dobstr),
               ),
+              Divider(),
               new Flexible(
                 child: new Container(
                   padding: const EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0,bottom: 5.0),
                   decoration: new BoxDecoration(
                     color: Colors.white,
+                    border: Border.all(color: Colors.orange),
                     borderRadius: new BorderRadius.only(
                       topLeft: const Radius.circular(10.0),
                       topRight: const Radius.circular(10.0),
@@ -88,6 +90,7 @@ class ApointmentRequestState extends State<ApointmentRequestPage>{
                     )
                   ), 
                  child : new TextField(
+                   textAlign: TextAlign.center,
                     controller: controller,
                     decoration: new InputDecoration.collapsed(
                       hintText: "Deatils, Location etc."
@@ -95,6 +98,7 @@ class ApointmentRequestState extends State<ApointmentRequestPage>{
                   ),
                 )
               ),
+              Divider(),
               new RaisedButton(
                 onPressed: () async{
                   bool newone = false;
@@ -178,8 +182,8 @@ class ApointmentRequestState extends State<ApointmentRequestPage>{
                   Fluttertoast.showToast(msg: "Request Sent Successfully. ");
                   controller.clear();
                 },
-                child: new Text("Done"),
-                color: Colors.blue,
+                child: new Text("Done",style: TextStyle(color: Colors.white),),
+                color: Colors.orange,
               )
             ],
           ),

@@ -43,7 +43,7 @@ class _SignUpPage2State extends State<SignUpPage2> {
       List <DocumentReference>prop = [];
       List <DocumentReference>chat = [];
       List <DocumentReference>bookmark = [];
-
+      List <String> appointment = [];
       FirebaseUser user = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: e.replaceAll(new RegExp(r"\s+\b|\b\s|\s|\b"), ""), password: p);
       print("Signed up.");
       user.sendEmailVerification();
@@ -62,8 +62,8 @@ class _SignUpPage2State extends State<SignUpPage2> {
         "properties": prop,
         "inbox" : chat,
         "bookmarks" : bookmark,
-        "appointment" : [],
-        "photo" : "https://firebasestorage.googleapis.com/v0/b/mmhapp-576cd.appspot.com/o/person-placeholder.png?alt=media&token=6f309a54-b83b-4074-b27b-b5366b7796bf",
+        "appointment" : appointment,
+        "photo" : "",
 
       });
                       

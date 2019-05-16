@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
         print("Signed in.");
         DocumentSnapshot snap = await Firestore.instance.collection('users').document(user.uid).get();
         if(snap['block'] == false){
-          Navigator.pushNamed(
+          Navigator.pushReplacementNamed(
             context,
             MyHomePage.routeName,
             arguments: user,
@@ -210,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             
           );
-          Navigator.pushNamed(
+          Navigator.pushReplacementNamed(
             context,
             MyHomePage.routeName,
             arguments: null,
@@ -300,10 +300,16 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     // checklogin();
-    return Scaffold(
-      key: _scaffoldKey,
-      // resizeToAvoidBottomPadding: false,
-      body: mainbody(),
+    return WillPopScope(
+      onWillPop: () async {
+          Future.value(
+              false); //return a `Future` with false value so this route cant be popped or closed.
+        },
+      child: Scaffold(
+        key: _scaffoldKey,
+        // resizeToAvoidBottomPadding: false,
+        body: mainbody(),
+      ),
     );
   }
 }

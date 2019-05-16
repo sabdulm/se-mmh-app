@@ -43,6 +43,7 @@ flutter:
       assets:
         - logo.png
         - no_img.png
+        - boy.png
       fonts:
         - family: Montserrat
           fonts:
