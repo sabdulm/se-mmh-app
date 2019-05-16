@@ -11,7 +11,7 @@
     <application
         
         android:name="io.flutter.app.FlutterApplication"
-        android:label="second"
+        android:label="Market My House"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAqVH-uQ-_suOXyBD9pL1mRKB8fg4DxWIQ"/>
         <activity

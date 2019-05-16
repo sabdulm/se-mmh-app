@@ -121,7 +121,7 @@ class _Bookmarks extends State<Bookmarks> {
     return new Scaffold(
       drawer: new DrawerOnly(user),
       appBar: new AppBar(
-        title: new Text("Drawer Demo"),
+        title: new Text("Bookmarks"),
       ),
       body:StreamBuilder(
             stream: Firestore.instance.collection('Property').snapshots(), //none

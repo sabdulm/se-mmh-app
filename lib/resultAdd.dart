@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'listings.dart';
 class ResultAdd extends StatelessWidget {
   final bool check;
-  ResultAdd(this.check);
+  FirebaseUser user;
+  ResultAdd(this.check, this.user);
 
   Widget _result(){
     if(check){
@@ -25,7 +27,12 @@ class ResultAdd extends StatelessWidget {
               _result(),
               FlatButton.icon(
                 onPressed: () {
-                  Navigator.popUntil(context, ModalRoute.withName('listings'));
+                  Navigator.pushReplacementNamed(
+                    context,
+                    MyHomePage.routeName,
+                    arguments: user,
+                  );
+                  // Navigator.popUntil(context, ModalRoute.withName('listings'));
                 }, 
                 icon: Icon(Icons.home),
                 label: Text('Return to home'),

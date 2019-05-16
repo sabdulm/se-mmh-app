@@ -1,7 +1,8 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddAd1 {
-  final String user;
+  FirebaseUser user;
   final String title;
   final String description;
   final List<String> tags;
@@ -9,7 +10,7 @@ class AddAd1 {
 }
 
 class AddAd2 {
-  final String user;
+  FirebaseUser user;
   final String title;
   final String description;
   final List<String> tags;

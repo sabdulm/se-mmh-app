@@ -54,7 +54,7 @@ class ApointmentRequestState extends State<ApointmentRequestPage>{
       body: new Container(
         padding: const EdgeInsets.only(top: 100.0, left: 25.0, right: 25.0),
         decoration: new BoxDecoration(
-          color: Colors.blue.shade100,
+          color: Colors.white,
           borderRadius: new BorderRadius.only(
             topLeft: const Radius.circular(10.0),
             topRight: const Radius.circular(10.0),

@@ -78,8 +78,8 @@ class AddAdState extends State<AddAd> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 12.0),
           onPressed: () {
-            AddAd1 temp = AddAd1(user.uid,namestr, description, tags);
-            Navigator.push(
+            AddAd1 temp = AddAd1(user,namestr, description, tags);
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => MyMap(temp),

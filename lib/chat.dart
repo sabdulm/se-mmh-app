@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'inbox.dart';
 import 'appointment.dart';
-
+import 'listings.dart';
 // var email = "hadi@gmail.com";
 // String name = "Hadi";
 var formatter = new DateFormat().add_yMMMMd();
@@ -407,7 +407,7 @@ class ChatScreenState extends State<ChatScreen>{
           automaticallyImplyLeading: true,
           leading: IconButton(icon:Icon(Icons.arrow_back),
             onPressed:() {
-              Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName('home'));
+              Navigator.of(context).pushNamedAndRemoveUntil('inbox', ModalRoute.withName(MyHomePage.routeName));
             },
           )
         ),

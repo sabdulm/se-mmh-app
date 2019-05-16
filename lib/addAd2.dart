@@ -5,6 +5,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'dart:math';
 import 'resultAdd.dart';
@@ -21,7 +22,7 @@ class AddAdSec extends StatefulWidget {
 class _AddAdSecState extends State<AddAdSec> {
   AddAd2 temp;
   _AddAdSecState(this.temp);
-
+  
   var imgs = <File> [];
   var imgUrls = <String> [];
   bool finishing = false;
@@ -112,7 +113,7 @@ class _AddAdSecState extends State<AddAdSec> {
 
                       Geoflutterfire geoPoint = Geoflutterfire();
                       GeoFirePoint point = geoPoint.point(latitude: temp.pin.latitude, longitude: temp.pin.longitude);
-                      DocumentReference ref = Firestore.instance.collection('users').document(temp.user);
+                      DocumentReference ref = Firestore.instance.collection('users').document(temp.user.uid);
                       
                       var x = Random() ;
                       var price = x.nextInt(50000) + 10000;
@@ -127,16 +128,16 @@ class _AddAdSecState extends State<AddAdSec> {
                         "price" : price,
                       }).then((res) =>
                       Firestore.instance.runTransaction((transaction) async{
-                        DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(temp.user));
+                        DocumentSnapshot freshsnap = await transaction.get(Firestore.instance.collection('users').document(temp.user.uid));
                         await transaction.update(freshsnap.reference,{
                           'properties': FieldValue.arrayUnion([res.documentID]),
                         });
-                      }).then((r) => Navigator.push(context, MaterialPageRoute(builder: (context) => ResultAdd(true))))
+                      }).then((r) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ResultAdd(true, temp.user)))))
                       .catchError((err)=>{
                         print(err),
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ResultAdd(false))),
-                        }));
-                    // }
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ResultAdd(false, temp.user))),
+                        
+                    });
                 }
               ),
             ),

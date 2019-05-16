@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -82,21 +83,24 @@ class Tempstate extends State<Tempclass>{
 
 class AppointmentRenderer extends StatefulWidget{
   String email;
-  AppointmentRenderer(this.email);
+  FirebaseUser user;
+  AppointmentRenderer(this.email, this.user);
 
   @override
   State<StatefulWidget> createState(){
-    return AppointState(email);
+    return AppointState(email, user);
   }
 }
 
 class AppointState extends State<AppointmentRenderer>{
   String email;
-  AppointState(this.email);
+  FirebaseUser user;
+  AppointState(this.email, this.user);
 
   @override
   Widget build(BuildContext context){
     return new Scaffold(
+      drawer: DrawerOnly(user),
       appBar: new AppBar(
         title: new Text("Calendar"),
       ),

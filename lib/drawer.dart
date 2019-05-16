@@ -23,7 +23,7 @@ class DrawerOnly extends StatelessWidget {
         title: const Text('Admin Page'),
         onTap: () =>
         {
-          Navigator.push(
+          Navigator.pushReplacement(
             ctxt,
             new MaterialPageRoute(
                 builder: (BuildContext context) =>
@@ -34,7 +34,7 @@ class DrawerOnly extends StatelessWidget {
       );
     }
     else {
-      return new ListTile();
+      return new Container();
     }
   }
 
@@ -75,7 +75,7 @@ class DrawerOnly extends StatelessWidget {
                             ),
                             onTap: () =>
                             {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 ctxt,
                                 new MaterialPageRoute(
                                     builder: (BuildContext context) =>
@@ -99,7 +99,11 @@ class DrawerOnly extends StatelessWidget {
                       title: const Text('Home'),
                       onTap: () =>
                       {
-                        Navigator.popUntil(context, ModalRoute.withName('listings'))
+                        Navigator.pushReplacementNamed(
+                          ctxt,
+                          MyHomePage.routeName,
+                          arguments: user,
+                        )
                       },
                     ),
                      _admin(ctxt, snapshot.data.documents[0]),
@@ -108,7 +112,7 @@ class DrawerOnly extends StatelessWidget {
                       title: const Text('Inbox'),
                       onTap: () =>
                       {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           ctxt,
                           MaterialPageRoute(
                               builder: (ctxt) =>
@@ -122,7 +126,7 @@ class DrawerOnly extends StatelessWidget {
                       leading: const Icon(Icons.bookmark),
                       title: const Text('Bookmarks'),
                       onTap: () =>{
-                        Navigator.pushNamed(
+                        Navigator.pushReplacementNamed(
                           ctxt,
                           MyBookmarkPage.routeName,
                           arguments: user,
@@ -133,9 +137,9 @@ class DrawerOnly extends StatelessWidget {
                       leading: const Icon(Icons.calendar_today),
                       title: const Text('View Calender'),
                       onTap: () {
-                        Navigator.push(ctxt,
+                        Navigator.pushReplacement(ctxt,
                          MaterialPageRoute(
-                           builder: (ctxt)=>AppointmentRenderer(snapshot.data.documents[0]['email'])
+                           builder: (ctxt)=>AppointmentRenderer(snapshot.data.documents[0]['email'], user)
                          )
                          );
                       },
@@ -150,7 +154,7 @@ class DrawerOnly extends StatelessWidget {
                         onTap: () {
                           try {
                             FirebaseAuth.instance.signOut();
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               ctxt,
                               MaterialPageRoute(builder: (ctxt) => MyApp()),
                             );
@@ -186,7 +190,7 @@ class DrawerOnly extends StatelessWidget {
                       title: const Text('Home'),
                       onTap: () =>
                       {
-                        Navigator.pushNamed(
+                        Navigator.pushReplacementNamed(
                           ctxt,
                           MyHomePage.routeName,
                           arguments: user,
@@ -203,7 +207,7 @@ class DrawerOnly extends StatelessWidget {
                         onTap: () {
                           try {
                             FirebaseAuth.instance.signOut();
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               ctxt,
                               MaterialPageRoute(builder: (ctxt) => MyApp()),
                             );

@@ -230,7 +230,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.7"
+    version: "0.15.8"
   io:
     dependency: transitive
     description:
@@ -251,7 +251,7 @@ packages:
       name: json_rpc_2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.9"
+    version: "2.1.0"
   kernel:
     dependency: transitive
     description:
@@ -336,7 +336,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
-
+  platform:
+    dependency: transitive
+    description:
+      name: platform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
+  pool:
+    dependency: transitive
+    description:
+      name: pool
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
+  process:
+    dependency: transitive
+    description:
+      name: process
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.9"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.2"
   quiver:
     dependency: transitive
     description:
@@ -453,11 +480,18 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.3"
+    version: "1.6.3"
   test_api:
     dependency: transitive
     description:
       name: test_api
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.5"
+  test_core:
+    dependency: transitive
+    description:
+      name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.5"
@@ -488,7 +522,7 @@ packages:
       name: vm_service_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.6"
+    version: "0.2.6+1"
   watcher:
     dependency: transitive
     description:
@@ -502,7 +536,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.12"
   yaml:
     dependency: transitive
     description:
