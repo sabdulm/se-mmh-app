@@ -116,7 +116,7 @@ class _PropertyPageState extends State<PropertyPage> {
                         await Firestore.instance.runTransaction((Transaction myTransaction) async {
                           await myTransaction.delete(snap.reference);
                         });                      
-                        Navigator.of(context).pop();  
+                        Navigator.of(context).popUntil(ModalRoute.withName('listings'));  
                       },
                       child: new Text('Delete'),
                     ),
