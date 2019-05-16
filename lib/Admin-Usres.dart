@@ -15,8 +15,8 @@ class AdminUserPage extends StatefulWidget {
 
 
 class _AdminUserPageState extends State<AdminUserPage> {
-  _AdminUserPageState(this.User);
-  final FirebaseUser User;
+  _AdminUserPageState(this._user);
+  final FirebaseUser _user;
   Widget but(Size screenSize){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +43,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => AdminAdPage(User),
+                    builder: (BuildContext context) => AdminAdPage(_user),
                   )),
               textColor: Colors.white,
               color: Colors.orange,
@@ -104,11 +104,11 @@ class _AdminUserPageState extends State<AdminUserPage> {
   Widget _image(String url, Size screenSize){
     if(url == ''){
       return Container(
-        height: screenSize.height/10,
-        width: screenSize.height/10,
+        height: 70,
+        width: 70,
         decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('no_img.png'),
+              image: AssetImage('boy.png'),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(80.0),
@@ -120,8 +120,8 @@ class _AdminUserPageState extends State<AdminUserPage> {
       );
     }
     return Container(
-      width: screenSize.height/10,
-      height: screenSize.height/10,
+      width: 70,
+      height: 70,
       decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(url),
@@ -155,7 +155,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
       onTap:() => Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => Profile(snapshot.documentID, User))
+              builder: (BuildContext context) => Profile(snapshot.documentID, _user))
       ),
     );
   }
@@ -163,7 +163,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      drawer: DrawerOnly(User),
+      drawer: DrawerOnly(_user),
       appBar: AppBar(
         title: Text('Users'),
       ),
@@ -177,9 +177,12 @@ class _AdminUserPageState extends State<AdminUserPage> {
                   stream: Firestore.instance.collection('users').snapshots(),
                   builder: (context, snapshot){
                     Size screenSize = MediaQuery.of(context).size;
+                    if(snapshot.data==null){
+                      return CircularProgressIndicator();
+                    }
                     return new ListView.builder(
                       padding: EdgeInsets.all(2),
-                      itemExtent: screenSize.height/8,
+                      itemExtent: 80,
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index)=>user(context, snapshot.data.documents[index], screenSize),
                     );

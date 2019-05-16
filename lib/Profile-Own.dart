@@ -50,7 +50,7 @@ class UserProfilePage extends StatelessWidget {
           height: 140.0,
           decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('no_img.png'),
+                image: AssetImage('boy.png'),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(80.0),

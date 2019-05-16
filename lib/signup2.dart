@@ -63,7 +63,7 @@ class _SignUpPage2State extends State<SignUpPage2> {
         "inbox" : chat,
         "bookmarks" : bookmark,
         "appointment" : appointment,
-        "photo" : "https://firebasestorage.googleapis.com/v0/b/mmhapp-576cd.appspot.com/o/person-placeholder.png?alt=media&token=6f309a54-b83b-4074-b27b-b5366b7796bf",
+        "photo" : "",
 
       });
                       

@@ -21,7 +21,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.0.8"
   boolean_selector:
     dependency: transitive
     description:
@@ -230,7 +230,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.8"
+    version: "0.15.7"
   io:
     dependency: transitive
     description:
@@ -251,7 +251,7 @@ packages:
       name: json_rpc_2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.0.9"
   kernel:
     dependency: transitive
     description:
@@ -272,7 +272,7 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.5"
+    version: "0.12.3+1"
   meta:
     dependency: transitive
     description:
@@ -335,7 +335,7 @@ packages:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0"
+    version: "1.4.0"
   platform:
     dependency: transitive
     description:
@@ -370,7 +370,7 @@ packages:
       name: quiver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.1"
   rxdart:
     dependency: transitive
     description:
@@ -431,7 +431,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.5"
+    version: "1.5.4"
   sqflite:
     dependency: transitive
     description:
@@ -452,7 +452,7 @@ packages:
       name: stream_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "1.6.8"
   string_scanner:
     dependency: transitive
     description:
@@ -480,21 +480,21 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.3"
+    version: "1.5.3"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.5"
+    version: "0.2.2"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.5"
+    version: "0.2.1+1"
   typed_data:
     dependency: transitive
     description:
@@ -522,7 +522,7 @@ packages:
       name: vm_service_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.6+1"
+    version: "0.2.6"
   watcher:
     dependency: transitive
     description:
@@ -536,7 +536,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.12"
+    version: "1.0.9"
   yaml:
     dependency: transitive
     description:
@@ -545,5 +545,5 @@ packages:
     source: hosted
     version: "2.1.15"
 sdks:
-  dart: ">=2.2.0 <3.0.0"
+  dart: ">=2.1.0 <3.0.0"
   flutter: ">=1.2.1 <2.0.0"

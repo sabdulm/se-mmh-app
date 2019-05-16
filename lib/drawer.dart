@@ -67,14 +67,14 @@ class DrawerOnly extends StatelessWidget {
                               height: 100.0,
                               decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(
+                                    image: snapshot.data.documents[0]['photo']==""?AssetImage('boy.png') :NetworkImage(
                                         snapshot.data.documents[0]['photo']),
                                     fit: BoxFit.cover,
                                   ),
                                   borderRadius: BorderRadius.circular(80.0),
                                   border: Border.all(
                                     color: Colors.white,
-                                    width: 10.0,
+                                    width: 5.0,
                                   )
                               ),
                             ),
@@ -98,7 +98,7 @@ class DrawerOnly extends StatelessWidget {
                             },
                           ),
                           Text(snapshot.data.documents[0]['name'],
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(fontWeight: FontWeight.bold )),
                         ],
                       ),
                       decoration: new BoxDecoration(
