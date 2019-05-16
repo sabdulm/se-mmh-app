@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
           routes: {
             MyHomePage.routeName : (context) => MyHomePage(),
             MyBookmarkPage.routeName : (context) => MyBookmarkPage(),
-            'calender' : (context) => Calendar(),
           },
           home: FutureBuilder(
             future: FirebaseAuth.instance.currentUser(),

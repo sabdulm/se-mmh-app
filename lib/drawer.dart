@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'inbox.dart';
 import 'bookmark.dart';
+import 'calendar.dart';
 // import 'date.dart';
 // import 'property.dart';
 
@@ -131,7 +132,11 @@ class DrawerOnly extends StatelessWidget {
                       leading: const Icon(Icons.calendar_today),
                       title: const Text('View Calender'),
                       onTap: () {
-                        Navigator.of(ctxt).pushNamed('calendar');
+                        Navigator.push(ctxt,
+                         MaterialPageRoute(
+                           builder: (ctxt)=>AppointmentRenderer(snapshot.data.documents[0]['email'])
+                         )
+                         );
                       },
                     ),
                     new ListTile(

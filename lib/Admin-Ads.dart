@@ -98,20 +98,23 @@ class _AdminAdPageState extends State<AdminAdPage> {
   }
   Widget _image (String url, Size screenSize){
     if(url == ''){
-      return SizedBox(
-          height: screenSize.height/5.5,
-          width: screenSize.width/3,
-          child: Image.asset("no_img.png", fit: BoxFit.fill,)
+      return new SizedBox(
+        height: 120,
+        width: screenSize.width/2.5,
+        child: ClipRect(child:new Container(child:new Image.asset("no_img.png", fit: BoxFit.fill,)),)
       );
     }
     return new SizedBox(
-      height: screenSize.height/5.5,
-      width: screenSize.width/3,
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(url),
-            fit: BoxFit.fill,
+      height: 120,
+      width: screenSize.width/2.5,
+      child: new ClipRect(
+        child: new Container(
+          decoration: new BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: new DecorationImage(
+              image: new NetworkImage(url),
+              fit: BoxFit.fill,
+            ),
           ),
         ),
       ),
@@ -132,11 +135,13 @@ class _AdminAdPageState extends State<AdminAdPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 snapshot['photo'].length<1 || snapshot['photo']==null ? _image('',screenSize) :_image(snapshot['photo'][0], screenSize),
-                new VerticalDivider(color: Colors.black,width: screenSize.width/20,),
+                new VerticalDivider(color: Colors.black,width: 16,),
                 new Container(
-                  width: screenSize.width-(screenSize.width/3) - (screenSize.width/10),
+                  width: screenSize.width-(screenSize.width/2.5) - 60,
                   height: 120,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       new Text("${snapshot['name'][0].toUpperCase()}${snapshot['name'].substring(1).toLowerCase()}",overflow: TextOverflow.ellipsis ,maxLines: 1, style: _biggerFont,),
                       new Text(
@@ -147,27 +152,35 @@ class _AdminAdPageState extends State<AdminAdPage> {
                       ),
                       Spacer(),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          MaterialButton(
-                            onPressed: () {_approve(snapshot.documentID);},
-                            textColor: Colors.white,
-                            color: Colors.orange,
-                            padding: const EdgeInsets.all(0.0),
-                            child: Container(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Approve'),
+                          SizedBox(
+                            width: (screenSize.width-(screenSize.width/2.5) - 60)/2,
+                            child: MaterialButton(
+                              
+                              onPressed: () {_approve(snapshot.documentID);},
+                              textColor: Colors.white,
+                              color: Colors.orange,
+                              padding: const EdgeInsets.all(0.0),
+                              child: Container(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text('Approve'),
+                              ),
                             ),
                           ),
-                          MaterialButton(
-                            onPressed: () {
-                              _delete(snapshot.documentID);
-                            },
-                            textColor: Colors.white,
-                            color: Colors.orange,
-                            padding: const EdgeInsets.all(0.0),
-                            child: Container(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Delete'),
+                          SizedBox(
+                            width: (screenSize.width-(screenSize.width/2.5) - 60)/2,
+                            child:MaterialButton(
+                              onPressed: () {
+                                _delete(snapshot.documentID);
+                              },
+                              textColor: Colors.white,
+                              color: Colors.orange,
+                              padding: const EdgeInsets.all(0.0),
+                              child: Container(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text('Delete'),
+                              ),
                             ),
                           ),
                         ],

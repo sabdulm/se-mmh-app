@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import './drawer.dart';
 import './property.dart';
 import 'chat.dart';
-
+import 'appointment.dart';
 var _docId = '';
 
 class Profile extends StatefulWidget {
@@ -42,8 +42,8 @@ class UserProfilePage extends StatelessWidget {
     fontWeight: FontWeight.bold,
   );
 
-  Widget _buildUserProfileImage(DocumentSnapshot snap){
-    if (snap['photo'] == '') {
+  Widget _buildUserProfileImage(String snap){
+    if (snap == '') {
       return Center(
         child: Container(
           width: 140.0,
@@ -68,7 +68,7 @@ class UserProfilePage extends StatelessWidget {
         height: 140.0,
         decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(snap['photo']),
+              image: NetworkImage(snap),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(80.0),
@@ -81,15 +81,15 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildFullName(DocumentSnapshot snap) {
+  Widget _buildFullName(String snap) {
     TextStyle _nameTextStyle = TextStyle(
       color: Colors.black,
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
-    if (snap['name'] != null){
+    if (snap != null){
       return new Text(
-        snap['name'],
+        snap,
         style: _nameTextStyle,
       );
     }
@@ -109,7 +109,19 @@ class UserProfilePage extends StatelessWidget {
             builder: (BuildContext context) => ChatScreen(key, snapshot['name'], snapshot['email'], snap['name'],snap['email']))
     );
   }
-
+  void _chat2(String _snap, BuildContext context) async{
+    DocumentSnapshot snap = await Firestore.instance.collection('users').document(_snap).get();
+    DocumentSnapshot snapshot = await Firestore.instance.collection('users').document(user.uid).get();
+    List<String> emails= [snap['email'], snapshot['email']];
+    emails.sort();
+    var key = emails[0] + emails[1];
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => ApointmentRequestPage(key, snapshot['name'], snapshot['email'], snap['name'],snap['email']))
+    );
+  }
+  
   Widget _buildContainer(String snap, BuildContext context){
     return Container(
         height:60,
@@ -141,28 +153,15 @@ class UserProfilePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _chat2(snap, context);
+                  },
                   textColor: Colors.white,
                   color: Colors.orange,
                   padding: const EdgeInsets.all(0.0),
                   child: Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text('Appointments'),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                  onPressed: () {},
-                  textColor: Colors.white,
-                  color: Colors.orange,
-                  padding: const EdgeInsets.all(0.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text('Block'),
                   ),
                 ),
               ],
@@ -197,7 +196,6 @@ class UserProfilePage extends StatelessWidget {
   }
   Widget _listItemBuilder (BuildContext context , DocumentSnapshot snapshot, Size screenSize){
     final bool alreadySaved = _saved.contains(snapshot.documentID);
-    print(snapshot['user']);
     return new GestureDetector(
       onTap: (){
         Route route = new MaterialPageRoute(builder: (context)=> PropertyPage(snapshot.documentID, 'Property', user));
@@ -275,6 +273,17 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
+  Widget _blocked(Size screenSize, String id, BuildContext context){
+    return Column(
+      children: <Widget>[
+        SizedBox(height: screenSize.height /20),
+        _buildUserProfileImage(''),
+        _buildFullName('Blocked User'),
+        _buildContainer(id, context),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -292,11 +301,14 @@ class UserProfilePage extends StatelessWidget {
                 return Text("Loading");
               }
               var userDocument = snapshot.data;
+              if(userDocument['block'] == true){
+                return _blocked(screenSize, userDocument.documentID, context);
+              }
               return Column(
                 children: <Widget>[
                   SizedBox(height: screenSize.height /20),
-                  _buildUserProfileImage(userDocument),
-                  _buildFullName(userDocument),
+                  _buildUserProfileImage(userDocument['photo']),
+                  _buildFullName(userDocument['name']),
                   _buildContainer(userDocument.documentID, context),
                   _buildAds(),
                 ],
