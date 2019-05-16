@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import './Profile-Edit.dart';
 import './drawer.dart';
 import './property.dart';
-
+import './addAd.dart';
 var _docId = '';
 
 class Profile extends StatefulWidget {
@@ -97,7 +97,7 @@ class UserProfilePage extends StatelessWidget {
 
   }
 
-  Widget _buildContainer(DocumentSnapshot snap){
+  Widget _buildContainer(DocumentSnapshot snap, BuildContext context){
 
     TextStyle _statCountTextStyle = TextStyle(
       color: Colors.black54,
@@ -124,7 +124,11 @@ class UserProfilePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               RaisedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (BuildContext context) => AddAd(user),
+                  ));
+                },
                 textColor: Colors.white,
                 color: Colors.orange,
                 padding: const EdgeInsets.all(0.0),
@@ -260,7 +264,11 @@ class UserProfilePage extends StatelessWidget {
                   builder: (context) => Edit(user),
                 ),
               );
-            }
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10.0),
+                child: Text('Edit'),
+            ),
           ),
         ],
       ),
@@ -279,7 +287,7 @@ class UserProfilePage extends StatelessWidget {
                     SizedBox(height: screenSize.height /20),
                     _buildUserProfileImage(userDocument),
                     _buildFullName(userDocument),
-                    _buildContainer(userDocument),
+                    _buildContainer(userDocument, context),
                     _buildAds(),
                   ],
                 );
