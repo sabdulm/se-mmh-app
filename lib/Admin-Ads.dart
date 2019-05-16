@@ -282,14 +282,14 @@ class _AdminAdPageState extends State<AdminAdPage> {
                   });
                   return new ListView.builder(
                     padding: EdgeInsets.all(2),
-                    itemExtent: screenSize.height/4,
+                    itemExtent: 120,
                     itemCount: temp.length,
                     itemBuilder: (context, index)=>_listItemBuilder(context, temp[index], screenSize),
                   );
                 }
                 return new ListView.builder(
                   padding: EdgeInsets.all(2),
-                  itemExtent: screenSize.height/4,
+                  itemExtent: 120,
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index)=>_listItemBuilder(context, snapshot.data.documents[index], screenSize),
                 );
