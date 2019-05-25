@@ -9,7 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'dart:math';
 import 'resultAdd.dart';
-
+import 'package:image/image.dart' as Im;
+import 'package:path_provider/path_provider.dart';
+import 'dart:math' as Math;
 
 class AddAdSec extends StatefulWidget {
   final AddAd2 temp;
@@ -34,7 +36,16 @@ class _AddAdSecState extends State<AddAdSec> {
     }
     return lst;
   }
+  void compressImage(File imageFile) async {
+    final tempDir = await getTemporaryDirectory();
+    final path = tempDir.path;
+    int rand = new Math.Random().nextInt(10000);
+    Im.Image image = Im.decodeImage(imageFile.readAsBytesSync());
+    Im.Image smallerImage = Im.copyResize(image, height: 500); // choose the size here, it will maintain aspect ratio
 
+    File compressedImage = new File('$path/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(smallerImage, quality: 85));
+    imgs.add(compressedImage);
+  }
 	Widget _buildCoverImage(Size screenSize) => new SizedBox(
     height: screenSize.height/3,
     child: imgs.length>0? new Carousel(
@@ -80,8 +91,8 @@ class _AddAdSecState extends State<AddAdSec> {
                       source: ImageSource.gallery,
                     );
                     if(imgFile!=null){
+                      compressImage(imgFile);
                       setState (() {
-                          imgs.add(imgFile);
                       });
 
                     }
