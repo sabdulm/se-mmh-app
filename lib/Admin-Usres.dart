@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
       height: 70,
       decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(url),
+            image: CachedNetworkImageProvider(url),
             fit: BoxFit.cover,
           ),
           borderRadius: BorderRadius.circular(80.0),

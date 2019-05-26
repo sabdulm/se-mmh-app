@@ -8,7 +8,7 @@ import 'package:location/location.dart';
 import 'dart:math';
 import 'property.dart';
 import 'addAd.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 int _value = 0;
 
 class MyState extends State<MyStateTemp> {
@@ -92,19 +92,17 @@ class MyState extends State<MyStateTemp> {
             )),
           ));
     }
+    final place_holder =  new Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+      ] 
+    );
     return new SizedBox(
       height: 120,
       width: screenSize.width / 2.5,
       child: new ClipRect(
-        child: new Container(
-          decoration: new BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: new DecorationImage(
-              image: new NetworkImage(url),
-              fit: BoxFit.fill,
-            ),
-          ),
-        ),
+        child: CachedNetworkImage(imageUrl: url, placeholder: (context, _)=>place_holder,fit: BoxFit.fill,)
       ),
     );
   }

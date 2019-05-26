@@ -114,7 +114,7 @@ class EditProfile extends State<Edit> {
       );
     }
   }
-  void updatePhoto(String snap) async{
+  void updatePhoto(String snap, String url) async{
     if (img!=null) {
       final StorageReference storageRef = FirebaseStorage.instance.ref().child(
           DateTime.now().toString());
@@ -122,9 +122,14 @@ class EditProfile extends State<Edit> {
       final StorageUploadTask uploadTask = storageRef.putFile(img);
       final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
       final String url = (await downloadUrl.ref.getDownloadURL());
+      if(url!= ''){
+        // StorageReference photoRef = await FirebaseStorage().getReferenceFromUrl(url);
+        // photoRef.delete();
+      }
       Firestore.instance.collection('users').document(snap).updateData({
         'photo': url,
       });
+      
     }
   }
   void update(String name, String address, String mobile, String title, String snap) async{
@@ -245,15 +250,18 @@ class EditProfile extends State<Edit> {
                                       onPressed: () {
                                         if(nameStr == ''){
                                           nameStr = snapshot.data['name'];
-                                        } else if(addressStr == ''){
+                                        }
+                                        if(addressStr == ''){
                                           addressStr = snapshot.data['address'];
-                                        } else if(mobileStr == ''){
+                                        }
+                                        if(mobileStr == ''){
                                           mobileStr = snapshot.data['mobile'];
-                                        } else if(titleStr == ''){
+                                        }
+                                        if(titleStr == ''){
                                           titleStr = snapshot.data['title'];
                                         }
                                         update(nameStr, addressStr, mobileStr, titleStr, snapshot.data.documentID);
-                                        updatePhoto(snapshot.data.documentID);
+                                        updatePhoto(snapshot.data.documentID,snapshot.data['url']);
                                         Navigator.pop(context);
                                       },
                                     textColor: Colors.white,
