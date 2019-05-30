@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,7 +69,7 @@ class UserProfilePage extends StatelessWidget {
         height: 140.0,
         decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(snap['photo']),
+              image: CachedNetworkImageProvider(snap['photo']),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(80.0),
@@ -160,7 +161,7 @@ class UserProfilePage extends StatelessWidget {
           decoration: new BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             image: new DecorationImage(
-              image: new NetworkImage(url),
+              image: new CachedNetworkImageProvider(url),
               fit: BoxFit.fill,
             ),
           ),

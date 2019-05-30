@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -104,19 +105,17 @@ class _AdminAdPageState extends State<AdminAdPage> {
         child: ClipRect(child:new Container(child:new Image.asset("no_img.png", fit: BoxFit.fill,)),)
       );
     }
+    final place_holder =  new Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+      ] 
+    );
     return new SizedBox(
       height: 120,
-      width: screenSize.width/2.5,
+      width: screenSize.width / 2.5,
       child: new ClipRect(
-        child: new Container(
-          decoration: new BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: new DecorationImage(
-              image: new NetworkImage(url),
-              fit: BoxFit.fill,
-            ),
-          ),
-        ),
+        child: CachedNetworkImage(imageUrl: url, placeholder: (context, _)=>place_holder,fit: BoxFit.fill,)
       ),
     );
   }

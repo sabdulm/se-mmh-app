@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'drawer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:image/image.dart' as Im;
+import 'package:path_provider/path_provider.dart';
+import 'dart:math' as Math;
 
 class Edit extends StatefulWidget {
   final FirebaseUser user ;
@@ -25,6 +28,16 @@ class EditProfile extends State<Edit> {
   String titleStr = "";
   String mobileStr = "";
   File img = null;
+  void compressImage(File imageFile) async {
+    final tempDir = await getTemporaryDirectory();
+    final path = tempDir.path;
+    int rand = new Math.Random().nextInt(10000);
+    Im.Image image = Im.decodeImage(imageFile.readAsBytesSync());
+    Im.Image smallerImage = Im.copyResize(image, height: 500); // choose the size here, it will maintain aspect ratio
+
+    File compressedImage = new File('$path/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(smallerImage, quality: 85));
+    this.img=compressedImage;
+  }
   Widget profilePic(String photo) {
     if (img == null) {
       if (photo == '') {
@@ -101,16 +114,22 @@ class EditProfile extends State<Edit> {
       );
     }
   }
-  void updatePhoto(String snap) async{
+  void updatePhoto(String snap, String url) async{
     if (img!=null) {
       final StorageReference storageRef = FirebaseStorage.instance.ref().child(
           DateTime.now().toString());
+      compressImage(img);
       final StorageUploadTask uploadTask = storageRef.putFile(img);
       final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
       final String url = (await downloadUrl.ref.getDownloadURL());
+      if(url!= ''){
+        // StorageReference photoRef = await FirebaseStorage().getReferenceFromUrl(url);
+        // photoRef.delete();
+      }
       Firestore.instance.collection('users').document(snap).updateData({
         'photo': url,
       });
+      
     }
   }
   void update(String name, String address, String mobile, String title, String snap) async{
@@ -231,15 +250,18 @@ class EditProfile extends State<Edit> {
                                       onPressed: () {
                                         if(nameStr == ''){
                                           nameStr = snapshot.data['name'];
-                                        } else if(addressStr == ''){
+                                        }
+                                        if(addressStr == ''){
                                           addressStr = snapshot.data['address'];
-                                        } else if(mobileStr == ''){
+                                        }
+                                        if(mobileStr == ''){
                                           mobileStr = snapshot.data['mobile'];
-                                        } else if(titleStr == ''){
+                                        }
+                                        if(titleStr == ''){
                                           titleStr = snapshot.data['title'];
                                         }
                                         update(nameStr, addressStr, mobileStr, titleStr, snapshot.data.documentID);
-                                        updatePhoto(snapshot.data.documentID);
+                                        updatePhoto(snapshot.data.documentID,snapshot.data['url']);
                                         Navigator.pop(context);
                                       },
                                     textColor: Colors.white,
